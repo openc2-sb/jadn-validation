@@ -180,6 +180,23 @@ def get_opt_str(key: str, j_type: Jadn_Type):
         
     return return_val
 
+def to_dict_on_given_char(string_val: str, position: int):
+    """Splits a string on the designated character."""
+
+    
+    return {string_val[:(position-1)]: string_val[position:]}
+
+def use_tagged_string(j_opts: str):
+    return_val = None
+    opts = get_opts(j_opts)
+    for opt in opts:
+        opt_key, opt_val = general_utils.split_on_first_char(opt)
+        if opt_key == '~':    
+            return_val = [opt_key, opt_val]
+            break
+        
+    return return_val
+
 def get_tagid(opts: List[str]) -> int:
     """
     Searches opts for a string that starts with '&'. If found, returns the integer value of the second character.

@@ -494,3 +494,55 @@ def test_map_max_occurs():
             
     err_count = validate_invalid_data(j_schema, root, invalid_data_list)
     assert err_count == len(invalid_data_list)
+
+     
+def test_map_tag_string():
+    root = "Root-Test"
+    
+    j_schema = {
+        "meta": {
+            "package": "http://test/v1.0",
+            "roots": ["Root-Test"]
+        },
+        "types": [
+            ["Root-Test", "Map", ["~1"], "", [
+                [1, "A", "String", ["[0"], ""],
+                [2, "B", "String", ["[0"], ""]
+            ]]
+        ]
+    }
+    
+    valid_data_list = [
+            {
+                "AI am any String"
+            },
+            {
+                "A1"
+            },
+            {
+                "BTwo"
+            }              
+    ]
+    
+    invalid_data_list = [
+
+        {
+            "3Two"
+        }, 
+        {
+            "field_value_21": "data 1",
+            "field_value_11": "data 2"
+        }, 
+        {
+            "field_value_x": "test incorrect field name"
+        },
+        {
+            "field_value_1": 123
+        }        
+    ]
+    
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+            
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)
+    assert err_count == len(invalid_data_list)
