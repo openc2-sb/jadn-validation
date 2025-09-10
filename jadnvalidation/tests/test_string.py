@@ -3,6 +3,25 @@ from datetime import datetime
 from jadnvalidation.tests.test_utils import validate_invalid_data, validate_valid_data
 from jadnvalidation.utils.consts import XML
 
+
+def test_string_min_inclusive():
+    root = "Root-Test"
+  
+    j_schema = {
+      "types": [
+        ["Root-Test", "String", ["w4"], "", []]
+      ]
+    }
+    
+    valid_data_list = ['four', 'en-US', 'multiple-small-parts', 'i-navajo', 'custom']
+    invalid_data_list = ['1', '', 'one', '17']
+    
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+        
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)
+    assert err_count == len(invalid_data_list)
+    
 def test_string_language():
     root = "Root-Test"
   
