@@ -65,6 +65,8 @@ def format_class_name(class_name: str) -> str:
     formatted_class_name = ''.join(word[0].upper() + word[1:] for word in words)
     if formatted_class_name == 'JsonPointer':
         formatted_class_name = 'JadnJsonPointer'
+    if formatted_class_name == 'Base64Binary':
+        formatted_class_name = 'B64'
     
     return formatted_class_name
 
@@ -117,6 +119,7 @@ def create_fmt_clz_instance(class_name: str, *args, **kwargs):
         "UnsignedInteger" : "jadnvalidation.data_validation.formats.unsigned_integer",
         "HexBinary" : "jadnvalidation.data_validation.formats.hex_binary",
         "B64" : "jadnvalidation.data_validation.formats.b64",
+        "Uuid" : "jadnvalidation.data_validation.formats.uuid",
     }
     
     formatted_class_name = format_class_name(class_name)
