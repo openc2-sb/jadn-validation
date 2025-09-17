@@ -1,4 +1,5 @@
 from datetime import datetime
+from jadnvalidation.utils.consts import JSON, XML
 import re
 
 from jadnvalidation.utils.consts import DURATION_FORMAT
@@ -6,13 +7,24 @@ from jadnvalidation.utils.consts import DURATION_FORMAT
 class Duration:
     
     data: any = None
-    #date_format: str = DURATION_FORMAT # RFC 3339 Duration Format
+    data_format: any = None
     
-    def __init__(self, data: any = None):
+    def __init__(self, data: any = None, data_format: any = None):
         self.data = data
+        self.data_format = data_format
     
     def validate(self):
-        if isinstance(self.data,str):
+
+        if isinstance(self.data, int):
+                print(f"json int duration")
+                return
+        elif self.data_format == XML:
+            try:
+                temp = int(self.data)
+                return
+            except ValueError:
+                raise ValueError(f"Invalid XML duration value: {self.data}")
+        elif isinstance(self.data, str):
             try:           
                 match = re.fullmatch("^P(\d+Y)?(\d+M)?(\d+D)?(T(\d+H)?(\d+M)?(\d+S)?)?$", self.data, flags=0)
                 print(str(match))
@@ -22,7 +34,7 @@ class Duration:
                     raise ValueError(f"Does not patch rfc3339 duration value: {self.data}.")
             except ValueError:
                 raise ValueError(f"Invalid duration value: {self.data}. Expected a 'P' formatted periodic duration.")
-        elif not isinstance(self.data, int): 
-            raise ValueError(f"Invalid duration value: {self.data}. Expected an integer / number of seconds.")
+        else: 
+            raise ValueError(f"Invalid duration value: {self.data}.")
         
   

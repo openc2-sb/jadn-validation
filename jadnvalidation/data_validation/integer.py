@@ -48,7 +48,7 @@ class Integer:
         
     def check_format(self):
         format = get_format(self.j_type)
-        if format is not None: # add is_arg_format(), 
+        if format is not None: 
             if is_arg_format(format):
                 format_split = split_on_first_char(format)
                 format_designator = format_split[0]
@@ -60,7 +60,7 @@ class Integer:
                 fmt_clz_instance = create_fmt_clz_instance(format, self.data, format_restriction)
                 fmt_clz_instance.validate()        
             else:
-                fmt_clz_instance = create_fmt_clz_instance(format, self.data)
+                fmt_clz_instance = create_fmt_clz_instance(format, self.data, self.data_format)
                 fmt_clz_instance.validate()        
 
     def json_check_type(self):

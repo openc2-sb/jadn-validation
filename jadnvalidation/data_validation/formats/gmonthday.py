@@ -4,7 +4,7 @@ class GMonthDay:
     
     data: any = None
     
-    def __init__(self, data: any = None):
+    def __init__(self, data: any = None, date_format: any = None):
         if isinstance(data, str):
             self.data = data
         elif isinstance(data, int):

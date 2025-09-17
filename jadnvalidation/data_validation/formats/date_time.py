@@ -26,7 +26,7 @@ from datetime import datetime
 class DateTime:
     date_time: str = None
 
-    def __init__(self, date_time: any = None):
+    def __init__(self, date_time: any = None, date_format: any = None):
         self.date_time = date_time
 
     # def validate(self):

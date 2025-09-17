@@ -8,7 +8,7 @@ class Date:
     date: any = None
     date_format: str = DATE_FORMAT # RFC 3339 Date Format
     
-    def __init__(self, date: any = None):
+    def __init__(self, date: any = None, date_format: any = None):
         self.date = date
     
     def validate(self):

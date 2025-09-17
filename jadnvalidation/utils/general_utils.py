@@ -67,6 +67,8 @@ def format_class_name(class_name: str) -> str:
         formatted_class_name = 'JadnJsonPointer'
     if formatted_class_name == 'Base64Binary':
         formatted_class_name = 'B64'
+    if formatted_class_name == 'X':
+        formatted_class_name = 'HexBinary'
     
     return formatted_class_name
 

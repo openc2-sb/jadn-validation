@@ -6,7 +6,7 @@ class DayTimeDuration:
     date_str: str = None
     #datetime_converted: datetime = None
     
-    def __init__(self, date_entry: any = None):
+    def __init__(self, date_entry: any = None, date_format: any = None):
         if isinstance(date_entry, str):
             self.date_str = date_entry
         else:
