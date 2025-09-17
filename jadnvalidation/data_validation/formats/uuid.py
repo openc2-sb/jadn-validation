@@ -12,19 +12,19 @@ class Uuid:
             try:
                 value = uuid.UUID(self.data)  
             except ValueError:
-                raise ValueError(f"Incorrect uuid string, Recieved {self.data}.")
+                raise ValueError(f"Incorrect uuid string, Received {self.data}.")
         elif isinstance(self.data, bytes):
             try:
                 val = self.data
-                string_val = val.decode('ascii', 'strict')
+                string_val = val.decode('utf-8', 'strict')
                 value = uuid.UUID(string_val)  
             except ValueError:
-                raise ValueError(f"Incorrect Binary uuid, Recieved {self.data}.")
+                raise ValueError(f"Incorrect Binary uuid, Received {self.data}.")
             '''
         elif isinstance(self.data, int):
             try:
                 value = uuid.UUID(self.data)  
             except ValueError:
-                raise ValueError(f"Incorrect uuid, Recieved {self.data}.")
+                raise ValueError(f"Incorrect uuid, Received {self.data}.")
             '''
-        else:  raise ValueError(f"Incorrect uuid, Recieved {self.data}.")
+        else:  raise ValueError(f"Incorrect uuid, Received {self.data}.")

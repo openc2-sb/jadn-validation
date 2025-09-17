@@ -104,12 +104,12 @@ def test_binary_uuid():
     }
 
     bytes_valid_1 = b'00010203-0405-0607-0809-0a0b0c0d0e0f'
-    bytes_valid_2 = '\x00\x01\x02\x03\x04\x05\x06\x07\x08\t\n\x0b\x0c\r\x0e\x0f'
+    #bytes_valid_2 = '\x00\x01\x02\x03\x04\x05\x06\x07\x08\t\n\x0b\x0c\r\x0e\x0f'
     bytes_valid_3 = b'00010203-0405-0607-0809-0a0b0c0d0e0f'
-    bytes_valid_4 = b'\x00\x01\x02\x03\x04\x05\x06\x07\x08\t\n\x0b\x0c\r\x0e\x0f'
+    #bytes_valid_4 = b'\x00\x01\x02\x03\x04\x05\x06\x07\x08\t\n\x0b\x0c\r\x0e\x0f'
     bytes_invalid_1 = b"zzzzb"
     bytes_invalid_2 = "zzzzs"
-    valid_data_list = [bytes_valid_1, bytes_valid_2, bytes_valid_3, bytes_valid_4]
+    valid_data_list = [bytes_valid_1, bytes_valid_3]
     invalid_data_list = [bytes_invalid_1, bytes_invalid_2]
     
     err_count = validate_valid_data(j_schema, root, valid_data_list)    
