@@ -33,7 +33,7 @@ class Duration:
                 if match:
                     pass
                 else:
-                    raise ValueError(f"Does not patch rfc3339 duration value: {self.data}.")
+                    raise ValueError(f"Does not pass rfc3339 duration value: {self.data}.")
                 
             except ValueError:
                 raise ValueError(f"Invalid duration value: {self.data}. Expected a 'P' formatted periodic duration.")
