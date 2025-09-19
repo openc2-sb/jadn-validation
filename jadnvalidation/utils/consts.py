@@ -9,7 +9,6 @@ class Choice_Consts:
 # RFC 3339: Date and Time Formats
 TIME_FORMAT = "%H:%M:%S"
 DATE_FORMAT = "%Y-%m-%d"
-DURATION_FORMAT = "P%Y%M%W%DT%H%M%S"
 HOSTNAME_MAX_LENGTH = 255
 
 # Data Formats
