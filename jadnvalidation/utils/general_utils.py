@@ -69,6 +69,10 @@ def format_class_name(class_name: str) -> str:
         formatted_class_name = 'B64'
     if formatted_class_name == 'X':
         formatted_class_name = 'HexBinary'
+    if formatted_class_name == 'Float':
+        formatted_class_name = 'F32'
+    if formatted_class_name == 'Double':
+        formatted_class_name = 'F64'
     
     return formatted_class_name
 

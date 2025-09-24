@@ -49,6 +49,23 @@ class Integer:
     def check_format(self):
         format = get_format(self.j_type)
         if format is not None: 
+            if format == 'long':
+                format = 'i64'
+            elif format == 'int':
+                format = 'i32' 
+            elif format == 'short':
+                format = 'i16' 
+            elif format == 'byte':
+                format = 'i8' 
+            elif format == 'unsignedLong':
+                format = 'u64'
+            elif format == 'unsignedInt':
+                format = 'u32' 
+            elif format == 'unsignedShort':
+                format = 'u16' 
+            elif format == 'unsignedByte':
+                format = 'u8' 
+
             if is_arg_format(format):
                 format_split = split_on_first_char(format)
                 format_designator = format_split[0]
