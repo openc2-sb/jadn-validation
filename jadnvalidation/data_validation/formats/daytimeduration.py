@@ -4,7 +4,6 @@ class DayTimeDuration:
     
     # Allow different formats?  See date.py
     date_str: str = None
-    #datetime_converted: datetime = None
     
     def __init__(self, date_entry: any = None, date_format: any = None):
         if isinstance(date_entry, str):
@@ -23,7 +22,9 @@ class DayTimeDuration:
                     pass
                 else: 
                     raise ValueError(f"Entry does not match dayTimeDuration: {self.date_str}")  
+                
             except ValueError:
                 raise ValueError(f"Invalid dayTimeDuration: {self.date_str}")        
+            
         else: 
             raise ValueError(f"Could not parse dayTimeDuration")

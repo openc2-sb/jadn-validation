@@ -19,5 +19,6 @@ class GMonthDay:
                     pass
                 else: 
                     raise ValueError(f"Entry does not match gMonthDay: {self.data}")  
+                
             except ValueError:
                 raise ValueError(f"Invalid gMonthDay: {self.data}")

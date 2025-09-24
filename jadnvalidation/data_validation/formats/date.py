@@ -15,12 +15,13 @@ class Date:
         if isinstance(self.date, str) and (not self.date.lstrip('-').isdigit()):
             try:
                 datetime.strptime(self.date, self.date_format)  
+                
             except ValueError:
                 raise ValueError(f"Incorrect date format, should be {self.date_format}.  Recieved {self.date}")
+            
         else:
             try:
                 datetime.fromtimestamp(int(self.date))
+                
             except ValueError:
                 raise ValueError(f"Invalid timestamp value: {self.date}.")
-        #else:
-        #    raise ValueError(f"Date must be a string or an integer (timestamp). Received: {type(self.date)}")
