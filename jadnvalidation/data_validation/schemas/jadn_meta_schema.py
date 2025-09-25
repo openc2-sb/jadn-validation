@@ -115,7 +115,7 @@ j_meta_schema = {
 
         ["FieldID", "Integer", ["y0"], ""],
 
-        ["ItemID", "Integer", ["w0"], ""],
+        ["ItemID", "Integer", [], ""],
 
         ["Options", "ArrayOf", ["*Option"], ""],
 
