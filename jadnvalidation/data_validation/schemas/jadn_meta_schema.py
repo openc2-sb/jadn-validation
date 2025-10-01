@@ -10,15 +10,16 @@ j_meta_schema = {
             # "$MaxBinary": 255,
             "$MaxBinary": 500,
             # "$MaxString": 255,
-            "$MaxString": 750,
+            "$MaxString": 1000,
             "$MaxElements": 1000,
             "$Sys": "$",
             # "$TypeName": "^[A-Z][-$A-Za-z0-9]{0,63}$",
             # "$TypeName": "^[A-Z][-$A-Za-z0-9]*(\\$[A-Za-z0-9]+)?$",  # Allow optional $suffix for types like "Party$type"
-            "$TypeName": "^[A-Za-z][-$A-Za-z0-9]*(\\$[A-Za-z0-9]+)?$",  # Allow both uppercase and lowercase initial
+            # "$TypeName": "^[A-Za-z][-_$A-Za-z0-9]*(\\$[A-Za-z0-9]+)?$",  # Allow both uppercase and lowercase initial
+            "$TypeName": "^[A-Za-z][-_$A-Za-z0-9]{0,63}$",
             # "$FieldName": "^[a-z][_A-Za-z0-9]{0,63}$",
             # "$FieldName": "^[$A-Za-z][_A-Za-z0-9]{0,63}$",  # Adjusted to allow $ for system fields and uppercase first char for OSCAL
-            "$FieldName": "^[$A-Za-z][-_A-Za-z0-9]{0,63}$", 
+            "$FieldName": "^[A-Za-z$][-_$A-Za-z0-9]{0,63}$", 
             "$NSID": "^[A-Za-z][A-Za-z0-9]{0,7}$"
         }        
     },
@@ -63,10 +64,10 @@ j_meta_schema = {
         ["NSID", "String", ["%^([A-Za-z][A-Za-z0-9]{0,7})?$"], "Namespace prefix matching $NSID"],
 
         # ["TypeName", "String", ["%^[A-Z][-.A-Za-z0-9]{0,63}$"], "Name of a logical type"],
-        ["TypeName", "String", ["%^[A-Za-z][-$A-Za-z0-9]*(\\$[A-Za-z0-9]+)?$"], "Name of a logical type"],
+        ["TypeName", "String", ["%^[A-Za-z][-_$A-Za-z0-9]{0,63}$"], "Name of a logical type"],
 
         # ["FieldName", "String", ["%^[a-z][_A-Za-z0-9]{0,63}$"], "Name of a field in a structured type"],
-        ["FieldName", "String", ["%^[a-z][-_A-Za-z0-9]{0,63}$"], "Name of a field in a structured type"],
+        ["FieldName", "String", ["%^[A-Za-z][-_A-Za-z0-9]{0,63}$"], "Name of a field in a structured type"],
 
         ["TypeRef", "String", [], "Reference to a type, matching ($NSID ':')? $TypeName"],
 
