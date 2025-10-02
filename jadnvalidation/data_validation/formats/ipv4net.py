@@ -56,8 +56,25 @@ class Ipv4Net:
         return jadn_type_obj              
                 
     def check_type(self):
-        if not isinstance(self.data, list):
-            raise ValueError(f"Data for type {self.j_type.type_name} must be a list. Received: {type(self.data)}")                
+        if self.data_format == JSON:
+            if not isinstance(self.data, str):
+                raise ValueError(f"Data for type {self.j_type.type_name} must be JSON String. Received: {type(self.data)}")
+            else: 
+                self.data = self.data.split("/") 
+                self.data[0] = (self.data[0]) 
+                self.data[1] = (int(self.data[1])) 
+                print(self.data) 
+                try:
+                    if self.data[2]: 
+                        raise ValueError(f"incorrectly formatted network. Received: {(self.data)}") 
+                    else: 
+                        pass
+                except IndexError as e:
+                    print('correctly formatted ip-net')
+                
+                    
+        elif not isinstance(self.data, list):
+            raise ValueError(f"Data for type {self.j_type.type_name} not a list. Received: {type(self.data)}")                
            
     def check_length(self):
         if self.data is None:
