@@ -602,10 +602,7 @@ def test_choice_spec_example():
 
     valid_data_list = [
         {
-            "PhoneType": "Home"
-        },
-        {
-            "custom": "1234567890"
+            "predefined": "Home"
         }
     ]
 
