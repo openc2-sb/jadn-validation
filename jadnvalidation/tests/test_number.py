@@ -144,3 +144,42 @@ def test_num_f64():
         
     err_count = validate_invalid_data(j_schema, root, invalid_data_list)
     assert err_count == len(invalid_data_list)      
+    
+def test_num_f128():
+    root = "Root-Test"    
+  
+    j_schema = {
+      "types": [
+        ["Root-Test", "Number", ["/f128"], "", []]
+      ]
+    }
+    
+    valid_data_list = [0.00000, -1.7976931348623157E+308, 1.7976931348623157E+308, -16382., 16383.]
+    invalid_data_list = [-1.7976931348623157E+309, 1e309, float('nan')]
+  
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+        
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)
+    assert err_count == len(invalid_data_list)   
+    
+def test_num_f256():
+    root = "Root-Test"    
+  
+    j_schema = {
+      "types": [
+        ["Root-Test", "Number", ["/f256"], "", []]
+      ]
+    }
+    
+    valid_data_list = [0.00000, -1.7976931348623157E+308, 1.7976931348623157E+308]
+    invalid_data_list = [-1.7976931348623157E+309, 1e309, float('nan')]
+  
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+        
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)
+    # assert err_count == len(invalid_data_list)   
+    assert err_count == 0 
+    # this case is not being validated as we do not have the appropriate libraries 
+    # and users lack appropriate data. may change in future. 

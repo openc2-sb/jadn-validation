@@ -15,9 +15,9 @@ json_rules = {}
 
 xml_rules = {}
 
-class F64:
+class F128:
     """
-    F64 class for validating and converting 64-bit floating-point numbers.
+    F128 class for validating and converting 64-bit floating-point numbers.
     """
     
     j_schema: dict = {}
@@ -47,23 +47,20 @@ class F64:
                 raise ValueError(f"Data must be a float/number. Received: {type(self.data)}")
                 
     def check_floating_point(self):
-        """Checks if a float is within the range of an f64 (approximate).
-        A floating-point number that is too large for float64 is a value exceeding the maximum 
-        representable value for a 64-bit floating-point number, which is approximately 1.8 * 10^308. 
-        Specifically, float64 can't store numbers larger than 1.7976931348623157E+308. 
-        Any value greater than this will cause an overflow, resulting in an error. 
+        """Checks if a float is within the range of an f128 (approximate).
+        The maximum representable value is 2^16384 - 2^16271 ≈ 1.1897e4932
         """
         
         if self.data is not None:   
             
             # if isinstance(self.data, float):
             if np.isinf(self.data) or np.isnan(self.data):
-                raise ValueError(f"Data {self.data} for Type {self.j_type.type_name} is not a valid 64-bit float representation.")
+                raise ValueError(f"Data {self.data} for Type {self.j_type.type_name} is not a valid 128-bit float representation.")
 
             f128_value = 0
             restored_value = 0
             try:
-                f64_value = np.float128(self.data)
+                f128_value = np.float128(self.data)
                 restored_value = float(f128_value)
             except ValueError as e:
                 raise ValueError(f"Unable to convert data {self.data} for Type {self.j_type.type_name} to float64 and back.")                
@@ -74,7 +71,7 @@ class F64:
             if np.isclose(self.data, restored_value, rtol=tolerance, atol=tolerance):
                 pass
             else:
-                raise ValueError(f"Data {self.data} for Type {self.j_type.type_name} is out of range for 64-bit float representation.")
+                raise ValueError(f"Data {self.data} for Type {self.j_type.type_name} is out of range for 128-bit float representation.")
     
     def validate(self) -> bool:
         # Check data against rules

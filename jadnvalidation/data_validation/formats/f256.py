@@ -15,7 +15,30 @@ json_rules = {}
 
 xml_rules = {}
 
-class F256:
+class F256:    
+    """
+    F128 class for validating and converting 64-bit floating-point numbers.
+    """
+    
+    j_schema: dict = {}
+    j_config: Jadn_Config = None    
+    j_type: Jadn_Type = None
+    data: any = None
+    data_format: str = None
+    errors = []      
+    
+    def __init__(self, j_schema: dict = {}, j_type: Union[list, Jadn_Type] = None, data: any = None, data_format = JSON):
+        self.j_schema = j_schema
+        
+        if isinstance(j_type, list):
+            j_type = build_j_type(j_type)
+        
+        self.j_type = j_type
+        self.data = data
+        self.data_format = data_format        
+        
+        self.j_config = get_j_config(self.j_schema) 
+        self.errors = []
             
     
     def validate(self) -> bool:
