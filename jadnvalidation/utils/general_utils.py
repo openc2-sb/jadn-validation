@@ -88,6 +88,8 @@ def create_fmt_clz_instance(class_name: str, *args, **kwargs):
         "F16" : "jadnvalidation.data_validation.formats.f16",
         "F32" : "jadnvalidation.data_validation.formats.f32",
         "F64" : "jadnvalidation.data_validation.formats.f64",
+        "F128" : "jadnvalidation.data_validation.formats.f128",
+        "F256" : "jadnvalidation.data_validation.formats.f256",
         "Pattern" : "jadnvalidation.data_validation.formats.pattern",
         "Regex" : "jadnvalidation.data_validation.formats.regex",
         "RelativeJsonPointer" : "jadnvalidation.data_validation.formats.relative_json_pointer",
