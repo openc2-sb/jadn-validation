@@ -48,7 +48,12 @@ class Array:
         self.errors = []
         
     def check_type(self):
-        if not isinstance(self.data, list):
+        print(type(self.data))
+        if isinstance(self.data, str):
+            if "/ipv4-net" in self.j_type.type_options or "/ipv6-net" in self.j_type.type_options:
+                pass
+            else: raise ValueError(f"Data for type {self.j_type.type_name} of the wrong type. Received: {type(self.data)}")
+        elif not isinstance(self.data, list):
             raise ValueError(f"Data for type {self.j_type.type_name} must be a list. Received: {type(self.data)}")
     
     def check_inheritance(self):

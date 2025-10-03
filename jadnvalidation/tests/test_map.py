@@ -513,15 +513,9 @@ def test_map_tag_string():
     }
     
     valid_data_list = [
-            {
-                "AI am any String"
-            },
-            {
-                "A1"
-            },
-            {
-                "BTwo"
-            }              
+            
+        ["AI am any String"],["A1"],["BTwo"]
+                          
     ]
     
     invalid_data_list = [

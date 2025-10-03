@@ -47,8 +47,15 @@ class Map:
         self.errors = []
         
     def check_type(self):
+
+        print(type(self.data))
         tagged_params = use_tagged_string(self.j_type.type_options)
-        if not isinstance(self.data, dict):
+        if isinstance(self.data, str):
+
+            if "~" in self.j_type.type_options:
+                pass
+            else: raise ValueError(f"Data for this type must be a map / dict. Received: {type(self.data)}")
+            '''
             if self.j_type.type_options is not None():
                 if tagged_params is not None:
 
@@ -57,9 +64,9 @@ class Map:
                         raise ValueError(f"JSON serialization requires a list of Strings here. Received: {type(self.data)}")
                     # Then, parse out the string-encoded data into actual Map data
                     self.data = to_dict_on_given_char(self.data, int(tagged_params[1]))
-                    
-            else:
-                raise ValueError(f"Data must be a map / dict. Received: {type(self.data)}")
+            '''        
+        elif not isinstance(self.data, list):
+            raise ValueError(f"Data must be a map / dict. Received: {type(self.data)}")
         
     def check_inheritance(self):
         inherit_from = get_inheritance(self.j_type.type_options)
