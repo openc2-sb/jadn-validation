@@ -17,7 +17,7 @@ xml_rules = {}
 
 class F128:
     """
-    F128 class for validating and converting 64-bit floating-point numbers.
+    F128 class for validating and converting 128-bit floating-point numbers.
     """
     
     j_schema: dict = {}
@@ -63,7 +63,7 @@ class F128:
                 f128_value = np.float128(self.data)
                 restored_value = float(f128_value)
             except ValueError as e:
-                raise ValueError(f"Unable to convert data {self.data} for Type {self.j_type.type_name} to float64 and back.")                
+                raise ValueError(f"Unable to convert data {self.data} for Type {self.j_type.type_name} to float128 and back.")                
                 
             # Use np.isclose for comparison to account for potential very small differences
             # due to floating point representation

@@ -17,7 +17,7 @@ xml_rules = {}
 
 class F256:    
     """
-    F128 class for validating and converting 64-bit floating-point numbers.
+    F256 class for validating and converting 256-bit floating-point numbers.
     """
     
     j_schema: dict = {}
