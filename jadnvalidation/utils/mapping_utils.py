@@ -186,11 +186,13 @@ def to_dict_on_given_char(string_val: str, position: int):
     
     return {string_val[:(position-1)]: string_val[position:]}
 
-def use_tagged_string(j_opts: str):
+def use_tagged_list(j_opts: str):
     return_val = None
     opts = get_opts(j_opts)
     for opt in opts:
         opt_key, opt_val = general_utils.split_on_first_char(opt)
+        if opt_val is None:
+            opt_val = True
         if opt_key == '~':    
             return_val = [opt_key, opt_val]
             break

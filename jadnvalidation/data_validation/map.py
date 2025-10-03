@@ -6,7 +6,7 @@ from jadnvalidation.models.jadn.jadn_config import Jadn_Config, check_field_name
 from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type, is_user_defined
 from jadnvalidation.utils.consts import JSON, XML
 from jadnvalidation.utils.general_utils import create_clz_instance, get_data_by_id, get_data_by_name, merge_opts
-from jadnvalidation.utils.mapping_utils import flip_to_array_of, get_inheritance, get_max_length, get_max_occurs, get_min_length, get_min_occurs, get_tagged_data, is_optional, use_field_ids, use_tagged_string, to_dict_on_given_char
+from jadnvalidation.utils.mapping_utils import flip_to_array_of, get_inheritance, get_max_length, get_max_occurs, get_min_length, get_min_occurs, get_tagged_data, is_optional, use_field_ids, use_tagged_list
 from jadnvalidation.utils.type_utils import get_reference_type
 
 common_rules = {
@@ -49,22 +49,12 @@ class Map:
     def check_type(self):
 
         print(type(self.data))
-        tagged_params = use_tagged_string(self.j_type.type_options)
+        tagged_params = use_tagged_list(self.j_type.type_options)
         if isinstance(self.data, str):
 
-            if "~" in self.j_type.type_options:
+            if tagged_params is not None:
                 pass
             else: raise ValueError(f"Data for this type must be a map / dict. Received: {type(self.data)}")
-            '''
-            if self.j_type.type_options is not None():
-                if tagged_params is not None:
-
-                    # First, check to see that it's correctly a tagged string if it's JSON 
-                    if (self.data_format == 'json') & (not isinstance(self.data, list)):
-                        raise ValueError(f"JSON serialization requires a list of Strings here. Received: {type(self.data)}")
-                    # Then, parse out the string-encoded data into actual Map data
-                    self.data = to_dict_on_given_char(self.data, int(tagged_params[1]))
-            '''        
         elif not isinstance(self.data, list):
             raise ValueError(f"Data must be a map / dict. Received: {type(self.data)}")
         
