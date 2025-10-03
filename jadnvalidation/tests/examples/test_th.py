@@ -2,7 +2,7 @@ from jadnvalidation.tests.test_utils import validate_invalid_data, validate_vali
 
 
 j_schema = {
-  "info": {
+  "meta": {
   "package": "http://docs.oasis-open.org/openc2/ns/ap-th/v1.0",
     "version": "v01-csd02-01",
     "title": "Threat Hunting Profile",
@@ -12,7 +12,7 @@ j_schema = {
       "oca": "http://docs.oasis-open.org/openc2/ns/ext/oca",
       "sco": "http://docs.oasis-open.org/openc2/ns/ext/sco"
     },
-    "exports": ["TH-Target", "TH-Args", "TH-Specifiers", "TH-Results"],
+    "roots": ["TH-Target", "TH-Args", "TH-Specifiers", "TH-Results"],
     "config": {
       "$MaxBinary": 1555,
       "$MaxString": 1555,

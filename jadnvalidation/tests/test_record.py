@@ -238,9 +238,9 @@ def test_record_in_record():
     root = "Root-Test"
     
     j_schema = {
-        "info": {
+        "meta": {
             "package": "http://test/v1.0",
-            "exports": ["Record-Test"]
+            "roots": ["Record-Test"]
         },
         "types": [
             ["Root-Test", "Record", ["{1", "}2"], "", [
@@ -318,7 +318,7 @@ def test_record_max_occurs():
             ["Root-Test", "Record", ["{1", "}10"], "", [
                 [1, "field_value_1", "String", ["]1"], ""],
                 [2, "field_value_2", "String", ["[0"], ""],
-                [2, "field_value_3", "String", ["]3"], ""]
+                [3, "field_value_3", "String", ["]3"], ""]
             ]]          
         ]
     }  
@@ -347,3 +347,50 @@ def test_record_max_occurs():
             
     err_count = validate_invalid_data(j_schema, root, invalid_data_list)
     assert err_count == len(invalid_data_list)
+
+        
+def test_record_complex():
+    root = "Root-Test"
+    
+    j_schema = {
+        "types": [
+            ["Root-Test", "Record", [], "", [
+                [1, "meta", "String", [], ""],
+                [2, "types", "Type", ["[1", "]-1"], ""]]],
+            ["Type", "Array", [], "", [
+                [1, "array_field_1", "Integer", [], ""],
+                [2, "array_field_2", "String", [], ""],
+                [3, "array_field_3", "Choice-List", ["[0"], ""]]],
+            ["Choice-List", "Choice", ["[0"], "", [
+                [1, "choice_field_1", "Integer", [], ""],
+                [2, "choice_field_2", "String", [], ""],
+                [3, "choice_field_3", "Tiny-Array", [], ""]
+            ]],
+            ["Tiny-Array", "Array", [], "", [
+                [1, "tiny_field_1", "String", [], ""]]]
+            ]                  
+    }  
+    
+    valid_data_list = [
+        {
+            "meta" : "string",
+            "types" : [[999, "Array-def-Name(ANY STRING)", {"choice_field_3": ["illum repellendus nobis"]}]]
+        },        
+        {
+            "meta" : "fake_package.url.lol",
+            "types" : [[999, "Array-def-Name(ANY STRING)"]]
+        }
+    ]
+    
+    invalid_data_list = [
+        {
+            "field_value_2": "test 2",
+            "field_value_3": "test 3",
+        }
+    ]
+        
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+            
+    # err_count = validate_invalid_data(j_schema, root, invalid_data_list)
+    # assert err_count == len(invalid_data_list)

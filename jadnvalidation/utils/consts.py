@@ -3,6 +3,7 @@ class Choice_Consts:
     CHOICE_ONE_OF = "oneOf"
     CHOICE_ANY_OF = "anyOf"
     CHOICE_ALL_OF = "allOf"
+    CHOICE_TAG_ID = "tag_ID"
     CHOICE_NOT = "not"
     
 # RFC 3339: Date and Time Formats

@@ -66,15 +66,30 @@ class ArrayOf:
                 self.errors.append(f"Array '{self.j_type.type_name}' missing data")        
         
         for data_item in self.data:
+            
+            clz_kwargs = dict(
+                j_schema=self.j_schema,
+                data=data_item,
+                data_format=self.data_format
+            )            
+            
             if is_primitive(vtype):
                 of_jtype = Jadn_Type("of_" + self.j_type.type_name, vtype)
-                clz_instance = create_clz_instance(vtype, self.j_schema, of_jtype, data_item, self.data_format)
-                clz_instance.validate()
+                
+                clz_kwargs['class_name'] = vtype
+                clz_kwargs['j_type'] = of_jtype
+                
+                clz_instance = create_clz_instance(**clz_kwargs)
+                clz_instance.validate()                
             else:                
                 ref_type = get_reference_type(self.j_schema, vtype)
                 ref_type_obj = build_j_type(ref_type)
-                clz_instance = create_clz_instance(ref_type_obj.base_type, self.j_schema, ref_type_obj, data_item, self.data_format)
-                clz_instance.validate()
+                
+                clz_kwargs['class_name'] = ref_type_obj.base_type
+                clz_kwargs['j_type'] = ref_type_obj                
+                
+                clz_instance = create_clz_instance(**clz_kwargs)
+                clz_instance.validate()                
         
     def validate(self):
         

@@ -1,18 +1,18 @@
 from jadnvalidation.data_validation.data_validation import DataValidation
-from jadnvalidation.utils.consts import JSON, XML
+from jadnvalidation.data_validation.schemas.jadn_meta_schema import j_meta_schema, j_meta_roots
 
-j_schema = {
-  "info": {
+oscal_ap_j_schema = {
+  "meta": {
     "package": "http://csrc.nist.gov/ns/oscal/1.1.1/oscal-ap-schema.json",
     "comment": "OSCAL Assessment Plan Model: JSON Schema",
-    "exports": ["Root"],
+    "roots": ["Root"],
     "config": {
       "$MaxBinary": 255,
       "$MaxString": 5555,
-      "$MaxElements": 250,
+      "$MaxElements": 100,
       "$Sys": "$",
       "$TypeName": "^[A-Za-z][-_$A-Za-z0-9]{0,63}$",
-      "$FieldName": "^[A-Za-z][-_A-Za-z0-9]{0,63}$",
+      "$FieldName": "^[A-Za-z][-_$A-Za-z0-9]{0,63}$",
       "$NSID": "^[A-Za-z][A-Za-z0-9]{0,7}$"
     }
   },
@@ -1002,10 +1002,10 @@ j_schema = {
 }
 
 j_schema_back_matter = {
-  "info": {
+  "meta": {
     "package": "http://csrc.nist.gov/ns/oscal/1.1.1/oscal-ap-schema.json",
     "comment": "OSCAL Assessment Plan Model: JSON Schema",
-    "exports": ["Root"],
+    "roots": ["Root"],
     "config": {
       "$MaxBinary": 255,
       "$MaxString": 5555,
@@ -1018,7 +1018,7 @@ j_schema_back_matter = {
   },
   "types": [
     ["Root", "Record", [], "", [
-        [1, "back-matter", "Back-matter", ["[0"], "A collection of resources that may be referenced from within the OSCAL document instance."]
+        [1, "back_matter", "Back-matter", ["[0"], "A collection of resources that may be referenced from within the OSCAL document instance."]
       ]],
     ["Back-matter", "Record", [], "A collection of resources that may be referenced from within the OSCAL document instance.", [
         [1, "resources", "Resources", ["[0"], "A resource associated with content in the containing document instance. A resource may be directly included in the document using base64 encoding or may point to one or more equivalent internet resources."]
@@ -1032,11 +1032,61 @@ j_schema_back_matter = {
 }
 
 
+def test_oscal_ap_schema():
+  is_errors = False
+  try :
+      j_validation = DataValidation(j_meta_schema, j_meta_roots, oscal_ap_j_schema)
+      j_validation.validate()
+  except Exception as err:
+      is_errors = True
+      print(err)  
+      
+  assert is_errors == False
+    
+def test_field_name_validation():
+    root = "Root"
+    
+    data = {
+      "assessment-plan": {
+        "uuid": "5Da8BBB7-eCa8-489b-AC6b-cB3d0Fd4dFde",
+        "metadata" : {
+          "title" : "metadata title",
+          "last-modified" : "1955-11-18T13:32:30Z",
+          "version" : "1.1.1",
+          "oscal-version" : "1.1.1"
+        },	
+        "import-ssp" : {
+          "href" : "https://www.example.com/index.html"
+        },
+        "reviewed-controls" : {
+          "control-selections" : [
+            {
+              "description": "test control"
+            },
+            {
+              "description": "test control"
+            }			
+          ]
+        }
+      }
+    }
+    
+    is_errors = False
+    try :
+        j_validation = DataValidation(oscal_ap_j_schema, root, data)
+        j_validation.validate()
+    except Exception as err:
+        is_errors = True
+        print(err)
+            
+    assert is_errors == False
+
+
 def test_back_matter():
     root = "Root"
     
     data = {
-        "back-matter": {
+        "back_matter": {
             "resources": [
                 {
                     "citation": {
@@ -1052,7 +1102,7 @@ def test_back_matter():
     
     errorMsgs=[]
     try :
-        j_validation = DataValidation(j_schema_back_matter, root, data, JSON)
+        j_validation = DataValidation(j_schema_back_matter, root, data)
         j_validation.validate()
     except Exception as err:
         if isinstance(err, ValueError):
@@ -1093,7 +1143,7 @@ def test_assessment_plan():
     
     errorMsgs=[]
     try :
-        j_validation = DataValidation(j_schema, root, data)
+        j_validation = DataValidation(oscal_ap_j_schema, root, data)
         j_validation.validate()
     except Exception as err:
         if isinstance(err, ValueError):

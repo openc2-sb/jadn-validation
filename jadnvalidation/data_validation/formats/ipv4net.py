@@ -93,15 +93,29 @@ class Ipv4Net:
         j_type_prefix_length = self.build_j_type_prefix_length()
         
         for j_index, field_data in enumerate(self.data):  
+            
+            clz_kwargs = dict(
+                j_schema=self.j_schema,
+                data=field_data,
+                data_format=self.data_format
+            )            
                 
             if j_index == 0:
-                clz_instance = create_clz_instance(j_type_ipv4_addr.base_type, self.j_schema, j_type_ipv4_addr, field_data, self.data_format)
+                
+                clz_kwargs['class_name'] = j_type_ipv4_addr.base_type
+                clz_kwargs['j_type'] = j_type_ipv4_addr             
+                
+                clz_instance = create_clz_instance(**clz_kwargs)
                 clz_instance.validate()
                 
             elif j_index == 1:
                 
                 if field_data is not None:
-                    clz_instance = create_clz_instance(j_type_prefix_length.base_type, self.j_schema, j_type_prefix_length, field_data, self.data_format)
+                    
+                    clz_kwargs['class_name'] = j_type_prefix_length.base_type
+                    clz_kwargs['j_type'] = j_type_prefix_length                    
+                    
+                    clz_instance = create_clz_instance(**clz_kwargs)
                     clz_instance.validate()      
     
     def validate(self):

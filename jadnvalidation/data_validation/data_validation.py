@@ -1,3 +1,4 @@
+import traceback
 from typing import Union
 
 from jadnvalidation.models.jadn.jadn_config import Jadn_Config, check_type_name, get_j_config
@@ -62,9 +63,18 @@ class DataValidation:
                 
                 root_type_obj = build_jadn_type_obj(root_type)
                 check_type_name(root_type_obj.type_name, self.j_config.TypeName)
+                
+                clz_kwargs = dict(
+                    class_name=root_type_obj.base_type,
+                    j_schema=self.j_schema,
+                    j_type=root_type_obj,
+                    data=self.data,
+                    data_format=self.data_format
+                )                
                     
-                clz_instance = create_clz_instance(root_type_obj.base_type, self.j_schema, root_type, self.data, self.data_format)
+                clz_instance = create_clz_instance(**clz_kwargs)
                 clz_instance.validate()            
             
         except Exception as err:
+            traceback.print_exc() 
             raise ValueError(err)

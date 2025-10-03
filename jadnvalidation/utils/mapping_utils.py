@@ -28,18 +28,30 @@ def get_choice_type(j_type_opts: List[str]) -> str:
     
     for type_opt in j_type_opts:
         opt_char_id, opt_val = general_utils.split_on_first_char(type_opt) 
-        if opt_char_id == "A":
+        if (opt_char_id == "C") & (opt_val == "A"):
             choice_type = Choice_Consts.CHOICE_ALL_OF
-        elif opt_char_id == "O":
+        elif (opt_char_id == "C") & (opt_val == "O"):
             choice_type = Choice_Consts.CHOICE_ANY_OF
-        elif opt_char_id == "X":
-            choice_type = Choice_Consts.CHOICE_NOT
+        elif (opt_char_id == "C") & (opt_val == "X"):
+            choice_type = Choice_Consts.CHOICE_NOT  
         else:
             choice_type = Choice_Consts.CHOICE_ONE_OF
             
         break
         
     return choice_type
+
+def get_inheritance(j_type_opts: List[str]) -> str:
+    inherit_from = None
+    
+    if j_type_opts is not None:
+        for type_opt in j_type_opts:
+            opt_char_id, opt_val = general_utils.split_on_first_char(type_opt) 
+            if opt_char_id == "e":
+                inherit_from = opt_val
+                break
+            
+    return inherit_from
 
 def get_max_length(j_type: Jadn_Type, global_config: Jadn_Config = None) -> int:
     
@@ -75,16 +87,33 @@ def get_max_occurs(j_type: Jadn_Type, global_config: Jadn_Config) -> int:
     max_val = get_opt_int("]", j_type)
     min_val = get_min_occurs(j_type)
     
-    if min_val == None and max_val == None:
-        max_val = 1
-    elif min_val >= 0 and max_val == None:
-        max_val = min_val
+    if max_val == None:
+        max_val = global_config.MaxElements  
+
+    elif max_val >= 1:
+        pass
+
+    # if min_val == None and max_val == None:
+    #     max_val = 1
+    # elif min_val >= 0 and max_val == None:
+    #     max_val = min_val
+    
     elif max_val == -1:
         max_val = global_config.MaxElements
+        
     elif max_val == -2:
         max_val = sys.maxsize
         
+    elif max_val < -2: 
+        raise ValueError("MaxOccurs given improper opt_val: " + {max_val})
+    
+    if min_val > max_val:
+        raise ValueError("MaxOccurs cannot be less than MinOccurs: " + {max_val} + " < " + {min_val})
+        
     return max_val
+
+def get_const_val_str(j_type: Jadn_Type) -> int:   
+    return get_opt_str("v", j_type)
 
 def get_min_inclusive(j_type: Jadn_Type) -> int:   
     return get_opt_int("w", j_type)
@@ -154,6 +183,35 @@ def get_opt_str(key: str, j_type: Jadn_Type):
         
     return return_val
 
+def get_tagid(opts: List[str]) -> int:
+    """
+    Searches opts for a string that starts with '&'. If found, returns the integer value of the second character.
+    """
+    if opts:
+        for opt in opts:
+            if isinstance(opt, str) and len(opt) >= 2 and opt[0] == '&' and opt[1].isdigit():
+                return int(opt[1])
+    return None
+
+def get_tagged_data(j_field: Jadn_Type, data: any) -> any:
+    """
+    Returns the tagged data if it exists in the data.
+    """
+    tagid = get_tagid(get_opts(j_field))
+    
+    if tagid is not None:
+        if isinstance(data, list) and len(data) >= tagid:
+            return data[tagid - 1]  # -1 because tagid is 1-based index
+        elif isinstance(data, dict):
+            values_list = list(data.values())
+            # Add length checks to avoid IndexError
+            if tagid > 0 and len(values_list) >= tagid:
+                return values_list[tagid - 1]
+            else:
+                return None
+    
+    return None
+
 def get_type(j_obj: Jadn_Type):
     type = None
     if isinstance(j_obj, Jadn_Type):
@@ -182,6 +240,18 @@ def get_vtype(j_obj: Jadn_Type):
             break
         
     return val
+
+def is_derived_enumeration(j_type_opts: List[str]) -> str:
+    derived_val = None
+    
+    if j_type_opts:
+        for type_opt in j_type_opts:
+            opt_char_id, opt_val = general_utils.split_on_first_char(type_opt)
+            if opt_char_id == "#":
+                derived_val = opt_val
+                break
+    
+    return derived_val
 
 # Note: A separate function may be needed for optional structures
 # This function is geared towards fields

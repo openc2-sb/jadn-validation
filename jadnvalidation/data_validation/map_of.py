@@ -67,7 +67,16 @@ class MapOf:
             self.errors.append(f"Number of fields length must be less than {max_length}. Received: {len(self.data)}")
 
     def validate_type(self, jtype: Jadn_Type, data: any):
-        clz_instance = create_clz_instance(jtype.base_type, self.j_schema, jtype, data, self.data_format)
+        
+        clz_kwargs = dict(
+            class_name=jtype.base_type,
+            j_schema=self.j_schema,
+            j_type=jtype,
+            data=data,
+            data_format=self.data_format
+        )
+        
+        clz_instance = create_clz_instance(**clz_kwargs)
         clz_instance.validate()
             
     def check_for_duplicate_key(self, ktype: str, keys_set: set, key: any):

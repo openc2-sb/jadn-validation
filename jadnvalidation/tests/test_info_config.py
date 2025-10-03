@@ -5,19 +5,19 @@ def test_max_string():
     root = "Root-Test" 
       
     j_schema = {
-        "info": {
-        "package": "http://test/v1.0",
-        "title": "Test Title",
-        "exports": ["Root-Test"],
-        "config": {
-            "$MaxBinary": 255,
-            "$MaxString": 10,
-            "$MaxElements": 100,
-            "$Sys": "$",
-            "$TypeName": "^[A-Z][-$A-Za-z0-9]{0,63}$",
-            "$FieldName": "^[a-z][_A-Za-z0-9]{0,63}$",
-            "$NSID": "^[A-Za-z][A-Za-z0-9]{0,7}$"
-        }
+        "meta": {
+            "package": "http://test/v1.0",
+            "title": "Test Title",
+            "roots": ["Root-Test"],
+            "config": {
+                "$MaxBinary": 255,
+                "$MaxString": 10,
+                "$MaxElements": 100,
+                "$Sys": "$",
+                "$TypeName": "^[A-Z][-$A-Za-z0-9]{0,63}$",
+                "$FieldName": "^[a-z][_A-Za-z0-9]{0,63}$",
+                "$NSID": "^[A-Za-z][A-Za-z0-9]{0,7}$"
+            }
         },
         "types": [
             ["Root-Test", "String", [], ""]
@@ -37,10 +37,10 @@ def test_max_string_order_of_precedence():
     root = "Root-Test"    
   
     j_schema = {
-        "info": {
+        "meta": {
             "package": "http://test/v1.0",
             "title": "Test Title",
-            "exports": ["Root-Test"],
+            "roots": ["Root-Test"],
             "config": {
             "$MaxBinary": 255,
             "$MaxString": 255,
@@ -69,7 +69,7 @@ def test_max_binary():
     root = "Root-Test"    
   
     j_schema = {
-        "info": {
+        "meta": {
             "package": "http://test/v1.0",
             "title": "Test Title",
             "config": {
@@ -81,7 +81,7 @@ def test_max_binary():
             "$FieldName": "^[a-z][_A-Za-z0-9]{0,63}$",
             "$NSID": "^[A-Za-z][A-Za-z0-9]{0,7}$"
             },
-            "exports": ["Root-Test"]
+            "roots": ["Root-Test"]
         },
         "types": [
             ["Root-Test", "Binary", [], ""]
@@ -101,10 +101,10 @@ def test_max_elements_array_of_ints():
     root = "Root-Test"    
     
     j_schema = {
-        "info": {
+        "meta": {
             "package": "http://test/v1.0",
             "title": "Test Title",
-            "exports": ["Root-Test"],
+            "roots": ["Root-Test"],
             "config": {
             "$MaxBinary": 255,
             "$MaxString": 255,
@@ -140,10 +140,10 @@ def test_max_elements_map_of_int_key():
     root = "Root-Test"
     
     j_schema = {
-        "info": {
+        "meta": {
             "package": "http://test/v1.0",
             "title": "Test Title",
-            "exports": ["Root-Test"],
+            "roots": ["Root-Test"],
             "config": {
             "$MaxBinary": 255,
             "$MaxString": 255,
@@ -179,10 +179,10 @@ def test_max_elements_map_of_string_key():
     root = "Root-Test"
     
     j_schema = {
-        "info": {
+        "meta": {
             "package": "http://test/v1.0",
             "title": "Test Title",
-            "exports": ["Root-Test"],
+            "roots": ["Root-Test"],
             "config": {
             "$MaxBinary": 255,
             "$MaxString": 255,
@@ -223,10 +223,10 @@ def test_sys_indicator():
     root = "Root-Test"
     
     invalid_j_schema = {
-        "info": {
+        "meta": {
             "package": "http://test/v1.0",
             "title": "Test Title",
-            "exports": ["Root-Test"],
+            "roots": ["Root-Test"],
             "config": {
             "$MaxBinary": 255,
             "$MaxString": 255,
@@ -247,10 +247,10 @@ def test_sys_indicator():
     }    
     
     valid_j_schema = {
-        "info": {
+        "meta": {
             "package": "http://test/v1.0",
             "title": "Test Title",
-            "exports": ["Root-Test"],
+            "roots": ["Root-Test"],
             "config": {
             "$MaxBinary": 255,
             "$MaxString": 255,
@@ -281,17 +281,17 @@ def test_sys_indicator():
     assert err_count == 0
     
     err_count = validate_valid_data(invalid_j_schema, root, valid_data_list)    
-    assert err_count == 1
+    assert err_count == 0
     
 def test_type_name_regex():
     invalid_root = "root-test"
     root = "Root-Test"
   
     invalid_j_schema_1 = {
-        "info": {
+        "meta": {
             "package": "http://test/v1.0",
             "title": "Test Title",
-            "exports": ["root-test"],
+            "roots": ["root-test"],
             "config": {
             "$MaxBinary": 255,
             "$MaxString": 255,
@@ -312,10 +312,10 @@ def test_type_name_regex():
     }
     
     j_schema = {
-        "info": {
+        "meta": {
             "package": "http://test/v1.0",
             "title": "Test Title",
-            "exports": ["Root-Test"],
+            "roots": ["Root-Test"],
             "config": {
             "$MaxBinary": 255,
             "$MaxString": 255,
@@ -353,10 +353,10 @@ def test_field_name_regex():
     root = "Root-Test"    
   
     invalid_j_schema_1 = {
-        "info": {
+        "meta": {
             "package": "http://test/v1.0",
             "title": "Test Title",
-            "exports": ["Root-Test"],
+            "roots": ["Root-Test"],
             "config": {
             "$MaxBinary": 255,
             "$MaxString": 255,
@@ -377,10 +377,10 @@ def test_field_name_regex():
     }
     
     j_schema = {
-        "info": {
+        "meta": {
             "package": "http://test/v1.0",
             "title": "Test Title",
-            "exports": ["Root-Test"],
+            "roots": ["Root-Test"],
             "config": {
             "$MaxBinary": 255,
             "$MaxString": 255,

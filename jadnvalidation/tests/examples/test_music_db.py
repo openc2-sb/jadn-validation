@@ -2,13 +2,13 @@ from jadnvalidation.data_validation.data_validation import DataValidation
 from jadnvalidation.utils.consts import JSON, XML
 
 j_schema = {
-  "info": {
+  "meta": {
     "title": "Music Library",
     "package": "http://fake-audio.org/music-lib",
     "version": "1.1",
     "description": "This information model defines a library of audio tracks, organized by album, with associated metadata regarding each track. It is modeled on the types of library data maintained by common websites and music file tag editors.",
     "license": "CC0-1.0",
-    "exports": ["Library"]
+    "roots": ["Library"]
   },
   "types": [
     ["Library", "MapOf", ["+Barcode", "*Album", "{1"], "Top level of the library is a map of CDs by barcode", []],

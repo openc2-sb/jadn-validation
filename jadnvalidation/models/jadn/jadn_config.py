@@ -14,13 +14,15 @@ SYS_IND_KEY = "$Sys"
 TYPE_NAME_KEY = "$TypeName"
 FIELD_NAME_KEY = "$FieldName"
 NSID_KEY = "$NSID"
+CONFIG_KEYS = [MAX_BINARY_KEY, MAX_STRING_KEY, MAX_ELEMENTS_KEY, SYS_IND_KEY, TYPE_NAME_KEY, FIELD_NAME_KEY, NSID_KEY]
 
 DEFAULT_MAX_BINARY = 255
 DEFAULT_MAX_STRING = 255
 DEFAULT_MAX_ELEMENTS = 100
 DEFAULT_SYS_IND = "$"
 DEFAULT_TYPE_NAME_REGEX = "^[A-Z][-$A-Za-z0-9]{0,63}$"
-DEFAULT_FIELD_NAME_REGEX = "^[a-z][_A-Za-z0-9]{0,63}$"
+# DEFAULT_FIELD_NAME_REGEX = "^[a-z][_A-Za-z0-9]{0,63}$"
+DEFAULT_FIELD_NAME_REGEX = "^[A-Za-z][-_A-Za-z0-9]{0,63}$"
 DEFAULT_NSID_REGEX = "^[A-Za-z][A-Za-z0-9]{0,7}$"
 
 class Jadn_Config():
@@ -59,7 +61,7 @@ def build_jadn_config_obj(j_config_data: dict) -> Jadn_Config:
 def get_j_config(j_schema: dict) -> Jadn_Config:
     j_config = Jadn_Config()
     
-    j_custom_config = get_nested_value(j_schema, ['info', 'config'], None)
+    j_custom_config = get_nested_value(j_schema, ['meta', 'config'], None)
     if j_custom_config:
         j_config = build_jadn_config_obj(j_custom_config)
     
@@ -67,7 +69,8 @@ def get_j_config(j_schema: dict) -> Jadn_Config:
 
 def check_sys_char(j_field_name, j_config_sys: str):
     if j_config_sys and j_config_sys in j_field_name:
-        raise ValueError(f"Field Name {j_field_name} contains System Character {j_config_sys}")
+        if not j_field_name in CONFIG_KEYS:
+            raise ValueError(f"Field Name {j_field_name} contains System Character {j_config_sys}")
 
 def check_type_name(j_type_name, j_config_type_name_reg: str):
     match = re.fullmatch(j_config_type_name_reg, j_type_name)

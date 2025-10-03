@@ -7,9 +7,9 @@ def test_choice():
     root = "Root-Test"
 
     j_schema = {
-        "info": {
+        "meta": {
             "package": "http://test.com",
-            "exports": ["Root-Test"]
+            "roots": ["Root-Test"]
         },
         "types": [
             ["Root-Test", "Choice", [], "", [
@@ -52,9 +52,9 @@ def test_xml_choice():
     root = "Root-Test"
 
     j_schema = {
-        "info": {
+        "meta": {
             "package": "http://test.com",
-            "exports": ["Root-Test"]
+            "roots": ["Root-Test"]
         },
         "types": [
             ["Root-Test", "Choice", [], "", [
@@ -95,9 +95,9 @@ def test_choice_id():
     root = "Root-Test"
         
     j_schema = {
-        "info": {
+        "meta": {
             "package": "http://test.com",
-            "exports": ["Root-Test"]
+            "roots": ["Root-Test"]
         },
         "types": [
             ["Root-Test", "Choice", ["="], "", [
@@ -137,9 +137,9 @@ def test_xml_choice_id():
     root = "Root-Test"
         
     j_schema = {
-        "info": {
+        "meta": {
             "package": "http://test.com",
-            "exports": ["Root-Test"]
+            "roots": ["Root-Test"]
         },
         "types": [
             ["Root-Test", "Choice", ["="], "", [
@@ -181,12 +181,12 @@ def test_choice_anyOf():
     root = "Root-Test"
 
     j_schema = {
-        "info": {
+        "meta": {
             "package": "http://test.com",
-            "exports": ["Root-Test"]
+            "roots": ["Root-Test"]
         },
         "types": [
-            ["Root-Test", "Choice", ["O"], "", [
+            ["Root-Test", "Choice", ["CO"], "", [
                 [1, "field_value_1", "String", [], ""],
                 [2, "field_value_2", "Boolean", [], ""]
             ]]
@@ -228,12 +228,12 @@ def test_xml_choice_anyOf():
     root = "Root-Test"
 
     j_schema = {
-        "info": {
+        "meta": {
             "package": "http://test.com",
-            "exports": ["Root-Test"]
+            "roots": ["Root-Test"]
         },
         "types": [
-            ["Root-Test", "Choice", ["O"], "", [
+            ["Root-Test", "Choice", ["CO"], "", [
                 [1, "field_value_1", "String", [], ""],
                 [2, "field_value_2", "Boolean", [], ""]
             ]]
@@ -301,12 +301,12 @@ def test_choice_allOf():
     root = "Root-Test"
 
     j_schema = {
-        "info": {
+        "meta": {
             "package": "http://test.com",
-            "exports": ["Root-Test"]
+            "roots": ["Root-Test"]
         },
         "types": [
-            ["Root-Test", "Choice", ["A"], "", [
+            ["Root-Test", "Choice", ["CA"], "", [
                 [1, "field_value_1", "String", [], ""],
                 [2, "field_value_2", "Boolean", [], ""]
             ]]
@@ -349,12 +349,12 @@ def test_xml_choice_allOf():
     root = "Root-Test"
 
     j_schema = {
-        "info": {
+        "meta": {
             "package": "http://test.com",
-            "exports": ["Root-Test"]
+            "roots": ["Root-Test"]
         },
         "types": [
-            ["Root-Test", "Choice", ["A"], "", [
+            ["Root-Test", "Choice", ["CA"], "", [
                 [1, "field_value_1", "String", [], ""],
                 [2, "field_value_2", "Boolean", [], ""]
             ]]
@@ -399,12 +399,12 @@ def test_choice_not():
     root = "Root-Test"
 
     j_schema = {
-        "info": {
+        "meta": {
             "package": "http://test.com",
-            "exports": ["Root-Test"]
+            "roots": ["Root-Test"]
         },
         "types": [
-            ["Root-Test", "Choice", ["X"], "", [
+            ["Root-Test", "Choice", ["CX"], "", [
                 [1, "field_value_1", "String", [], ""],
                 [2, "field_value_2", "Boolean", [], ""]
             ]]
@@ -445,12 +445,12 @@ def test_xml_choice_not():
     root = "Root-Test"
 
     j_schema = {
-        "info": {
+        "meta": {
             "package": "http://test.com",
-            "exports": ["Root-Test"]
+            "roots": ["Root-Test"]
         },
         "types": [
-            ["Root-Test", "Choice", ["X"], "", [
+            ["Root-Test", "Choice", ["CX"], "", [
                 [1, "field_value_1", "String", [], ""],
                 [2, "field_value_2", "Boolean", [], ""]
             ]]
@@ -487,4 +487,187 @@ def test_xml_choice_not():
     assert err_count == 0
             
     err_count = validate_invalid_data(j_schema, root, invalid_data_list, XML)
-    assert err_count == len(invalid_data_list)          
+    assert err_count == len(invalid_data_list)    
+
+def test_choice_as_field():
+    root = "Root-Test"
+    
+    j_schema = {
+        "meta": {
+            "package": "http://test.com",
+            "roots": ["Root-Test"]
+        },
+        "types": [
+            ["Root-Test", "Record", [], "", [
+                [1, "field_value_1", "String", [], ""],
+                [2, "field_value_2", "Choice-Test", [], ""]
+            ]],
+            ["Choice-Test", "Choice", [], "", [
+                [1, "choice_value_1", "Integer", [], ""],
+                [2, "choice_value_2", "Boolean", [], ""]
+            ]]
+        ]
+    }
+
+    valid_data_list = [
+        {
+            "field_value_1": "illum repellendus nobis",
+            "field_value_2": {"choice_value_1": 1}
+        }
+    ]
+
+    invalid_data_list = [
+        {
+            "field_value_1": "illum repellendus nobis",
+            "field_value_2": True,
+            "field_value_3": "test extra field validation"
+        }, 
+        {
+            "field_value_x": "test incorrect field name"
+        }
+    ]
+
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+        
+    err_count = validate_valid_data(j_schema, root, invalid_data_list)
+    assert err_count == len(invalid_data_list)  
+        
+
+def test_choice_as_field_multiple():
+    root = "Root-Test"
+    
+    j_schema = {
+        "meta": {
+            "package": "http://test.com",
+            "roots": ["Root-Test"]
+        },
+        "types": [
+            ["Root-Test", "Record", [], "", [
+                [1, "field_value_1", "String", [], ""],
+                [2, "field_value_2", "Choice-Test", ["]-1"], ""]
+            ]],
+            ["Choice-Test", "Choice", [], "", [
+                [1, "choice_value_1", "Integer", [], ""],
+                [2, "choice_value_2", "Boolean", [], ""]
+            ]]
+        ]
+    }
+
+    valid_data_list = [
+        {
+            "field_value_1": "illum repellendus nobis",
+            "field_value_2": [{"choice_value_1": 1}, {"choice_value_2": True}]
+        }
+    ]
+
+    invalid_data_list = [
+        {
+            "field_value_1": "illum repellendus nobis",
+            "field_value_2": True,
+            "field_value_3": "test extra field validation"
+        }, 
+        {
+            "field_value_x": "test incorrect field name"
+        }
+    ]
+
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+        
+    err_count = validate_valid_data(j_schema, root, invalid_data_list)
+    assert err_count == len(invalid_data_list)
+    
+def test_choice_spec_example():
+    root = "PhoneType"
+    
+    j_schema = {
+        "meta": {
+            "title": "JADN Schema Start Up Template",
+            "package": "http://JADN-Schema-Start-Up-Template-URI",
+            "roots": ["PhoneType"]
+        },
+        "types": [
+            ["PhoneType", "Choice", ["CO"], "", [
+                [1, "predefined", "PhoneNumberTypes", [], ""],
+                [2, "custom", "String", ["{3", "}10"], ""]
+            ]],
+            ["PhoneNumberTypes", "Enumerated", [], "", [
+                [1, "Home", ""],
+                [2, "Cell", ""],
+                [3, "Work", ""]
+            ]]
+        ]
+    }
+
+    valid_data_list = [
+        {
+            "predefined": "Home"
+        }
+    ]
+
+    invalid_data_list = [
+        {
+            "field_value_1": "illum repellendus nobis",
+            "field_value_2": True,
+            "field_value_3": "test extra field validation"
+        }, 
+        {
+            "field_value_x": "test incorrect field name"
+        }
+    ]
+
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+        
+    # err_count = validate_valid_data(j_schema, root, invalid_data_list)
+    # assert err_count == len(invalid_data_list)       
+    
+def test_choice_spec_example_xml():
+    root = "PhoneType"
+    
+    j_schema = {
+        "meta": {
+            "title": "JADN Schema Start Up Template",
+            "package": "http://JADN-Schema-Start-Up-Template-URI",
+            "roots": ["PhoneType"]
+        },
+        "types": [
+            ["PhoneType", "Choice", ["CO"], "", [
+                [1, "predefined", "PhoneNumberTypes", [], ""],
+                [2, "custom", "String", ["{3", "}10"], ""]
+            ]],
+            ["PhoneNumberTypes", "Enumerated", [], "", [
+                [1, "Home", ""],
+                [2, "Cell", ""],
+                [3, "Work", ""]
+            ]]
+        ]
+    }
+    
+    valid_xml_1 = """<PhoneType>
+        <predefined>Home</predefined>
+        <custom>HomeNum</custom>
+    </PhoneType>"""    
+
+    valid_data_list = [
+        valid_xml_1
+    ]
+
+    invalid_data_list = [
+        {
+            "field_value_1": "illum repellendus nobis",
+            "field_value_2": True,
+            "field_value_3": "test extra field validation"
+        }, 
+        {
+            "field_value_x": "test incorrect field name"
+        }
+    ]
+
+    err_count = validate_valid_data(j_schema, root, valid_data_list, XML)    
+    assert err_count == 0
+        
+    # err_count = validate_valid_data(j_schema, root, invalid_data_list)
+    # assert err_count == len(invalid_data_list)       
+        

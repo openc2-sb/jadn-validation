@@ -25,6 +25,32 @@ def test_enum():
             
     err_count = validate_invalid_data(j_schema, root, invalid_data_list)
     assert err_count == len(invalid_data_list) 
+
+def test_enum_multiple(): 
+    root = "Root-Test"    
+  
+    j_schema = {
+        "types": [
+            ["Root-Test", "Record", [], "", [
+                [1, "suit", "Enum-Test", ["[2", "]2"], ""]
+            ]],
+            ["Enum-Test", "Enumerated", [], "", [
+                [10, "clubs", ""],
+                [20, "diamonds", ""],
+                [30, "hearts", ""],
+                [40, "spades", ""]
+            ]]
+        ]
+    }
+    
+    valid_data_list = [{'suit': ['clubs', 'spades']}, {'suit': ['hearts', 'diamonds']}]
+    invalid_data_list = [{'suit': 'clubs'}, {'suit': 'asdfghjklasdfghjkl'}, {'suit': 'Aces'}, {'SuitEnum': 10},'asdfghjklasdfghjkl', 'Aces', 10]
+    
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+            
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)
+    assert err_count == len(invalid_data_list) 
     
 def test_xml_enum(): 
     root = "Root-Test"    

@@ -65,14 +65,22 @@ def format_class_name(class_name: str) -> str:
     formatted_class_name = ''.join(word[0].upper() + word[1:] for word in words)
     if formatted_class_name == 'JsonPointer':
         formatted_class_name = 'JadnJsonPointer'
+    if formatted_class_name == 'Base64Binary':
+        formatted_class_name = 'B64'
+    if formatted_class_name == 'X':
+        formatted_class_name = 'HexBinary'
     
     return formatted_class_name
 
 def create_fmt_clz_instance(class_name: str, *args, **kwargs):
     
     modules = {
+        "Attr" : "jadnvalidation.data_validation.formats.attr",
         "Date" : "jadnvalidation.data_validation.formats.date",
         "DateTime" : "jadnvalidation.data_validation.formats.date_time",
+        "Duration" : "jadnvalidation.data_validation.formats.duration",
+        "DayTimeDuration" : "jadnvalidation.data_validation.formats.daytimeduration",
+        "YearMonthDuration" : "jadnvalidation.data_validation.formats.yearmonthduration",
         "Time" : "jadnvalidation.data_validation.formats.time",
         "Ipv4" : "jadnvalidation.data_validation.formats.ipv4",
         "Ipv4Addr" : "jadnvalidation.data_validation.formats.ipv4",
@@ -90,6 +98,10 @@ def create_fmt_clz_instance(class_name: str, *args, **kwargs):
         "F64" : "jadnvalidation.data_validation.formats.f64",
         "F128" : "jadnvalidation.data_validation.formats.f128",
         "F256" : "jadnvalidation.data_validation.formats.f256",
+        "NonNegativeInteger" : "jadnvalidation.data_validation.formats.non_negative_integer",
+        "PositiveInteger" : "jadnvalidation.data_validation.formats.positive_integer",
+        "NonPositiveInteger" : "jadnvalidation.data_validation.formats.non_positive_integer",
+        "NegativeInteger" : "jadnvalidation.data_validation.formats.negative_integer",
         "Pattern" : "jadnvalidation.data_validation.formats.pattern",
         "Regex" : "jadnvalidation.data_validation.formats.regex",
         "RelativeJsonPointer" : "jadnvalidation.data_validation.formats.relative_json_pointer",
@@ -103,11 +115,24 @@ def create_fmt_clz_instance(class_name: str, *args, **kwargs):
         "Name" : "jadnvalidation.data_validation.formats.name",
         "QName" : "jadnvalidation.data_validation.formats.qname",
         "NormalizedString" : "jadnvalidation.data_validation.formats.normalized_string",
-        "Language" : "jadnvalidation.data_validation.formats.language"
+        "Language" : "jadnvalidation.data_validation.formats.language",
+        "GYear" : "jadnvalidation.data_validation.formats.gyear",
+        "GYearMonth" : "jadnvalidation.data_validation.formats.gyearmonth",
+        "GMonthDay" : "jadnvalidation.data_validation.formats.gmonthday",
+        "SignedInteger" : "jadnvalidation.data_validation.formats.signed_integer",
+        "UnsignedInteger" : "jadnvalidation.data_validation.formats.unsigned_integer",
+        "HexBinary" : "jadnvalidation.data_validation.formats.hex_binary",
+        "B64" : "jadnvalidation.data_validation.formats.b64",
+        "Uuid" : "jadnvalidation.data_validation.formats.uuid",
     }
     
     formatted_class_name = format_class_name(class_name)
-    module = importlib.import_module(modules.get(formatted_class_name))
+    
+    module = None
+    try:
+        module = importlib.import_module(modules.get(formatted_class_name))
+    except Exception as e:
+        print(f"Error importing module for format '{formatted_class_name}': {e}", file=sys.stderr)
     
     if module == None:
         raise ValueError("Unknown format type")
@@ -282,11 +307,65 @@ def get_nested_value(data, keys, default=None):
             return default
     return current
 
+def give_format_constraint(format: str, option_index: int):
+    # the frankenstein logic from before was a larger version of this; its moved into the formats now, 
+    # but if you want one here, itll be like this
+
+    format_designator, designated_value = split_on_first_char(format)    
+    # if you need to differentiate by format designator: a holdover         
+    try:
+        unsigned_value = int(designated_value)
+        print("uN value is 2^"+str(unsigned_value))
+        unsig_min = 0
+        unsig_max = pow(2,unsigned_value)
+        struct = [unsig_min, unsig_max]
+        return struct[option_index]
+    except ValueError as e:
+        print("u<n> format requires a numeric component following unsigned signifier \"u\". \n"+e)
+
 def is_even(n):
     return n % 2 == 0
 
 def is_odd(n):
     return n % 2 != 0
+
+def is_arg_format(format):
+    if format:
+        split_format = split_on_first_char(format)
+        if (split_format[0] in ["i", "u"]) & ((split_format[1]).isdigit()):
+            return True
+    else: return False
+        
+def merge_opts(opts1: list, opts2: list) -> list:
+    """
+    Merge two lists of option strings, ensuring each item in the result has a unique first character.
+    If duplicates (by first character) are found, the first occurrence is kept and the duplicate is logged and removed.
+
+    Args:
+        opts1 (list): First list of option strings.
+        opts2 (list): Second list of option strings.
+
+    Returns:
+        list: Merged list with unique first characters.
+    """
+    merged = []
+    seen = {}
+    duplicates = []
+
+    for opt in (opts1 or []) + (opts2 or []):
+        if not opt:
+            continue
+        first_char = opt[0]
+        if first_char not in seen:
+            seen[first_char] = opt
+            merged.append(opt)
+        else:
+            duplicates.append(opt)
+
+    if duplicates:
+        print(f"[merge_opts] Duplicate opts removed (by first char): {duplicates}")
+
+    return merged
 
 def safe_get(lst, index, default=None):
     """Safely get an item from a list at a given index.
@@ -329,6 +408,37 @@ def split_on_second_char(string):
         return []
 
     return [string[:2], string[2:]]
+
+def sort_array_by_id(j_array: list, j_array2: list = None, is_allow_dups: bool = False) -> list:
+    """
+    Orders an array of JADN field definitions by their ID (first element of each field definition).
+    If a second array is provided, combines both arrays before ordering.
+    If is_allow_dups is False, raises a ValueError if duplicate IDs are found.
+
+    Args:
+        j_array (list): List of JADN field definitions, where each field is a list and the first element is the ID.
+        j_array2 (list, optional): Second list of JADN field definitions to combine with the first.
+        is_allow_dups (bool, optional): Whether to allow duplicate IDs. Defaults to False.
+
+    Returns:
+        list: The combined input lists ordered by the ID in ascending order.
+
+    Raises:
+        ValueError: If duplicate IDs are found and is_allow_dups is False.
+    """
+    combined = (j_array or []) + (j_array2 or [])
+    ids = [x[0] for x in combined if isinstance(x, list) and len(x) > 0]
+    if not is_allow_dups:
+        seen = set()
+        dups = set()
+        for id_ in ids:
+            if id_ in seen:
+                dups.add(id_)
+            else:
+                seen.add(id_)
+        if dups:
+            raise ValueError(f"Duplicate IDs found in combined array: {sorted(dups)}")
+    return sorted(combined, key=lambda x: x[0] if isinstance(x, list) and len(x) > 0 else float('inf'))
 
 def str_to_class(classname):
     return getattr(sys.modules[__name__], classname)
