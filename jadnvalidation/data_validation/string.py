@@ -55,7 +55,7 @@ class String:
         if self.data is not None:
             tmp = self.data
             try:
-                if tmp and self.data_format == XML and isinstance(int(tmp[1:]), int): # address issue where pattern check fails on n- prepended XML tags of digit type
+                if tmp and self.data_format == XML and tmp[0] == "n" and isinstance(int(tmp[1:]), int): # address issue where pattern check fails on n- prepended XML tags of digit type
                     tmp = tmp[1:]
             except:
                 pass # XML tag not a number and wont have prepended "n", so no issue
