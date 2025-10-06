@@ -53,9 +53,18 @@ class String:
             
     def check_pattern(self):
         if self.data is not None:
+            tmp = self.data
+            try:
+                if tmp and self.data_format == XML and isinstance(int(tmp[1:]), int): # address issue where pattern check fails on n- prepended XML tags of digit type
+                    tmp = tmp[1:]
+            except:
+                pass # XML tag not a number and wont have prepended "n", so no issue
             pattern = get_pattern(self.j_type)
             if pattern is not None and self.data:
-                pattern_instance = Pattern(self.data, pattern)
+                if tmp != self.data:
+                    pattern_instance = Pattern(tmp, pattern)
+                else:
+                    pattern_instance = Pattern(self.data, pattern)
                 pattern_instance.validate()        
         
     def check_type(self):
