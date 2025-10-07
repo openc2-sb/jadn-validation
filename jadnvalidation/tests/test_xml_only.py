@@ -347,6 +347,43 @@ VALID_CLASSES_XML = """<?xml version="1.0" ?>
 </Student-Info>
 """
 
+INVALID_CLASSES_XML = """<?xml version="1.0" ?>
+<Student-Info type="dict">
+    <full_name type="str">Josh Cohen</full_name>
+    <uid type="str">117707466</uid>
+    <email type="str">joshua.cohen@gdit.com</email>
+    <classification type="str">graduate</classification>
+    <academic_standing type="str">good_standing</academic_standing>
+    <student_token type="str">ABCD</student_token>
+    <majors type="list">
+        <item type="str">Computer Science</item>
+        <item type="str">Finance</item>
+    </majors>
+    <class_selections type="list">
+        <item type="dict">
+            <class type="int">132</class>
+            <prerequisites type="list">
+                <item type="int">131</item>
+            </prerequisites>
+            <start_date type="str">2025-08-28</start_date>
+            <class_time type="str">11:00:00</class_time>
+            <class_days type="dict">
+                <Tuesday type="bool">true</Tuesday>
+                <Thursday type="bool">true</Thursday>
+            </class_days>
+            <credits type="int">4</credits>
+            <instructor type="dict">
+                <name type="str">Prof. Teacher</name>
+            </instructor>
+            <location type="str">IRB</location>
+            <section_number type="str">101</section_number>
+            <capacity type="int">300</capacity>
+            <enrolled_count type="int">300</enrolled_count>
+        </item>
+    </class_selections>
+</Student-Info>
+"""
+
 def test_attr():
     root = "Root-Test"   
   
@@ -381,7 +418,9 @@ def test_xml_pattern_digit():
     err_count = validate_invalid_data(LIBRARY_SCHEMA, root, [INVALID_LIBRARY_XML], XML)
     assert err_count == 1
 
-def test_xml_pattern_digit_2():
+def test_xml_multiplicity():
     root = "Student-Info"
     err_count = validate_valid_data(VALID_CLASSES_SCHEMA, root, [VALID_CLASSES_XML], XML)
     assert err_count == 0
+    err_count = validate_invalid_data(VALID_CLASSES_SCHEMA, root, [INVALID_CLASSES_XML], XML)
+    assert err_count == 1
