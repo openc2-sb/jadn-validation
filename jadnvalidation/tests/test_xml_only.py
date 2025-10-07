@@ -424,3 +424,31 @@ def test_xml_multiplicity():
     assert err_count == 0
     err_count = validate_invalid_data(VALID_CLASSES_SCHEMA, root, [INVALID_CLASSES_XML], XML)
     assert err_count == 1
+
+ENUM_DERIVED_SCHEMA = {
+  "meta": {
+    "package": "https://www.test.com",
+    "roots": ["Channel-Mask"]
+  },
+  "types": [
+    ["Pixel", "Map", [], "", [
+        [1, "red", "Integer", [], ""],
+        [2, "green", "Integer", [], ""],
+        [3, "blue", "Integer", [], ""]
+      ]],
+    ["Channel", "Enumerated", ["#Pixel"], "", []],
+    ["Channel-Mask", "ArrayOf", ["*Channel"], "", []]
+  ]
+}
+
+VALID_ENUM_DERIVED_XML = """<?xml version="1.0" ?>
+<Channel-Mask type="list">
+    <item type="str">red</item>
+    <item type="str">red</item>
+</Channel-Mask>
+"""
+
+def test_xml_derived_enum():
+    root = "Channel-Mask"
+    err_count = validate_valid_data(ENUM_DERIVED_SCHEMA, root, [VALID_ENUM_DERIVED_XML], XML)
+    assert err_count == 0

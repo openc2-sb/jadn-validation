@@ -37,6 +37,8 @@ class ArrayOf:
         if data_format == XML:
             if "item" in data:
                 self.data = [data["item"]] if not isinstance(data["item"], list) else data["item"]
+            else:
+                self.data = data
         else:
             self.data = data
         self.data_format = data_format          
