@@ -2,7 +2,7 @@ from jadnvalidation.models.jadn.jadn_config import Jadn_Config, get_j_config
 from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type
 from jadnvalidation.utils.consts import JSON, XML
 from jadnvalidation.utils.general_utils import create_clz_instance
-from jadnvalidation.utils.mapping_utils import is_optional
+from jadnvalidation.utils.mapping_utils import is_optional, to_dict_on_given_char
         
         
 common_rules = {
@@ -14,7 +14,7 @@ common_rules = {
 json_rules = {}
 xml_rules = {}        
         
-class Ipv4Net:
+class TaggedList:
     j_schema: dict = {}
     j_config: Jadn_Config = None
     j_type: Jadn_Type = None
@@ -35,17 +35,18 @@ class Ipv4Net:
         self.j_config = get_j_config(self.j_schema)
         self.errors = []
                 
-    def build_j_type_ipv4_addr(self) -> Jadn_Type:
+    def build_key_string(self) -> Jadn_Type:
+
         jadn_type_obj = Jadn_Type(
                 type_name="ipv4_addr", 
-                base_type="Binary", 
+                base_type="String", 
                 type_options=["/ipv4-addr", "{1", "[1"], 
-                type_description="IPv4 address as defined in [[RFC0791]](#rfc0791)",
+                type_description="",
                 fields=[])
         
         return jadn_type_obj
     
-    def build_j_type_prefix_length(self) -> Jadn_Type:
+    def build_value(self) -> Jadn_Type:
         jadn_type_obj = Jadn_Type(
                 type_name="prefix_length", 
                 base_type="Integer", 

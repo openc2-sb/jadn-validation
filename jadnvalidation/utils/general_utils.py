@@ -113,7 +113,8 @@ def create_fmt_clz_instance(class_name: str, *args, **kwargs):
         "GYearMonth" : "jadnvalidation.data_validation.formats.gyearmonth",
         "GMonthDay" : "jadnvalidation.data_validation.formats.gmonthday",
         "SignedInteger" : "jadnvalidation.data_validation.formats.signed_integer",
-        "UnsignedInteger" : "jadnvalidation.data_validation.formats.unsigned_integer"
+        "UnsignedInteger" : "jadnvalidation.data_validation.formats.unsigned_integer",
+        "TaggedList" : "jadnvalidation.data_validation.formats.tagged_list"
     }
     
     formatted_class_name = format_class_name(class_name)
