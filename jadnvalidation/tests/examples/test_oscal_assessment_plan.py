@@ -12,7 +12,7 @@ oscal_ap_j_schema = {
       "$MaxElements": 100,
       "$Sys": "$",
       "$TypeName": "^[A-Za-z][-_$A-Za-z0-9]{0,63}$",
-      "$FieldName": "^[A-Za-z][-_A-Za-z0-9]{0,63}$",
+      "$FieldName": "^[A-Za-z][-_$A-Za-z0-9]{0,63}$",
       "$NSID": "^[A-Za-z][A-Za-z0-9]{0,7}$"
     }
   },

@@ -127,38 +127,38 @@ class Integer:
         if min_val is not None and self.data is None: 
             raise ValueError(f"An Integer value for type {self.j_type.type_name} is required. Received: None")        
         elif min_val is not None and self.data < min_val:
-            self.errors.append(f"Integer for type {self.j_type.type_name} must be greater than {min_val}. Received: {len(self.data)}")
+            self.errors.append(f"Integer for type {self.j_type.type_name} must be greater than {min_val}. Received: {self.data}")
         
     def check_max_val(self):
         if self.data is not None: 
             max_val = get_max_length(self.j_type, self.j_config)
             if max_val is not None and self.data > max_val:
-                self.errors.append(f"Integer for type {self.j_type.type_name} must be less than {max_val}. Received: {len(self.data)}")           
+                self.errors.append(f"Integer for type {self.j_type.type_name} must be less than {max_val}. Received: {self.data}")           
         
                     
     # Instance is greater than or equal to option value        
     def check_min_inclusive(self): 
         min_inclusive_val = get_min_inclusive(self.j_type)
         if min_inclusive_val is not None and self.data < min_inclusive_val: 
-            self.errors.append(f"Number must be greater than or equal to {min_inclusive_val}. Received: {len(self.data)}")            
+            self.errors.append(f"Integer for type {self.j_type.type_name} must be greater than or equal to {min_inclusive_val}. Received: {self.data}")            
     
     # Instance is less than or equal to option value
     def check_max_inclusive(self): 
         max_inclusive_val = get_max_inclusive(self.j_type)
         if max_inclusive_val is not None and self.data > max_inclusive_val: 
-            self.errors.append(f"Number must be less than or equal to {max_inclusive_val}. Received: {len(self.data)}")
+            self.errors.append(f"Integer for type {self.j_type.type_name} must be less than or equal to {max_inclusive_val}. Received: {self.data}")
     
     # Instance is greater than option value
     def check_min_exclusive(self): 
         min_exclusive_val = get_min_exclusive(self.j_type)
         if min_exclusive_val is not None and self.data <= min_exclusive_val: 
-            self.errors.append(f"Number must be greater than {min_exclusive_val}. Received: {len(self.data)}")
+            self.errors.append(f"Integer for type {self.j_type.type_name} must be greater than {min_exclusive_val}. Received: {self.data}")
     
     # Instance is less than option value
     def check_max_exclusive(self): 
         max_exclusive_val = get_max_exclusive(self.j_type)
         if max_exclusive_val is not None and self.data >= max_exclusive_val: 
-            self.errors.append(f"Number must be less than {max_exclusive_val}. Received: {len(self.data)}")
+            self.errors.append(f"Integer for type {self.j_type.type_name} must be less than {max_exclusive_val}. Received: {self.data}")
 
     def validate(self):
         
@@ -175,7 +175,7 @@ class Integer:
         for key, function_name in common_rules.items():
             getattr(self, function_name)()            
             
-        if len(self.errors) > 0:
+        if (len(self.errors)) > 0:
             raise ValueError(self.errors)  
         
         return True

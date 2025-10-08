@@ -47,7 +47,12 @@ class Array:
         self.errors = []
         
     def check_type(self):
-        if not isinstance(self.data, list):
+        print(type(self.data))
+        if isinstance(self.data, str):
+            if "/ipv4-net" in self.j_type.type_options or "/ipv6-net" in self.j_type.type_options:
+                pass
+            else: raise ValueError(f"Data for type {self.j_type.type_name} of the wrong type. Received: {type(self.data)}")
+        elif not isinstance(self.data, list):
             raise ValueError(f"Data for type {self.j_type.type_name} must be a list. Received: {type(self.data)}")
     
     def check_inheritance(self):
@@ -69,6 +74,21 @@ class Array:
         if is_structure(self.j_type):
             # Order fields by their ID
             self.j_type.fields = sort_array_by_id(self.j_type.fields)        
+        
+            '''
+    def check_type(self):
+
+        if self.data != None and not isinstance(self.data, list):
+            if isinstance(self.data, str):
+                if "/ipv4net" in self.j_type.type_options or "/ipv6net" in self.j_type.type_options:
+                    pass
+            else: raise ValueError(f"Data for type {self.j_type.type_name} of the wrong type. Received: {type(self.data)}")
+        elif self.data is None:
+            if "}0" in self.j_type.type_options:
+                pass
+            else: raise ValueError(f"Data missing for type {self.j_type.type_name}")
+        else: raise ValueError(f"Data for type {self.j_type.type_name} must be a list. Received: {type(self.data)}")
+        '''
         
     def check_min_length(self):
         min_length = get_min_length(self.j_type)

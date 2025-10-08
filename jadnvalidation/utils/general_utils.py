@@ -100,6 +100,8 @@ def create_fmt_clz_instance(class_name: str, *args, **kwargs):
         "F16" : "jadnvalidation.data_validation.formats.f16",
         "F32" : "jadnvalidation.data_validation.formats.f32",
         "F64" : "jadnvalidation.data_validation.formats.f64",
+        "F128" : "jadnvalidation.data_validation.formats.f128",
+        "F256" : "jadnvalidation.data_validation.formats.f256",
         "NonNegativeInteger" : "jadnvalidation.data_validation.formats.non_negative_integer",
         "PositiveInteger" : "jadnvalidation.data_validation.formats.positive_integer",
         "NonPositiveInteger" : "jadnvalidation.data_validation.formats.non_positive_integer",
