@@ -175,7 +175,7 @@ class Choice:
                 j_field_obj.type_options = merged_opts
                 
             clz_kwargs = dict(
-                class_name=j_field_obj.base_type,
+                class_name=j_field_obj.base_type, # this should be "type that is getting shortcut" 
                 j_schema=self.j_schema,
                 j_type=j_field_obj,
                 data=choice_data,
@@ -187,6 +187,46 @@ class Choice:
             
             break # Only one choice is allowed.
         
+    def process_default(self, use_ids):
+
+        # only one choice is allowed        
+        if len(self.data) != 1:
+            self.errors.append(f"Choice '{self.j_type.type_name}' must have exactly one choice. Received: {len(self.data)}")
+        
+        for key, choice_data in self.data.items():
+            j_field = get_j_field(self.j_type.fields, key, use_ids)
+            
+            if j_field is None:
+                raise ValueError(f"Choice '{self.j_type.type_name}' key {key} not found. ")
+            
+            j_field_obj = build_jadn_type_obj(j_field)
+            check_sys_char(j_field_obj.type_name, self.j_config.Sys)
+            check_field_name(j_field_obj.type_name, self.j_config.FieldName)
+        
+            if is_field_multiplicity(j_field_obj.type_options):
+                j_field_obj = flip_to_array_of(j_field_obj, get_min_occurs(j_field_obj), get_max_occurs(j_field_obj, self.j_config))
+        
+            elif is_user_defined(j_field_obj.base_type):
+                ref_type = get_reference_type(self.j_schema, j_field_obj.base_type)
+                ref_type_obj = build_j_type(ref_type)
+                check_type_name(ref_type_obj.type_name, self.j_config.TypeName)
+                merged_opts = merge_opts(j_field_obj.type_options, ref_type_obj.type_options)
+                j_field_obj = ref_type_obj
+                j_field_obj.type_options = merged_opts
+                
+            clz_kwargs = dict(
+                class_name=j_field_obj.base_type,
+                j_schema=self.j_schema,
+                j_type=j_field_obj,
+                data=choice_data,
+                data_format=self.data_format
+            )                 
+                
+            clz_instance = create_clz_instance(**clz_kwargs)
+            clz_instance.validate()
+            
+            break # Only one choice is allowed.
+
     def process_tag_id(self, use_ids):
         
         tagged_choice_found = False
@@ -234,18 +274,23 @@ class Choice:
             choice_type = Choice_Consts.CHOICE_TAG_ID
         else:
             choice_type = get_choice_type(self.j_type.type_options)
-        
-        match choice_type:
-            case Choice_Consts.CHOICE_ALL_OF:
-                self.process_all_of(use_ids)
-            case Choice_Consts.CHOICE_ANY_OF:
-                self.process_any_of(use_ids)
-            case Choice_Consts.CHOICE_NOT:
-                self.process_not(use_ids)
-            case Choice_Consts.CHOICE_TAG_ID:
-                self.process_tag_id(use_ids)
-            case _:
-                self.process_one_of(use_ids)
+
+        if use_ids is not None:
+            match choice_type:
+                case Choice_Consts.CHOICE_ALL_OF:
+                    self.process_all_of(use_ids)
+                case Choice_Consts.CHOICE_ANY_OF:
+                    self.process_any_of(use_ids)
+                case Choice_Consts.CHOICE_ONE_OF:
+                    self.process_any_of(use_ids)
+                case Choice_Consts.CHOICE_NOT:
+                    self.process_not(use_ids)
+                case Choice_Consts.CHOICE_TAG_ID:
+                    self.process_tag_id(use_ids)
+                case _:
+                    self.process_one_of(use_ids)
+        else: 
+                    self.process_default()
                                 
     def validate(self):
         

@@ -32,10 +32,12 @@ def get_choice_type(j_type_opts: List[str]) -> str:
             choice_type = Choice_Consts.CHOICE_ALL_OF
         elif (opt_char_id == "C") & (opt_val == "O"):
             choice_type = Choice_Consts.CHOICE_ANY_OF
-        elif (opt_char_id == "C") & (opt_val == "X"):
+        elif (opt_char_id == "C") & (opt_val == "N"):
             choice_type = Choice_Consts.CHOICE_NOT  
-        else:
+        elif (opt_char_id == "C") & (opt_val == "X"):
             choice_type = Choice_Consts.CHOICE_ONE_OF
+        else:
+            choice_type = None
             
         break
         
