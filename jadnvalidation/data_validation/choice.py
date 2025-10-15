@@ -310,7 +310,7 @@ class Choice:
             
     def check_choice(self):
         use_ids = use_field_ids(self.j_type.type_options)
-        if self.tagged_data is not None:
+        if self.tagged_data is not None: # seems redundant but gets mad if i remove the lower one...
             choice_type = Choice_Consts.CHOICE_TAG_ID
         else:
             choice_type = get_choice_type(self.j_type.type_options)
@@ -325,8 +325,8 @@ class Choice:
                     self.process_one_of(use_ids)
                 case Choice_Consts.CHOICE_NOT:
                     self.process_not(use_ids)
-                #case Choice_Consts.CHOICE_TAG_ID:
-                #    self.process_tag_id(use_ids)
+                case Choice_Consts.CHOICE_TAG_ID:
+                    self.process_tag_id(use_ids)
                 case _:
                     self.process_default(use_ids)
                                 
