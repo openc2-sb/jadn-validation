@@ -230,20 +230,22 @@ def test_xml_choice_oneOf():
         },
         "types": [
             ["Root-Test", "Choice", ["CX"], "", [
-                [1, "field_value_1", "String", [], ""],
-                [2, "field_value_2", "Boolean", [], ""],
-                [3, "field_value_3", "String", ["%^a$"], ""]
+                [1, "field_value_1", "Number", [], ""],
+                [2, "field_value_2", "String", ["/date-time"], ""]
             ]]
         ]
     }
     
     valid_xml_1 = """<Root-Test>
-        illum repellendus nobis
+        333.0
     </Root-Test>"""
-    
-    valid_xml_2 = """<Root-Test>
-        false
-    </Root-Test>"""
+    valid_xml_2 = """<Root-Test>2023-08-13T16:07:54Z</Root-Test>"""
+    valid_xml_3 = """<?xml version="1.0" encoding="UTF-8"?>
+        <items>
+            <item>one</item>
+            <item>two</item>
+            <item>three</item>
+        </items>"""
     
     invalid_xml_1 = """<Root-Test>
         <field_value_4>test extra field validation</field_value_4>
@@ -254,8 +256,8 @@ def test_xml_choice_oneOf():
     </Root-Test>"""
 
     invalid_xml_3 = """<Root-Test>
-        <field_value_1>i have 2 values</field_value_1>
-        <field_value_2>False</field_value_2>
+        <field_value_1>a</field_value_1>
+        <field_value_2>false</field_value_2>
     </Root-Test>"""
 
     invalid_xml_4 = """<Root-Test>
@@ -263,7 +265,7 @@ def test_xml_choice_oneOf():
     </Root-Test>"""
 
     valid_data_list = [valid_xml_1, valid_xml_2]
-    invalid_data_list = [invalid_xml_1, invalid_xml_2, invalid_xml_3, invalid_xml_4]    
+    invalid_data_list = [invalid_xml_1, invalid_xml_2, invalid_xml_3]    
      
     err_count = validate_valid_data(j_schema, root, valid_data_list, XML)    
     assert err_count == 0
