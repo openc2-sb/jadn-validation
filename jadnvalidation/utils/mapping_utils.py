@@ -24,7 +24,7 @@ def flip_to_array_of(j_type_obj: Jadn_Type, min_occurs, max_occurs):
     return j_field_obj
 
 def get_choice_type(j_type_opts: List[str]) -> str:
-    choice_type = Choice_Consts.CHOICE_ONE_OF
+    choice_type = Choice_Consts.CHOICE_TAGGED
     
     for type_opt in j_type_opts:
         opt_char_id, opt_val = general_utils.split_on_first_char(type_opt) 
@@ -37,7 +37,7 @@ def get_choice_type(j_type_opts: List[str]) -> str:
         elif (opt_char_id == "C") & (opt_val == "X"):
             choice_type = Choice_Consts.CHOICE_ONE_OF
         else:
-            choice_type = None
+            choice_type = None # this does not seem to be assigning correctly
             
         break
         
