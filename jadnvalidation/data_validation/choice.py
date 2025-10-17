@@ -97,19 +97,6 @@ class Choice:
             clz_instance = create_clz_instance(**clz_kwargs)
             clz_instance.validate()
 
-        elif is_primitive(j_field_obj.base_type): 
-            
-            clz_kwargs = dict(
-                class_name=j_field_obj.base_type,
-                j_schema=self.j_schema,
-                j_type=j_field_obj,
-                data=self.data,
-                data_format=self.data_format
-            )                 
-            
-            clz_instance = create_clz_instance(**clz_kwargs)
-            clz_instance.validate()
-
     def process_all_of(self, use_ids):  
         # value must be an instance of allOf the types
         choice_fields = 0
