@@ -656,9 +656,7 @@ def test_choice_spec_example():
     }
 
     valid_data_list = [
-        {
-            "predefined": "Home"
-        }
+            "Home"
     ]
 
     invalid_data_list = [
@@ -675,8 +673,8 @@ def test_choice_spec_example():
     err_count = validate_valid_data(j_schema, root, valid_data_list)    
     assert err_count == 0
         
-    # err_count = validate_valid_data(j_schema, root, invalid_data_list)
-    # assert err_count == len(invalid_data_list)       
+    err_count = validate_valid_data(j_schema, root, invalid_data_list)
+    assert err_count == len(invalid_data_list)       
     
 def test_choice_spec_example_xml():
     root = "PhoneType"
@@ -700,10 +698,9 @@ def test_choice_spec_example_xml():
         ]
     }
     
-    valid_xml_1 = """<PhoneType>
-        <predefined>Home</predefined>
-        <custom>HomeNum</custom>
-    </PhoneType>"""    
+    valid_xml_1 = """
+        <PhoneType>Home</PhoneType>
+    """
 
     valid_data_list = [
         valid_xml_1
@@ -723,6 +720,6 @@ def test_choice_spec_example_xml():
     err_count = validate_valid_data(j_schema, root, valid_data_list, XML)    
     assert err_count == 0
         
-    # err_count = validate_valid_data(j_schema, root, invalid_data_list)
-    # assert err_count == len(invalid_data_list)       
+    err_count = validate_valid_data(j_schema, root, invalid_data_list)
+    assert err_count == len(invalid_data_list)       
         
