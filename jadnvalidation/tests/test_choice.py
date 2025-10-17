@@ -464,7 +464,7 @@ def test_xml_choice_allOf():
     assert err_count == len(invalid_data_list)  
     
     
-def test_choice_not():
+def test_choice_allOf_with_not():
     root = "Root-Test"
 
     j_schema = {
@@ -473,36 +473,21 @@ def test_choice_not():
             "roots": ["Root-Test"]
         },
         "types": [
-            ["Root-Test", "Choice", ["CN"], "", [
+            ["Root-Test", "Choice", ["CA"], "", [
                 [1, "field_value_1", "String", [], ""],
-                [2, "field_value_2", "Boolean", [], ""]
+                [2, "field_value_2", "String", ["N", "%^a$"], ""]
             ]]
         ]
     }
     
-    valid_data_list = [
-        {
-            "field_value_a": "illum repellendus nobis",
-            "field_value_b": False 
-        }, 
-        {
-            "field_value_b": False,
-            "field_value_a": "illum repellendus nobis"            
-        }
-    ]
+    valid_data_list = ["illum repellendus nobis", "b"]
     
-    invalid_data_list = [
+    invalid_data_list = ["a", 123,
         {
-            "field_value_1": "illum repellendus nobis",
-            "field_value_2": True
-        }, 
-        {
-            "field_value_1": "test incorrect field name"
-        },
-        {
-            "field_value_2": False
-        }        
+            "field_value_1": "illum repellendus nobis"
+        },      
     ]
+    invalid_data_list = ["a"]
     
     err_count = validate_valid_data(j_schema, root, valid_data_list)    
     assert err_count == 0
@@ -510,7 +495,7 @@ def test_choice_not():
     err_count = validate_invalid_data(j_schema, root, invalid_data_list)
     assert err_count == len(invalid_data_list)
     
-def test_xml_choice_not():
+def test_xml_choice_allOf_with_not():
     root = "Root-Test"
 
     j_schema = {
@@ -519,38 +504,39 @@ def test_xml_choice_not():
             "roots": ["Root-Test"]
         },
         "types": [
-            ["Root-Test", "Choice", ["CN"], "", [
+            ["Root-Test", "Choice", ["CA"], "", [
                 [1, "field_value_1", "String", [], ""],
-                [2, "field_value_2", "Boolean", [], ""]
+                [2, "field_value_2", "String", ["N", "%^a$"], ""]
             ]]
         ]
     }
     
     valid_xml_1 = """<Root-Test>
-        <field_value_a>illum repellendus nobis</field_value_a>
-        <field_value_b>False</field_value_b>
+        illum repellendus nobis
     </Root-Test>"""
     
     valid_xml_2 = """<Root-Test>
-        <field_value_z id="2">False</field_value_z>
-        <field_value_y key="1">illum repellendus nobis</field_value_y>  
+        b  
     </Root-Test>"""
     
     invalid_xml_1 = """<Root-Test>
         <field_value_1 id="1">illum repellendus nobis</field_value_1>
-        <field_value_2 id="2">True</field_value_2>
     </Root-Test>"""
     
     invalid_xml_2 = """<Root-Test>
-        <field_value_1 key="1">test incorrect field name</field_value_1>
+        a
     </Root-Test>"""
 
-    invalid_xml_3 = """<Root-Test>
-        <field_value_2 key="2">True</field_value_2>
+    invalid_xml_3 = """<Root-Test>  # currently not invalid; needs more team discussion
+        illum repellendus nobis
+        multiline?
+        or are all strings
+        outside a block
+        together??
     </Root-Test>"""
 
     valid_data_list = [valid_xml_1, valid_xml_2]
-    invalid_data_list = [invalid_xml_1, invalid_xml_2, invalid_xml_3]    
+    invalid_data_list = [invalid_xml_1, invalid_xml_2]    
     
     err_count = validate_valid_data(j_schema, root, valid_data_list, XML)    
     assert err_count == 0

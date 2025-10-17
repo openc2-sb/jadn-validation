@@ -5,7 +5,7 @@ from jadnvalidation.models.jadn.jadn_type import build_jadn_type_obj, is_field_m
 from jadnvalidation.models.jadn.jadn_config import Jadn_Config, check_field_name, check_sys_char, check_type_name, get_j_config
 from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type
 from jadnvalidation.utils.general_utils import create_clz_instance, get_j_field, merge_opts
-from jadnvalidation.utils.mapping_utils import flip_to_array_of, get_choice_type, get_inheritance, get_tagid, is_optional, use_field_ids
+from jadnvalidation.utils.mapping_utils import flip_to_array_of, get_choice_type, get_inheritance, get_tagid, is_optional, use_field_ids, is_logical_not
 from jadnvalidation.utils.consts import JSON, XML, Choice_Consts
 from jadnvalidation.utils.type_utils import get_reference_type
 
@@ -155,9 +155,15 @@ class Choice:
                 clz_instance = create_clz_instance(**clz_kwargs)
                 try:
                     clz_instance.validate()
+                    if is_logical_not(j_field_obj.type_options):    
+                        raise Exception (f"Choice '{j_field_obj.type_name}' found, but 'not' has been specified.")
                 except ValueError as e:
-                    tracker = tracker+1
-                    print(f"not an instance of {j_field_obj.base_type} :"+e)
+                    if is_logical_not(j_field_obj.type_options): 
+                        print(f"Choice '{j_field_obj.type_name}' missing, but 'not' has been specified.")
+                    else:     
+                        tracker = tracker+1
+                        print(f'tracker incremented')
+                        print(f"not an instance of {j_field_obj.base_type} :")
         if tracker != choice_fields:
             raise ValueError(f"All fields on AllOf Choice not satisfied.")
         
@@ -219,14 +225,6 @@ class Choice:
             raise ValueError(f"value matches more than one Choice option in {self.j_type.type_name}")
         else: pass
 
-    def process_not(self, use_ids):
-        for key, choice_data in self.data.items():
-            j_field = get_j_field(self.j_type.fields, key, use_ids)
-            
-            if j_field:
-                raise ValueError(f"Choice '{self.j_type.type_name}' key {key} found, but 'not' has been specified.")
-                
-        
     def process_default(self, use_ids):
 
         # only one choice is allowed        
@@ -323,8 +321,8 @@ class Choice:
                     self.process_any_of(use_ids)
                 case Choice_Consts.CHOICE_ONE_OF:
                     self.process_one_of(use_ids)
-                case Choice_Consts.CHOICE_NOT:
-                    self.process_not(use_ids)
+                #case Choice_Consts.CHOICE_NOT:
+                    #self.process_not(use_ids)
                 case Choice_Consts.CHOICE_TAG_ID:
                     self.process_tag_id(use_ids)
                 case _:

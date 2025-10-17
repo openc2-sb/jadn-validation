@@ -192,6 +192,16 @@ def get_tagid(opts: List[str]) -> int:
                 return int(opt[1])
     return None
 
+def is_logical_not(opts: List[str]) -> bool:
+    """
+    Searches opts for a string 'N'. If found, returns True, otherwise False.
+    """
+    if opts:
+        for opt in opts:
+            if isinstance(opt, str) and opt == 'N':
+                return True
+    return False
+
 def get_tagged_data(j_field: Jadn_Type, data: any) -> any:
     """
     Returns the tagged data if it exists in the data.
