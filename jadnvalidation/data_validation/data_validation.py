@@ -1,3 +1,4 @@
+import traceback
 from typing import Union
 
 from jadnvalidation.models.jadn.jadn_config import Jadn_Config, check_type_name, get_j_config
@@ -75,4 +76,5 @@ class DataValidation:
                 clz_instance.validate()            
             
         except Exception as err:
+            traceback.print_exc() 
             raise ValueError(err)

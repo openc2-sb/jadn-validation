@@ -6,7 +6,7 @@ from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type
 from jadnvalidation.utils.mapping_utils import get_format, get_max_length, get_min_length
 
 common_rules = {
-    "type": "check_type",
+    "data": "check_data",
     "/": "check_format",
     "{": "check_min_length",
     "}": "check_max_length"
@@ -38,13 +38,17 @@ class Binary:
         self.j_config = get_j_config(self.j_schema)
         self.errors = []
         
-    def check_type(self):
-        if isinstance(self.data, str):
-            string_variable = self.data
-            self.data = string_variable.encode('utf-8')
-        
-        if not isinstance(self.data, bytes):
-            raise ValueError(f"Binary data is not of type binary or string.  Received {type(self.data)}")
+    def check_data(self):
+        # Accept str (convert to bytes), or bytes only
+        if self.data is not None:
+            if isinstance(self.data, str):
+                try:
+                    self.data = self.data.encode('utf-8')
+                except Exception as e:
+                    self.errors.append(f"Failed to encode string to bytes: {e}")
+                    return
+            if not isinstance(self.data, bytes):
+                self.errors.append(f"Binary data must be of type 'bytes'. Received: {type(self.data).__name__}")
         
     def check_min_length(self):
         min_length = get_min_length(self.j_type)
@@ -57,10 +61,17 @@ class Binary:
             self.errors.append(f"Binary length must be less than or equal to {max_length}. Received: {len(self.data)}")
         
     def check_format(self):
-        format = get_format(self.j_type)
-        if format is not None:
-            fmt_clz_instance = create_fmt_clz_instance(format, self.data)
-            fmt_clz_instance.validate()
+        if self.data is not None:
+            format = get_format(self.j_type)
+            
+            if format is not None:
+                
+                # Note: this format breaks the normal convention since it has two designators for the same format
+                if format.lower() == 'x' or format.lower() == 'X':
+                    format = "hex_binary"
+            
+                fmt_clz_instance = create_fmt_clz_instance(format, self.data)
+                fmt_clz_instance.validate()
         
     def validate(self):
         

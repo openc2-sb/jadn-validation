@@ -34,7 +34,13 @@ class ArrayOf:
             j_type = build_j_type(j_type)
         
         self.j_type = j_type
-        self.data = data
+        if data_format == XML:
+            if "item" in data:
+                self.data = [data["item"]] if not isinstance(data["item"], list) else data["item"]
+            else:
+                self.data = data
+        else:
+            self.data = data
         self.data_format = data_format          
         
         self.j_config = get_j_config(self.j_schema)

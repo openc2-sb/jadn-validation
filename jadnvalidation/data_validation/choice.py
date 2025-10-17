@@ -1,11 +1,9 @@
 from typing import Union
-from build.lib.jadnvalidation.utils.general_utils import get_item_safe_check
-from build.lib.jadnvalidation.utils.mapping_utils import get_max_occurs, get_min_occurs
-from jadnvalidation.models.jadn.jadn_type import build_jadn_type_obj, is_field_multiplicity, is_user_defined, is_primitive
+
+from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type, build_jadn_type_obj, is_field_multiplicity, is_primitive, is_user_defined
 from jadnvalidation.models.jadn.jadn_config import Jadn_Config, check_field_name, check_sys_char, check_type_name, get_j_config
-from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type
 from jadnvalidation.utils.general_utils import create_clz_instance, get_j_field, merge_opts
-from jadnvalidation.utils.mapping_utils import flip_to_array_of, get_choice_type, get_inheritance, get_tagid, is_optional, use_field_ids, is_logical_not
+from jadnvalidation.utils.mapping_utils import flip_to_array_of, get_choice_type, get_inheritance, get_max_occurs, get_min_occurs, use_field_ids
 from jadnvalidation.utils.consts import JSON, XML, Choice_Consts
 from jadnvalidation.utils.type_utils import get_reference_type
 
@@ -258,7 +256,7 @@ class Choice:
         for j_index, j_field in enumerate(self.j_type.fields):
             j_field_obj = build_jadn_type_obj(j_field)
                 
-            if j_field_obj.type_name is not self.tagged_data:    
+            if j_field_obj.type_name != self.tagged_data:    
                 continue
             else:
                 tagged_choice_found = True

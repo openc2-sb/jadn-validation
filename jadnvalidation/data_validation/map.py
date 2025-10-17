@@ -1,8 +1,7 @@
 from typing import Union
 
-from build.lib.jadnvalidation.models.jadn.jadn_config import check_type_name
 from jadnvalidation.models.jadn.jadn_type import build_jadn_type_obj, is_field_multiplicity
-from jadnvalidation.models.jadn.jadn_config import Jadn_Config, check_field_name, check_sys_char, get_j_config
+from jadnvalidation.models.jadn.jadn_config import Jadn_Config, check_field_name, check_sys_char, check_type_name, get_j_config
 from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type, is_user_defined
 from jadnvalidation.utils.consts import JSON, XML
 from jadnvalidation.utils.general_utils import create_clz_instance, get_data_by_id, get_data_by_name, merge_opts
