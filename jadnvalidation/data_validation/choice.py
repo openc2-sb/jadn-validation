@@ -1,10 +1,9 @@
 from typing import Union
-from jadnvalidation.utils.mapping_utils import get_max_occurs, get_min_occurs
-from jadnvalidation.models.jadn.jadn_type import build_jadn_type_obj, is_field_multiplicity, is_user_defined
+
+from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type, build_jadn_type_obj, is_field_multiplicity, is_primitive, is_user_defined
 from jadnvalidation.models.jadn.jadn_config import Jadn_Config, check_field_name, check_sys_char, check_type_name, get_j_config
-from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type
 from jadnvalidation.utils.general_utils import create_clz_instance, get_j_field, merge_opts
-from jadnvalidation.utils.mapping_utils import flip_to_array_of, get_choice_type, get_inheritance, get_max_occurs, get_min_occurs, get_tagid, is_optional, use_field_ids
+from jadnvalidation.utils.mapping_utils import flip_to_array_of, get_choice_type, get_inheritance, get_max_occurs, get_min_occurs, use_field_ids
 from jadnvalidation.utils.consts import JSON, XML, Choice_Consts
 from jadnvalidation.utils.type_utils import get_reference_type
 
