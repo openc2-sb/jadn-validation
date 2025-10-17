@@ -83,14 +83,15 @@ class Map:
             self.errors.append(f"Number of fields length must be less than {max_length}. Received: {len(self.data)}")
         
     def check_fields(self):
+        funnyArray = []
         funnyArray = use_keyless_map(self.j_type.type_options)
         if funnyArray is not None and self.data_format == JSON:
             party = True
             temp_map = {}
             for val in self.data:
-                if not isinstance(str):
-                    raise TypeError(f'inparsable item in keyless map: {self.data[val]}')
-                dict_val = to_dict_on_given_char(self.data[val], funnyArray[1])
+                if not isinstance(val, str):
+                    raise TypeError(f'inparsable item in keyless map: {val}')
+                dict_val = to_dict_on_given_char(val, funnyArray[1])
                 temp_map.update(dict_val)
 
 
@@ -113,6 +114,8 @@ class Map:
 
                 if is_field_multiplicity(j_field_obj.type_options):
                     j_field_obj = flip_to_array_of(j_field_obj, get_min_occurs(j_field_obj), get_max_occurs(j_field_obj, self.j_config))
+
+                # it kind of gets lost here because it assigns 'A' as a JADN-Type... not what we want, see you all monday
 
                 elif is_user_defined(j_field_obj.base_type):
                     ref_type = get_reference_type(self.j_schema, j_field_obj.base_type) # if it references another map with these options this may need to be revisited

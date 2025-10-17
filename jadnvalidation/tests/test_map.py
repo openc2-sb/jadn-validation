@@ -496,7 +496,7 @@ def test_map_max_occurs():
     assert err_count == len(invalid_data_list)
 
      
-def test_map_tag_string():
+def test_map_keyless_map():
     root = "Root-Test"
     
     j_schema = {

@@ -180,21 +180,23 @@ def get_opt_str(key: str, j_type: Jadn_Type):
         
     return return_val
 
-def to_dict_on_given_char(string_val: str, position: int):
+def to_dict_on_given_char(string_val: str, position: int) -> dict:
     """Splits a string on the designated character."""
-    
-    return {string_val[:(position-1)]: string_val[position:]}
+    split_return = {}
+    split_value = general_utils.split_on_given_char(string_val, position)
+    split_return.update({str(split_value[0]):str(split_value[1])})
+    #split_return.update({string_val[:(position-1)]: string_val[position:]}) # really should work but dosnt
+    return split_return
 
-def use_keyless_map(j_opts: str):
+def use_keyless_map(j_type_opts: List[str]) -> list:
     return_val = None
-    opts = get_opts(j_opts)
-    for opt in opts:
+    for opt in j_type_opts:
         opt_key, opt_val = general_utils.split_on_first_char(opt)
         if opt_val is None:
             opt_val = True
         if opt_key == '~':    
             return_val = [opt_key, opt_val]
-            break
+            return return_val
         
     return return_val
 

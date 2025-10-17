@@ -395,6 +395,19 @@ def split_on_second_char(string):
 
     return [string[:2], string[2:]]
 
+def split_on_given_char(string:str, pos:int) -> list:
+    """Splits a string on the provided character."""
+
+    if not string:
+        return []
+    first_part = string[:int(pos)]
+    second_part = string[int(pos):]
+
+    holding_list:list = [first_part, second_part]
+    #holding_list = [string[:pos], string[pos:]]
+    speedbump = "look at me"
+    return holding_list
+
 def sort_array_by_id(j_array: list, j_array2: list = None, is_allow_dups: bool = False) -> list:
     """
     Orders an array of JADN field definitions by their ID (first element of each field definition).
