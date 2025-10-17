@@ -114,6 +114,9 @@ def get_max_occurs(j_type: Jadn_Type, global_config: Jadn_Config) -> int:
         
     return max_val
 
+def get_const_val_str(j_type: Jadn_Type) -> int:   
+    return get_opt_str("v", j_type)
+
 def get_min_inclusive(j_type: Jadn_Type) -> int:   
     return get_opt_int("w", j_type)
 

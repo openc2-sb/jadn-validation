@@ -1,5 +1,7 @@
+import traceback 
 from jadnvalidation.data_validation.data_validation import DataValidation
 from jadnvalidation.utils.consts import JSON
+from jadnvalidation.data_validation.schemas.jadn_meta_schema import j_meta_schema, j_meta_roots
 
 
 j_schema = {
@@ -112,16 +114,16 @@ j_schema = {
         [2, "idn_hostname", "IDN-Hostname", ["[0"], "An internationalized hostname that can be used to connect to this device over a network"],
         [3, "device_id", "String", ["[0"], "An identifier that refers to this device within an inventory or management system"]
       ]],
-    ["Domain-Name", "String", ["/hostname"], "[[RFC1034]](#rfc1034), Section 3.5"],
-    ["Email-Addr", "String", ["/email"], "Email address, [[RFC5322]](#rfc5322), Section 3.4.1"],
+    ["Domain-Name", "String", ["/hostname"], "[[RFC1034]](#rfc1034), Section 3.5", []],
+    ["Email-Addr", "String", ["/email"], "Email address, [[RFC5322]](#rfc5322), Section 3.4.1", []],
     ["Features", "ArrayOf", ["*Feature", "{0", "}10", "q"], "An array of zero to ten names used to query an Actuator for its supported capabilities."],
     ["File", "Map", ["{1"], "", [
         [1, "name", "String", ["[0"], "The name of the file as defined in the file system"],
         [2, "path", "String", ["[0"], "The absolute path to the location of the file in the file system"],
         [3, "hashes", "Hashes", ["[0"], "One or more cryptographic hash codes of the file contents"]
       ]],
-    ["IDN-Domain-Name", "String", ["/idn-hostname"], "Internationalized Domain Name, [[RFC5890]](#rfc5890), Section 2.3.2.3."],
-    ["IDN-Email-Addr", "String", ["/idn-email"], "Internationalized email address, [[RFC6531]](#rfc6531)"],
+    ["IDN-Domain-Name", "String", ["/idn-hostname"], "Internationalized Domain Name, [[RFC5890]](#rfc5890), Section 2.3.2.3.", []],
+    ["IDN-Email-Addr", "String", ["/idn-email"], "Internationalized email address, [[RFC6531]](#rfc6531)", []],
     ["IPv4-Net", "Array", ["/ipv4-net"], "", [
         [1, "ipv4_addr", "IPv4-Addr", [], "IPv4 address as defined in [[RFC0791]](#rfc0791)"],
         [2, "prefix_length", "Integer", ["[0"], "CIDR prefix-length. If omitted, refers to a single host address."]
@@ -144,8 +146,8 @@ j_schema = {
         [4, "dst_port", "Port", ["[0"], "destination service per [[RFC6335]](#rfc6335)"],
         [5, "protocol", "L4-Protocol", ["[0"], "layer 4 protocol (e.g., TCP) - [Section 3.4.2.10](#34210-l4-protocol)"]
       ]],
-    ["IRI", "String", ["/iri"], "Internationalized Resource Identifier, [[RFC3987]](#rfc3987)."],
-    ["MAC-Addr", "Binary", ["/eui"], "Media Access Control / Extended Unique Identifier address - EUI-48 or EUI-64 as defined in [[EUI]](#eui)."],
+    ["IRI", "String", ["/iri"], "Internationalized Resource Identifier, [[RFC3987]](#rfc3987).", []],
+    ["MAC-Addr", "Binary", ["/eui"], "Media Access Control / Extended Unique Identifier address - EUI-48 or EUI-64 as defined in [[EUI]](#eui).", []],
     ["Process", "Map", ["{1"], "", [
         [1, "pid", "Integer", ["{0", "[0"], "Process ID of the process"],
         [2, "name", "String", ["[0"], "Name of the process"],
@@ -155,9 +157,9 @@ j_schema = {
         [6, "command_line", "String", ["[0"], "The full command line invocation used to start this process, including all arguments"]
       ]],
     ["Properties", "ArrayOf", ["*String", "{1", "q"], "A list of names that uniquely identify properties of an Actuator."],
-    ["URI", "String", ["/uri"], "Uniform Resource Identifier, [[RFC3986]](#rfc3986)."],
-    ["Date-Time", "Integer", ["{0"], "Date and Time"],
-    ["Duration", "Integer", ["{0"], "A length of time"],
+    ["URI", "String", ["/uri"], "Uniform Resource Identifier, [[RFC3986]](#rfc3986).", []],
+    ["Date-Time", "Integer", ["{0"], "Date and Time", []],
+    ["Duration", "Integer", ["{0"], "A length of time", []],
     ["Feature", "Enumerated", [], "Specifies the results to be returned from a query features Command", [
         [1, "versions", "List of OpenC2 Language versions supported by this Actuator"],
         [2, "profiles", "List of profiles supported by this Actuator"],
@@ -169,29 +171,29 @@ j_schema = {
         [2, "sha1", "Binary", ["/x", "[0"], "SHA1 hash as defined in [[RFC6234]](#rfc6234)"],
         [3, "sha256", "Binary", ["/x", "[0"], "SHA256 hash as defined in [[RFC6234]](#rfc6234)"]
       ]],
-    ["Hostname", "String", ["/hostname"], "Internet host name as specified in [[RFC1123]](#rfc1123)"],
-    ["IDN-Hostname", "String", ["/idn-hostname"], "Internationalized Internet host name as specified in [[RFC5890]](#rfc5890), Section 2.3.2.3."],
-    ["IPv4-Addr", "Binary", ["/ipv4-addr"], "32 bit IPv4 address as defined in [[RFC0791]](#rfc0791)"],
-    ["IPv6-Addr", "Binary", ["/ipv6-addr"], "128 bit IPv6 address as defined in [[RFC8200]](#rfc8200)"],
+    ["Hostname", "String", ["/hostname"], "Internet host name as specified in [[RFC1123]](#rfc1123)", []],
+    ["IDN-Hostname", "String", ["/idn-hostname"], "Internationalized Internet host name as specified in [[RFC5890]](#rfc5890), Section 2.3.2.3.", []],
+    ["IPv4-Addr", "Binary", ["/ipv4-addr"], "32 bit IPv4 address as defined in [[RFC0791]](#rfc0791)", []],
+    ["IPv6-Addr", "Binary", ["/ipv6-addr"], "128 bit IPv6 address as defined in [[RFC8200]](#rfc8200)", []],
     ["L4-Protocol", "Enumerated", [], "Value of the protocol (IPv4) or next header (IPv6) field in an IP packet. Any IANA value, [RFC5237]", [
         [1, "icmp", "Internet Control Message Protocol - [[RFC0792]](#rfc0792)"],
         [6, "tcp", "Transmission Control Protocol - [[RFC0793]](#rfc0793)"],
         [17, "udp", "User Datagram Protocol - [[RFC0768]](#rfc0768)"],
         [132, "sctp", "Stream Control Transmission Protocol - [[RFC4960]](#rfc4960)"]
       ]],
-    ["Nsid", "String", ["{1", "}16"], "A short identifier that refers to a namespace."],
+    ["Nsid", "String", ["{1", "}16"], "A short identifier that refers to a namespace.", []],
     ["Payload", "Choice", [], "", [
         [1, "bin", "Binary", [], "Specifies the data contained in the artifact"],
         [2, "url", "URI", [], "MUST be a valid URL that resolves to the un-encoded content"]
       ]],
-    ["Port", "Integer", ["{0", "}65535"], "Transport Protocol Port Number, [[RFC6335]](#rfc6335)"],
+    ["Port", "Integer", ["{0", "}65535"], "Transport Protocol Port Number, [[RFC6335]](#rfc6335)", []],
     ["Response-Type", "Enumerated", [], "", [
         [0, "none", "No response"],
         [1, "ack", "Respond when Command received"],
         [2, "status", "Respond with progress toward Command completion"],
         [3, "complete", "Respond when all aspects of Command completed"]
       ]],
-    ["Version", "String", [], "Major.Minor version number"]
+    ["Version", "String", [], "Major.Minor version number", []]
   ]
 }
 
@@ -307,5 +309,33 @@ def test_invalid_command():
             
     assert len(errorMsgs) == 1
     
+def test_schema():
+    is_valid = True
     
+    primitive_types = {"String", "Integer", "Boolean", "Binary"}
+
+    num_incorrect = 0
+    for t in j_schema["types"]:
+        # If type definition has less than 5 items and is a primitive, add empty array as 5th item
+        if len(t) < 5 and t[1] in primitive_types:
+            num_incorrect += 1
+            print(f"Patching type {t[0]} to add empty array as 5th item") 
+  
+    if num_incorrect > 0:
+        print(f"Patched {num_incorrect} type definitions in schema")
+    
+    assert num_incorrect == 0, f"Schema has {num_incorrect} type definitions with less than 5 items"  
+    
+    try:            
+        j_validation = DataValidation(j_meta_schema, j_meta_roots, j_schema)
+        j_validation.validate()
+    except Exception as e:
+        is_valid = False
+        print(f"Schema Validation Error: {str(e)}")
+        traceback.print_exc() 
+        
+    assert is_valid            
+
+        
+
     

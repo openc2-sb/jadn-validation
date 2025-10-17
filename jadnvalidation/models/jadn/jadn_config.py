@@ -14,6 +14,7 @@ SYS_IND_KEY = "$Sys"
 TYPE_NAME_KEY = "$TypeName"
 FIELD_NAME_KEY = "$FieldName"
 NSID_KEY = "$NSID"
+CONFIG_KEYS = [MAX_BINARY_KEY, MAX_STRING_KEY, MAX_ELEMENTS_KEY, SYS_IND_KEY, TYPE_NAME_KEY, FIELD_NAME_KEY, NSID_KEY]
 
 DEFAULT_MAX_BINARY = 255
 DEFAULT_MAX_STRING = 255
@@ -68,7 +69,8 @@ def get_j_config(j_schema: dict) -> Jadn_Config:
 
 def check_sys_char(j_field_name, j_config_sys: str):
     if j_config_sys and j_config_sys in j_field_name:
-        raise ValueError(f"Field Name {j_field_name} contains System Character {j_config_sys}")
+        if not j_field_name in CONFIG_KEYS:
+            raise ValueError(f"Field Name {j_field_name} contains System Character {j_config_sys}")
 
 def check_type_name(j_type_name, j_config_type_name_reg: str):
     match = re.fullmatch(j_config_type_name_reg, j_type_name)
