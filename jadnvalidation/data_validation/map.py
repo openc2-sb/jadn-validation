@@ -47,9 +47,16 @@ class Map:
         self.errors = []
         
     def check_type(self):
-        if not isinstance(self.data, dict):
+        funnyArray = use_keyless_map(self.j_type.type_options)
+        keyless = False
+        if funnyArray is not None and self.data_format == JSON:
+            keyless = True
+            if not isinstance(self.data, list):
+                raise ValueError(f"Data for JSON Keyless Map must be a list. Received: {type(self.data)}")
+            else: pass
+        elif not isinstance(self.data, dict) & keyless == False:
             raise ValueError(f"Data must be a map / dict. Received: {type(self.data)}")
-        
+    
     def check_inheritance(self):
         inherit_from = get_inheritance(self.j_type.type_options)
         if inherit_from is not None:

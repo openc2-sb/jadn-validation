@@ -32,11 +32,11 @@
       [2, "namespace", "Namespace", [], "Namespace IRI"]
     ]],
     ["Config", "Map", ["{1"], "Config vars override JADN defaults", [
-      [1, "$MaxBinary", "Integer", ["y1", "[0"], "Package max octets, default = 255"],
-      [2, "$MaxString", "Integer", ["y1", "[0"], "Package max characters, default = 255"],
-      [3, "$MaxElements", "Integer", ["y1", "[0"], "Package max items/properties, default = 255"],
-      [4, "$Sys", "String", ["{1", "}1", "[0"], "System character for TypeName, default = '.'"],
-      [5, "$TypeName", "String", ["/regex", "[0"], "Default = ^[A-Z][-.A-Za-z0-9]{0,63}$"],
+      [1, "$MaxBinary", "Integer", ["y1", "[0", "u255"], "Package max octets"],
+      [2, "$MaxString", "Integer", ["y1", "[0", "u255"], "Package max characters"],
+      [3, "$MaxElements", "Integer", ["y1", "[0", "u255"], "Package max items/properties"],
+      [4, "$Sys", "String", ["{1", "}1", "[0", "u."], "System character for TypeName"],
+      [5, "$TypeName", "String", ["/regex", "[0", "^[A-Z][-.A-Za-z0-9]{0,63}$"], ""],
       [6, "$FieldName", "String", ["/regex", "[0", "u^[a-z][_A-Za-z0-9]{0,63}$"], ""],
       [7, "$NSID", "String", ["/regex", "[0", "u^([A-Za-z][A-Za-z0-9]{0,7})?$"], ""]
     ]],
@@ -48,7 +48,7 @@
     ["Type", "Array", [], "", [
       [1, "type_name", "TypeName"],
       [2, "core_type", "Enumerated", ["#JADN-Type"]],
-      [3, "type_options", "TypeOptions", ["[0", "&2"]],
+      [3, "type_options", "TypeOptions", ["[0", "&2", "~1"]],
       [4, "type_description", "Description", ["[0"]],
       [5, "fields", "JADN-Type", ["[0", "&2"]]
     ]],
@@ -92,7 +92,7 @@
       [1, "field_id", "FieldID"],
       [2, "field_name", "FieldName"],
       [3, "field_type", "TypeRef"],
-      [4, "field_options", "TypeOptions", ["[0", "&3"]],
+      [4, "field_options", "TypeOptions", ["[0", "&3", "~1"]],
       [5, "field_description", "Description", ["[0"]]
     ]],
     ["FieldID", "Integer", ["y0"]],
