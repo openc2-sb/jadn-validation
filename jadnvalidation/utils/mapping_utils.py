@@ -182,11 +182,10 @@ def get_opt_str(key: str, j_type: Jadn_Type):
 
 def to_dict_on_given_char(string_val: str, position: int):
     """Splits a string on the designated character."""
-
     
     return {string_val[:(position-1)]: string_val[position:]}
 
-def use_tagged_list(j_opts: str):
+def use_keyless_map(j_opts: str):
     return_val = None
     opts = get_opts(j_opts)
     for opt in opts:

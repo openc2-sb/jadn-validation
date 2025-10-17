@@ -6,7 +6,7 @@ from jadnvalidation.models.jadn.jadn_config import Jadn_Config, check_field_name
 from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type, is_user_defined
 from jadnvalidation.utils.consts import JSON, XML
 from jadnvalidation.utils.general_utils import create_clz_instance, get_data_by_id, get_data_by_name, merge_opts
-from jadnvalidation.utils.mapping_utils import flip_to_array_of, get_inheritance, get_max_length, get_max_occurs, get_min_length, get_min_occurs, get_tagged_data, is_optional, use_field_ids, use_tagged_list
+from jadnvalidation.utils.mapping_utils import flip_to_array_of, get_inheritance, get_max_length, get_max_occurs, get_min_length, get_min_occurs, get_tagged_data, is_optional, use_field_ids, use_keyless_map, to_dict_on_given_char
 from jadnvalidation.utils.type_utils import get_reference_type
 
 common_rules = {
@@ -47,15 +47,7 @@ class Map:
         self.errors = []
         
     def check_type(self):
-
-        print(type(self.data))
-        tagged_params = use_tagged_list(self.j_type.type_options)
-        if isinstance(self.data, str):
-
-            if tagged_params is not None:
-                pass
-            else: raise ValueError(f"Data for this type must be a map / dict. Received: {type(self.data)}")
-        elif not isinstance(self.data, list):
+        if not isinstance(self.data, dict):
             raise ValueError(f"Data must be a map / dict. Received: {type(self.data)}")
         
     def check_inheritance(self):
@@ -84,50 +76,106 @@ class Map:
             self.errors.append(f"Number of fields length must be less than {max_length}. Received: {len(self.data)}")
         
     def check_fields(self):
-        for j_key, j_field in enumerate(self.j_type.fields):
-            j_field_obj = build_jadn_type_obj(j_field)
-            
-            field_data = None
-            if self.use_ids:
-                field_data = get_data_by_id(self.data, j_field_obj.id)
-            else:
-                field_data = get_data_by_name(self.data, j_field_obj.type_name)                
-            
-            if field_data is None:
-                if is_optional(j_field_obj):
-                    continue
+        funnyArray = use_keyless_map(self.j_type.type_options)
+        if funnyArray is not None and self.data_format == JSON:
+            party = True
+            temp_map = {}
+            for val in self.data:
+                if not isinstance(str):
+                    raise TypeError(f'inparsable item in keyless map: {self.data[val]}')
+                dict_val = to_dict_on_given_char(self.data[val], funnyArray[1])
+                temp_map.update(dict_val)
+
+
+            for split_key, split_field in enumerate(temp_map):
+                j_field_obj = build_jadn_type_obj(split_field)
+                field_data = None
+                if self.use_ids:
+                    field_data = get_data_by_id(temp_map.get(split_key), j_field_obj.id)
                 else:
-                    raise ValueError(f"Field '{j_field_obj.type_name}' is missing from data")
+                    field_data = get_data_by_name(temp_map.get(split_key), j_field_obj.type_name) 
                 
-            check_sys_char(j_field_obj.type_name, self.j_config.Sys)
-            check_field_name(j_field_obj.type_name, self.j_config.FieldName)                
-
-            if is_field_multiplicity(j_field_obj.type_options):
-                j_field_obj = flip_to_array_of(j_field_obj, get_min_occurs(j_field_obj), get_max_occurs(j_field_obj, self.j_config))
-
-            elif is_user_defined(j_field_obj.base_type):
-                ref_type = get_reference_type(self.j_schema, j_field_obj.base_type)
-                ref_type_obj = build_j_type(ref_type)
-                check_type_name(ref_type_obj.type_name, self.j_config.TypeName)
-                merged_opts = merge_opts(j_field_obj.type_options, ref_type_obj.type_options)
-                j_field_obj = ref_type_obj
-                j_field_obj.type_options = merged_opts
+                if field_data is None:
+                    if is_optional(j_field_obj):
+                        continue
+                    else:
+                        raise ValueError(f"Field '{j_field_obj.type_name}' is missing from data")
                 
-            tagged_data = get_tagged_data(j_field_obj, self.data)
-                
-            clz_kwargs = dict(
-                class_name=j_field_obj.base_type,
-                j_schema=self.j_schema,
-                j_type=j_field_obj,
-                data=field_data,
-                data_format=self.data_format
-            )
-            if tagged_data is not None:
-                clz_kwargs['tagged_data'] = tagged_data
+                check_sys_char(j_field_obj.type_name, self.j_config.Sys)
+                check_field_name(j_field_obj.type_name, self.j_config.FieldName)    
 
-            clz_instance = create_clz_instance(**clz_kwargs)
-            clz_instance.validate()
-            
+                if is_field_multiplicity(j_field_obj.type_options):
+                    j_field_obj = flip_to_array_of(j_field_obj, get_min_occurs(j_field_obj), get_max_occurs(j_field_obj, self.j_config))
+
+                elif is_user_defined(j_field_obj.base_type):
+                    ref_type = get_reference_type(self.j_schema, j_field_obj.base_type) # if it references another map with these options this may need to be revisited
+                    ref_type_obj = build_j_type(ref_type)
+                    check_type_name(ref_type_obj.type_name, self.j_config.TypeName)
+                    merged_opts = merge_opts(j_field_obj.type_options, ref_type_obj.type_options)
+                    j_field_obj = ref_type_obj
+                    j_field_obj.type_options = merged_opts
+                    
+                tagged_data = get_tagged_data(j_field_obj, self.data)
+                
+                clz_kwargs = dict(
+                    class_name=j_field_obj.base_type,
+                    j_schema=self.j_schema,
+                    j_type=j_field_obj,
+                    data=field_data,
+                    data_format=self.data_format
+                )
+                if tagged_data is not None:
+                    clz_kwargs['tagged_data'] = tagged_data
+
+                clz_instance = create_clz_instance(**clz_kwargs)
+                clz_instance.validate()
+
+
+        else:
+            for j_key, j_field in enumerate(self.j_type.fields):
+                j_field_obj = build_jadn_type_obj(j_field)
+                
+                field_data = None
+                if self.use_ids:
+                    field_data = get_data_by_id(self.data, j_field_obj.id)
+                else:
+                    field_data = get_data_by_name(self.data, j_field_obj.type_name)                
+                
+                if field_data is None:
+                    if is_optional(j_field_obj):
+                        continue
+                    else:
+                        raise ValueError(f"Field '{j_field_obj.type_name}' is missing from data")
+                    
+                check_sys_char(j_field_obj.type_name, self.j_config.Sys)
+                check_field_name(j_field_obj.type_name, self.j_config.FieldName)                
+
+                if is_field_multiplicity(j_field_obj.type_options):
+                    j_field_obj = flip_to_array_of(j_field_obj, get_min_occurs(j_field_obj), get_max_occurs(j_field_obj, self.j_config))
+
+                elif is_user_defined(j_field_obj.base_type):
+                    ref_type = get_reference_type(self.j_schema, j_field_obj.base_type)
+                    ref_type_obj = build_j_type(ref_type)
+                    check_type_name(ref_type_obj.type_name, self.j_config.TypeName)
+                    merged_opts = merge_opts(j_field_obj.type_options, ref_type_obj.type_options)
+                    j_field_obj = ref_type_obj
+                    j_field_obj.type_options = merged_opts
+                    
+                tagged_data = get_tagged_data(j_field_obj, self.data)
+                    
+                clz_kwargs = dict(
+                    class_name=j_field_obj.base_type,
+                    j_schema=self.j_schema,
+                    j_type=j_field_obj,
+                    data=field_data,
+                    data_format=self.data_format
+                )
+                if tagged_data is not None:
+                    clz_kwargs['tagged_data'] = tagged_data
+
+                clz_instance = create_clz_instance(**clz_kwargs)
+                clz_instance.validate()
+                
     def check_extra_fields(self):
         # Check if data has any unknown fields
         if self.data is not None:
