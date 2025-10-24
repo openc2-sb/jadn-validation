@@ -64,7 +64,18 @@ class Choice:
             j_field_obj = build_jadn_type_obj(j_field)
         if is_field_multiplicity(j_field_obj.type_options):
             j_field_obj = flip_to_array_of(j_field_obj, get_min_occurs(j_field_obj), get_max_occurs(j_field_obj, self.j_config))
-                    
+                           
+            clz_kwargs = dict(
+                class_name=j_field_obj.base_type,
+                j_schema=self.j_schema,
+                j_type=j_field_obj,
+                data=self.data,
+                data_format=self.data_format
+            )                 
+            
+            clz_instance = create_clz_instance(**clz_kwargs)
+            clz_instance.validate()
+
         elif is_user_defined(j_field_obj.base_type):
             ref_type = get_reference_type(self.j_schema, j_field_obj.base_type)
             ref_type_obj = build_j_type(ref_type)
@@ -201,7 +212,17 @@ class Choice:
             j_field_obj = build_jadn_type_obj(j_field)
             if is_field_multiplicity(j_field_obj.type_options):
                 j_field_obj = flip_to_array_of(j_field_obj, get_min_occurs(j_field_obj), get_max_occurs(j_field_obj, self.j_config))
-        
+                                   
+                clz_kwargs = dict(
+                    class_name=j_field_obj.base_type,
+                    j_schema=self.j_schema,
+                    j_type=j_field_obj,
+                    data=self.data,
+                    data_format=self.data_format
+                )                 
+                
+                clz_instance = create_clz_instance(**clz_kwargs)
+                clz_instance.validate()
             elif is_user_defined(j_field_obj.base_type): 
                 ref_type = get_reference_type(self.j_schema, j_field_obj.base_type) 
                 ref_type_obj = build_j_type(ref_type)
@@ -266,7 +287,17 @@ class Choice:
         
             if is_field_multiplicity(j_field_obj.type_options):
                 j_field_obj = flip_to_array_of(j_field_obj, get_min_occurs(j_field_obj), get_max_occurs(j_field_obj, self.j_config))
-        
+                                   
+                clz_kwargs = dict(
+                    class_name=j_field_obj.base_type,
+                    j_schema=self.j_schema,
+                    j_type=j_field_obj,
+                    data=self.data,
+                    data_format=self.data_format
+                )                 
+                
+                clz_instance = create_clz_instance(**clz_kwargs)
+                clz_instance.validate()
             elif is_user_defined(j_field_obj.base_type):
                 ref_type = get_reference_type(self.j_schema, j_field_obj.base_type)
                 ref_type_obj = build_j_type(ref_type)
@@ -304,7 +335,17 @@ class Choice:
         
                 if is_field_multiplicity(j_field_obj.type_options):
                     j_field_obj = flip_to_array_of(j_field_obj, get_min_occurs(j_field_obj), get_max_occurs(j_field_obj, self.j_config))
-                                        
+                                                              
+                    clz_kwargs = dict(
+                        class_name=j_field_obj.base_type,
+                        j_schema=self.j_schema,
+                        j_type=j_field_obj,
+                        data=self.data,
+                        data_format=self.data_format
+                    )                 
+                    
+                    clz_instance = create_clz_instance(**clz_kwargs)
+                    clz_instance.validate()     
                 elif is_user_defined(j_field_obj.base_type):
                     ref_type = get_reference_type(self.j_schema, j_field_obj.base_type)
                     ref_type_obj = build_j_type(ref_type)
