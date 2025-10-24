@@ -475,7 +475,8 @@ def test_choice_allOf_with_not():
         "types": [
             ["Root-Test", "Choice", ["CA"], "", [
                 [1, "field_value_1", "String", [], ""],
-                [2, "field_value_2", "String", ["N", "%^a$"], ""]
+                [2, "field_value_2", "String", ["N", "%^a$"], ""],
+                [3, "field_value_3", "String", ["N", "%^c$"], ""]
             ]]
         ]
     }
@@ -543,6 +544,38 @@ def test_xml_choice_allOf_with_not():
             
     err_count = validate_invalid_data(j_schema, root, invalid_data_list, XML)
     assert err_count == len(invalid_data_list)    
+    
+def test_choice_allOf_with_not_multiplicity():
+    root = "Root-Test"
+
+    j_schema = {
+        "meta": {
+            "package": "http://test.com",
+            "roots": ["Root-Test"]
+        },
+        "types": [
+            ["Root-Test", "Choice", ["CA"], "", [
+                [1, "field_value_1", "String", ["[2"], ""],
+                [2, "field_value_2", "String", ["N", "%^a$", "[2"], ""],
+                [3, "field_value_3", "String", ["N", "%^c$", "[2"], ""]
+            ]]
+        ]
+    }
+    
+    valid_data_list = [["illum repellendus nobis", "b"], ["yes", "q"]]
+    
+    invalid_data_list = [["c", "c"],["no", "a"], 1, ["no", 2],
+        {
+            "field_value_1": "illum repellendus nobis"
+        },      
+    ]
+    invalid_data_list = ["a"]
+    
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+            
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)
+    assert err_count == len(invalid_data_list)
 
 def test_choice_as_field():
     root = "Root-Test"

@@ -196,7 +196,7 @@ def test_record_w_ref_int_field_multiplicity():
     assert err_count == len(invalid_data_list)
     
     
-def test_recrod_w_ref_array_field_multiplicity():
+def test_record_w_ref_array_field_multiplicity():
     root = "Root-Test"
     
     j_schema = {

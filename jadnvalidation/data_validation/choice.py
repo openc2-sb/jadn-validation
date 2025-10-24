@@ -106,6 +106,30 @@ class Choice:
             if is_field_multiplicity(j_field_obj.type_options):
                 j_field_obj = flip_to_array_of(j_field_obj, get_min_occurs(j_field_obj), get_max_occurs(j_field_obj, self.j_config))
                         
+                choice_fields = choice_fields+1                
+                clz_kwargs = dict(
+                    class_name=j_field_obj.base_type,
+                    j_schema=self.j_schema,
+                    j_type=j_field_obj,
+                    data=self.data,
+                    data_format=self.data_format
+                )                 
+                
+                clz_instance = create_clz_instance(**clz_kwargs)
+                try:
+                    clz_instance.validate()
+                    if is_logical_not(j_field_obj.type_options):    
+                        raise Exception (f"Choice '{j_field_obj.type_name}' found, but 'not' has been specified.")
+                    else: choice_fields = choice_fields+1
+                except ValueError as e:
+                    if is_logical_not(j_field_obj.type_options): 
+                        print(f"Choice '{j_field_obj.type_name}' missing, but 'not' has been specified.")
+                    else:     
+                        tracker = tracker+1
+                        choice_fields = choice_fields+1
+                        print(f'tracker incremented')
+                        print(f"not an instance of {j_field_obj.base_type}")
+
             elif is_user_defined(j_field_obj.base_type):
                 ref_type = get_reference_type(self.j_schema, j_field_obj.base_type)
                 ref_type_obj = build_j_type(ref_type)
@@ -125,9 +149,17 @@ class Choice:
                 clz_instance = create_clz_instance(**clz_kwargs)
                 try:
                     clz_instance.validate()
+                    if is_logical_not(j_field_obj.type_options):    
+                        raise Exception (f"Choice '{j_field_obj.type_name}' found, but 'not' has been specified.")
+                    else: choice_fields = choice_fields+1
                 except ValueError as e:
-                    tracker = tracker+1
-                    print(f"not an instance of {j_field_obj.base_type} :"+e)
+                    if is_logical_not(j_field_obj.type_options): 
+                        print(f"Choice '{j_field_obj.type_name}' missing, but 'not' has been specified.")
+                    else:     
+                        tracker = tracker+1
+                        choice_fields = choice_fields+1
+                        print(f'tracker incremented')
+                        print(f"not an instance of {j_field_obj.base_type}")
 
             elif is_primitive(j_field_obj.base_type): 
                 
@@ -144,14 +176,18 @@ class Choice:
                     clz_instance.validate()
                     if is_logical_not(j_field_obj.type_options):    
                         raise Exception (f"Choice '{j_field_obj.type_name}' found, but 'not' has been specified.")
+                    else: choice_fields = choice_fields+1          
                 except ValueError as e:
                     if is_logical_not(j_field_obj.type_options): 
                         print(f"Choice '{j_field_obj.type_name}' missing, but 'not' has been specified.")
                     else:     
                         tracker = tracker+1
+                        choice_fields = choice_fields+1
                         print(f'tracker incremented')
-                        print(f"not an instance of {j_field_obj.base_type} :")
-        if tracker != choice_fields:
+                        print(f"not an instance of {j_field_obj.base_type}")
+        if choice_fields == 0:
+            raise ValueError(f"All fields on AllOf Choice use Not option. Restrict the Choice value space.")
+        if tracker != 0:
             raise ValueError(f"All fields on AllOf Choice not satisfied.")
         
     def process_one_of(self, use_ids):
