@@ -250,8 +250,8 @@ def test_map_id():
     err_count = validate_valid_data(j_schema, root, valid_data_list)    
     assert err_count == 0
             
-    # err_count = validate_invalid_data(j_schema, root, invalid_data_list)
-    # assert err_count == len(invalid_data_list)
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)
+    assert err_count == len(invalid_data_list)
     
 '''
 def test_xml_map_id():
@@ -517,11 +517,7 @@ def test_map_keyless_map():
         ["AI am any String"],["A1"],["BTwo"]
                           
     ]
-    valid_data_list = [
-            
-        ["AI am any String"]
-                          
-    ]
+
     invalid_data_list = [
 
         {
@@ -541,7 +537,7 @@ def test_map_keyless_map():
     
     err_count = validate_valid_data(j_schema, root, valid_data_list)    
     assert err_count == 0
-    '''    
+        
     err_count = validate_invalid_data(j_schema, root, invalid_data_list)
     assert err_count == len(invalid_data_list)
-    '''
+    

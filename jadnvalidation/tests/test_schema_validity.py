@@ -547,112 +547,112 @@ def test_total_validity_with_opts():
     ]],
     ["FieldID", "Integer", ["y0"]],
     ["FieldOptions", "Map", [], "", [
-      [91, "minOccurs", "Integer", ["y0", "[0"]],
-      [93, "maxOccurs", "Integer", ["y-2", "[0"]],
-      [38, "tagId", "Integer", ["[0"]],
-      [75, "key", "Boolean", ["[0"]],
-      [76, "link", "Boolean", ["[0"]],
-      [78, "not", "Boolean", ["[0"]]
+      [91, "minOccurs", "Integer", ["y0", "[0", "=["]],
+      [93, "maxOccurs", "Integer", ["y-2", "[0", "=]"]],
+      [38, "tagId", "Integer", ["[0", "=&"]],
+      [75, "key", "Boolean", ["[0", "=K"]],
+      [76, "link", "Boolean", ["[0", "=L"]],
+      [78, "not", "Boolean", ["[0", "=N"]]
     ]],
     ["AllOpts", "Map", [], "", [
-      [48, "nillable", "Boolean", ["[0"]],
-      [97, "abstract", "Boolean", ["[0"]],
-      [101, "extends", "TypeRef", ["[0"]],
-      [114, "restricts", "TypeRef", ["[0"]],
-      [102, "final", "Boolean", ["[0"]]
+      [48, "nillable", "Boolean", ["[0", "=K"]],
+      [97, "abstract", "Boolean", ["[0", "=a"]],
+      [101, "extends", "TypeRef", ["[0", "=e"]],
+      [114, "restricts", "TypeRef", ["[0", "=r"]],
+      [102, "final", "Boolean", ["[0", "=f"]]
     ]],
     ["BinaryOpts", "Map", [], "", [
-      [47, "format", "ArrayOf", ["*Format", "q", "[0"]],
-      [123, "minLength", "Integer", ["[0"]],
-      [125, "maxLength", "Integer", ["[0"]],
-      [117, "default", "Binary", ["[0"]],
-      [118, "const", "Binary", ["[0"]],
-      [48, "nillable", "Boolean", ["[0"]],
-      [65, "attr", "Boolean", ["[0"]]
+      [47, "format", "ArrayOf", ["*Format", "q", "[0", "=/"]],
+      [123, "minLength", "Integer", ["[0", "={"]],
+      [125, "maxLength", "Integer", ["[0", "=}"]],
+      [117, "default", "Binary", ["[0", "=u"]],
+      [118, "const", "Binary", ["[0", "=v"]],
+      [48, "nillable", "Boolean", ["[0", "=undefined"]],
+      [65, "attr", "Boolean", ["[0", "=undefined"]]
     ]],
     ["BooleanOpts", "Map", [], "", [
-      [117, "default", "Boolean", ["[0"]],
-      [118, "const", "Boolean", ["[0"]],
-      [48, "nillable", "Boolean", ["[0"]],
-      [65, "attr", "Boolean", ["[0"]]
+      [117, "default", "Boolean", ["[0", "=u"]],
+      [118, "const", "Boolean", ["[0", "=K"]],
+      [48, "nillable", "Boolean", ["[0", "=K"]],
+      [65, "attr", "Boolean", ["[0", "=K"]]
     ]],
     ["IntegerOpts", "Map", [], "", [
-      [47, "format", "ArrayOf", ["*Format", "q", "[0"]],
-      [69, "scale", "Integer", ["[0"]],
-      [121, "minInclusive", "Integer", ["[0"]],
-      [122, "maxInclusive", "Integer", ["[0"]],
-      [119, "minExclusive", "Integer", ["[0"]],
-      [120, "maxExclusive", "Integer", ["[0"]],
-      [117, "default", "Integer", ["[0"]],
-      [118, "const", "Integer", ["[0"]],
-      [48, "nillable", "Boolean", ["[0"]],
-      [65, "attr", "Boolean", ["[0"]]
+      [47, "format", "ArrayOf", ["*Format", "q", "[0", "=/"]],
+      [69, "scale", "Integer", ["[0", "=undefined"]],
+      [121, "minInclusive", "Integer", ["[0", "=w"]],
+      [122, "maxInclusive", "Integer", ["[0", "=x"]],
+      [119, "minExclusive", "Integer", ["[0", "=y"]],
+      [120, "maxExclusive", "Integer", ["[0", "=z"]],
+      [117, "default", "Integer", ["[0", "=u"]],
+      [118, "const", "Integer", ["[0", "=v"]],
+      [48, "nillable", "Boolean", ["[0", "=undefined"]],
+      [65, "attr", "Boolean", ["[0", "=undefined"]]
     ]],
     ["NumberOpts", "Map", [], "", [
-      [47, "format", "ArrayOf", ["*Format", "q", "[0"]],
-      [121, "minInclusive", "Number", ["[0"]],
-      [122, "maxInclusive", "Number", ["[0"]],
-      [119, "minExclusive", "Number", ["[0"]],
-      [120, "maxExclusive", "Number", ["[0"]],
-      [117, "default", "Number", ["[0"]],
-      [118, "const", "Number", ["[0"]],
-      [48, "nillable", "Boolean", ["[0"]],
-      [65, "attr", "Boolean", ["[0"]]
+      [47, "format", "ArrayOf", ["*Format", "q", "[0", "=/"]],
+      [121, "minInclusive", "Number", ["[0", "=w"]],
+      [122, "maxInclusive", "Number", ["[0", "=x"]],
+      [119, "minExclusive", "Number", ["[0", "=y"]],
+      [120, "maxExclusive", "Number", ["[0", "=z"]],
+      [117, "default", "Number", ["[0", "=u"]],
+      [118, "const", "Number", ["[0", "=v"]],
+      [48, "nillable", "Boolean", ["[0", "=undefined"]],
+      [65, "attr", "Boolean", ["[0", "=undefined"]]
     ]],
     ["StringOpts", "Map", [], "", [
-      [47, "format", "ArrayOf", ["*Format", "q", "[0"]],
-      [121, "minInclusive", "String", ["[0"]],
-      [122, "maxInclusive", "String", ["[0"]],
-      [119, "minExclusive", "String", ["[0"]],
-      [120, "maxExclusive", "String", ["[0"]],
-      [37, "pattern", "String", ["/regex", "[0"]],
-      [123, "minLength", "Integer", ["y0", "[0"]],
-      [125, "maxLength", "Integer", ["y0", "[0"]],
-      [117, "default", "String", ["[0"]],
-      [118, "const", "String", ["[0"]],
-      [48, "nillable", "Boolean", ["[0"]],
-      [65, "attr", "Boolean", ["[0"]]
+      [47, "format", "ArrayOf", ["*Format", "q", "[0", "=/"]],
+      [121, "minInclusive", "Number", ["[0", "=w"]],
+      [122, "maxInclusive", "Number", ["[0", "=x"]],
+      [119, "minExclusive", "Number", ["[0", "=y"]],
+      [120, "maxExclusive", "Number", ["[0", "=z"]],
+      [117, "default", "Number", ["[0", "=u"]],
+      [118, "const", "Number", ["[0", "=v"]],
+      [37, "pattern", "String", ["/regex", "[0", "=%"]],
+      [123, "minLength", "Integer", ["y0", "[0", "={"]],
+      [125, "maxLength", "Integer", ["y0", "[0", "=}"]],
+      [48, "nillable", "Boolean", ["[0", "=undefined"]],
+      [65, "attr", "Boolean", ["[0", "=undefined"]]
     ]],
     ["EnumeratedOpts", "Map", ["eAllOpts"], "", [
-      [61, "id", "Boolean", ["[0"]],
-      [35, "enum", "TypeRef", ["[0"]],
-      [62, "pointer", "TypeRef", ["[0"]],
-      [65, "attr", "Boolean", ["[0"]]
+      [61, "id", "Boolean", ["[0", "=="]],
+      [35, "enum", "TypeRef", ["[0", "=#"]],
+      [62, "pointer", "TypeRef", ["[0", "=>"]],
+      [65, "attr", "Boolean", ["[0", "=undefined"]]
     ]],
     ["ChoiceOpts", "Map", ["eAllOpts"], "", [
-      [61, "id", "Boolean", ["[0"]],
-      [67, "combine", "String", ["{1", "}1", "[0"]]
+      [61, "id", "Boolean", ["[0", "=="]],
+      [67, "combine", "String", ["{1", "}1", "[0", "=C"]]
     ]],
     ["ArrayOpts", "Map", ["eAllOpts"], "", [
-      [47, "format", "ArrayOf", ["*Format", "q", "[0"]],
-      [123, "minLength", "Integer", ["y0", "[0"]],
-      [125, "maxLength", "Integer", ["y0", "[0"]]
+      [47, "format", "ArrayOf", ["*Format", "q", "[0", "=/"]],
+      [123, "minLength", "Integer", ["y0", "[0", "={"]],
+      [125, "maxLength", "Integer", ["y0", "[0", "=}"]]
     ]],
     ["ArrayOfOpts", "Map", ["eAllOpts"], "", [
-      [42, "valueType", "TypeRef"],
-      [123, "minLength", "Integer", ["y0", "[0"]],
-      [125, "maxLength", "Integer", ["y0", "[0"]],
-      [113, "unique", "Boolean", ["[0"]],
-      [115, "set", "Boolean", ["[0"]],
-      [98, "unordered", "Boolean", ["[0"]]
+      [42, "valueType", "TypeRef", ["=*"]],
+      [123, "minLength", "Integer", ["y0", "[0", "={"]],
+      [125, "maxLength", "Integer", ["y0", "[0", "=}"]],
+      [113, "unique, ordered", "Boolean", ["[0", "=q"]],
+      [115, "set", "Boolean", ["[0", "=s"]],
+      [98, "unordered", "Boolean", ["[0", "=b"]]
     ]],
     ["MapOpts", "Map", ["eAllOpts"], "", [
-      [61, "id", "Boolean", ["[0"]],
-      [123, "minLength", "Integer", ["y0", "[0"]],
-      [125, "maxLength", "Integer", ["y0", "[0"]],
-      [111, "sequence", "Boolean", ["[0"]]
+      [61, "id", "Boolean", ["[0", "=="]],
+      [123, "minLength", "Integer", ["y0", "[0", "={"]],
+      [125, "maxLength", "Integer", ["y0", "[0", "=}"]],
+      [111, "sequence", "Boolean", ["[0", "=undefined"]]
     ]],
     ["MapOfOpts", "Map", ["eAllOpts"], "", [
-      [43, "keyType", "TypeRef"],
-      [42, "valueType", "TypeRef"],
-      [123, "minLength", "Integer", ["y0", "[0"]],
-      [125, "maxLength", "Integer", ["y0", "[0"]],
-      [111, "sequence", "Boolean", ["[0"]]
+      [43, "keyType", "TypeRef", ["=+"]],
+      [42, "valueType", "TypeRef", ["=*"]],
+      [123, "minLength", "Integer", ["y0", "[0", "={"]],
+      [125, "maxLength", "Integer", ["y0", "[0", "=}"]],
+      [111, "sequence", "Boolean", ["[0", "=undefined"]]
     ]],
     ["RecordOpts", "Map", ["eAllOpts"], "", [
-      [123, "minLength", "Integer", ["y0", "[0"]],
-      [125, "maxLength", "Integer", ["y0", "[0"]],
-      [111, "sequence", "Boolean", ["[0"]]
+      [123, "minLength", "Integer", ["y0", "[0", "={"]],
+      [125, "maxLength", "Integer", ["y0", "[0", "=}"]],
+      [111, "sequence", "Boolean", ["[0", "=undefined"]]
     ]],
     ["Format", "String", ["%^/[a-zA-Z0-9]{1,16}+$"]],
     ["Description", "String"]

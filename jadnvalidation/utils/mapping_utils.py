@@ -158,14 +158,15 @@ def get_opts(j_type: Jadn_Type):
 def get_opt_int(key: str, j_type: Jadn_Type):
     return_val = None
     opts = get_opts(j_type)
-    for opt in opts:
-        opt_key, opt_val = general_utils.split_on_first_char(opt)
-        if key == opt_key:
-            try:
-                return_val = int(opt_val)
-            except ValueError as e:
-                print("Invalid option: requires integer value: " + e)
-            break
+    if opts is not None:
+        for opt in opts:
+            opt_key, opt_val = general_utils.split_on_first_char(opt)
+            if key == opt_key:
+                try:
+                    return_val = int(opt_val)
+                except ValueError as e:
+                    print("Invalid option: requires integer value: " + e)
+                break
         
     return return_val
 
@@ -296,7 +297,24 @@ def use_field_ids(j_type_opts: List[str]) -> bool:
         for type_opt in j_type_opts:
             opt_char_id, opt_val = general_utils.split_on_first_char(type_opt)
             if opt_char_id == "=":
-                use_id = True
+                if opt_val == None or opt_val == '':
+                    use_id = True
+                    return use_id
                 break   
     
     return use_id
+
+def use_alias(j_type_opts: List[str]) -> bool | str:
+    use_alias = False
+    alias_str = ""
+    
+    if j_type_opts:
+        for type_opt in j_type_opts:
+            opt_char_id, opt_val = general_utils.split_on_first_char(type_opt)
+            if opt_char_id == "=":
+                if opt_val is not None:
+                    alias_str = opt_val
+                    return alias_str
+                break   
+    
+    return use_alias

@@ -6,7 +6,7 @@ from jadnvalidation.models.jadn.jadn_config import Jadn_Config, check_field_name
 from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type, is_user_defined
 from jadnvalidation.utils.consts import JSON, XML
 from jadnvalidation.utils.general_utils import create_clz_instance, get_data_by_id, get_data_by_name, merge_opts
-from jadnvalidation.utils.mapping_utils import flip_to_array_of, get_inheritance, get_max_length, get_max_occurs, get_min_length, get_min_occurs, get_tagged_data, is_optional, use_field_ids, use_keyless_map, to_dict_on_given_char
+from jadnvalidation.utils.mapping_utils import flip_to_array_of, get_inheritance, get_max_length, get_max_occurs, get_min_length, get_min_occurs, get_tagged_data, is_optional, use_field_ids, use_alias, use_keyless_map, to_dict_on_given_char
 from jadnvalidation.utils.type_utils import get_reference_type
 
 common_rules = {
@@ -95,13 +95,16 @@ class Map:
                 temp_map.update(dict_val)
 
 
-            for split_key, split_field in enumerate(temp_map):
-                j_field_obj = build_jadn_type_obj(split_field)
+            for j_key, j_field in enumerate(self.j_type.fields):
+                j_field_obj = build_jadn_type_obj(j_field)
                 field_data = None
                 if self.use_ids:
-                    field_data = get_data_by_id(temp_map.get(split_key), j_field_obj.id)
+                    field_data = get_data_by_id(temp_map, j_field_obj.id)
+                elif use_alias(j_field_obj.type_options):
+                    alias_val = use_alias(j_field_obj.type_options)
+                    field_data = get_data_by_name(temp_map, alias_val)
                 else:
-                    field_data = get_data_by_name(temp_map.get(split_key), j_field_obj.type_name) 
+                    field_data = get_data_by_name(temp_map, j_field_obj.type_name) 
                 
                 if field_data is None:
                     if is_optional(j_field_obj):
@@ -144,10 +147,13 @@ class Map:
         else:
             for j_key, j_field in enumerate(self.j_type.fields):
                 j_field_obj = build_jadn_type_obj(j_field)
-                
+                alias_val = ''
                 field_data = None
                 if self.use_ids:
                     field_data = get_data_by_id(self.data, j_field_obj.id)
+                elif use_alias(j_field_obj.type_options):
+                    alias_val = use_alias(j_field_obj.type_options)
+                    field_data = get_data_by_name(temp_map, alias_val)
                 else:
                     field_data = get_data_by_name(self.data, j_field_obj.type_name)                
                 
@@ -192,19 +198,19 @@ class Map:
             
             if len(self.data) > len(self.j_type.fields):
                 raise ValueError(f"Data has more fields ({len(self.data)}) than allowed ({len(self.j_type.fields)})")
-            
-            for data_key in self.data.keys():
-                is_found = False
-                for j_field in self.j_type.fields:
-                    if self.use_ids:
-                        if data_key == str(j_field[0]):
+            if not use_keyless_map(self.j_type.type_options): #check to see if this needs a counter-case
+                for data_key in self.data.keys():
+                    is_found = False
+                    for j_field in self.j_type.fields:
+                        if self.use_ids:
+                            if data_key == str(j_field[0]):
+                                is_found = True
+                        elif data_key == j_field[1]:
                             is_found = True
-                    elif data_key == j_field[1]:
-                        is_found = True
-                        
-                if not is_found:
-                    raise ValueError(f"Data field '{data_key}' is not defined in schema")
-        
+                            
+                    if not is_found:
+                        raise ValueError(f"Data field '{data_key}' is not defined in schema")
+            
     def validate(self):
         
         # Check data against rules
