@@ -3,7 +3,7 @@ from typing import Union
 from build.lib.jadnvalidation.models.jadn.jadn_config import check_type_name
 from jadnvalidation.models.jadn.jadn_type import build_jadn_type_obj, is_field_multiplicity
 from jadnvalidation.models.jadn.jadn_config import Jadn_Config, check_field_name, check_sys_char, get_j_config
-from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type, is_user_defined
+from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type, is_user_defined, is_primitive
 from jadnvalidation.utils.consts import JSON, XML
 from jadnvalidation.utils.general_utils import create_clz_instance, get_data_by_id, get_data_by_name, merge_opts
 from jadnvalidation.utils.mapping_utils import flip_to_array_of, get_inheritance, get_max_length, get_max_occurs, get_min_length, get_min_occurs, get_tagged_data, is_optional, use_field_ids, use_alias, use_keyless_map, to_dict_on_given_char
@@ -118,9 +118,7 @@ class Map:
                 if is_field_multiplicity(j_field_obj.type_options):
                     j_field_obj = flip_to_array_of(j_field_obj, get_min_occurs(j_field_obj), get_max_occurs(j_field_obj, self.j_config))
 
-                # it kind of gets lost here because it assigns 'A' as a JADN-Type... not what we want, see you all monday
-
-                elif is_user_defined(j_field_obj.base_type):
+                if is_user_defined(j_field_obj.base_type):
                     ref_type = get_reference_type(self.j_schema, j_field_obj.base_type) # if it references another map with these options this may need to be revisited
                     ref_type_obj = build_j_type(ref_type)
                     check_type_name(ref_type_obj.type_name, self.j_config.TypeName)
@@ -128,6 +126,17 @@ class Map:
                     j_field_obj = ref_type_obj
                     j_field_obj.type_options = merged_opts
                     
+                    print(f"field type is : {j_field_obj.base_type}")
+
+                elif is_primitive(j_field_obj.base_type):
+                    ref_type = get_reference_type(self.j_schema, j_field_obj.base_type) # if it references another map with these options this may need to be revisited
+                    ref_type_obj = build_j_type(ref_type)
+                    check_type_name(ref_type_obj.type_name, self.j_config.TypeName)
+                    merged_opts = merge_opts(j_field_obj.type_options, ref_type_obj.type_options)
+                    j_field_obj = ref_type_obj
+                    j_field_obj.type_options = merged_opts
+                    
+                    print(f"field type is : {j_field_obj.base_type}")
                 tagged_data = get_tagged_data(j_field_obj, self.data)
                 
                 clz_kwargs = dict(
