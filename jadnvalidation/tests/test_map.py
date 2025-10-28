@@ -520,19 +520,45 @@ def test_map_keyless_map():
 
     invalid_data_list = [
 
-        {
-            "3Two"
-        }, 
-        {
-            "field_value_21": "data 1",
-            "field_value_11": "data 2"
-        }, 
-        {
-            "field_value_x": "test incorrect field name"
+        ["3Two"], ["a1"], "A1",
+        {"field_value_21": "data 1"}, 
+        {"field_value_x": "test incorrect field name"},
+        {"field_value_1": 123}        
+    ]
+    
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+        
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)
+    assert err_count == len(invalid_data_list)
+        
+def test_map_keyless_map_2():
+    root = "Root-Test"
+    
+    j_schema = {
+        "meta": {
+            "package": "http://test/v1.0",
+            "roots": ["Root-Test"]
         },
-        {
-            "field_value_1": 123
-        }        
+        "types": [
+            ["Root-Test", "Map", ["~1"], "", [
+                [1, "A", "String-Thing", ["[0"], ""],
+                [2, "B", "Int-Thing", ["[0"], ""]
+            ]],
+            ["String-Thing", "String", [], "", []],
+            ["Int-Thing", "Integer", [], "", []]
+        ]
+    }
+    
+    valid_data_list = [
+            
+        ["AI am any String"],["A1"],["B2"]
+                          
+    ]
+
+    invalid_data_list = [
+
+        ["3Two"], ["a1"], "A1", ["BHello"]       
     ]
     
     err_count = validate_valid_data(j_schema, root, valid_data_list)    
@@ -541,3 +567,39 @@ def test_map_keyless_map():
     err_count = validate_invalid_data(j_schema, root, invalid_data_list)
     assert err_count == len(invalid_data_list)
     
+def test_map_alias_fields():
+    root = "Root-Test"
+    
+    j_schema = {
+        "meta": {
+            "package": "http://test/v1.0",
+            "roots": ["Root-Test"]
+        },
+        "types": [
+            ["Root-Test", "Map", ["~1"], "", [
+                [1, "A", "String-Thing", ["[0"], ""],
+                [2, "B", "Int-Thing", ["[0"], ""]
+            ]],
+            ["String-Thing", "String", ["=C"], "", []],
+            ["Int-Thing", "Integer", [], "", []]
+        ]
+    }
+    
+    
+    valid_data_list = [
+            
+        ["CI am any String"],["C1"],["B2"]
+                          
+    ]
+
+    invalid_data_list = [
+
+        ["3Two"], ["A1"], "B1", ["BHello"]       
+    ]
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+            
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)
+    assert err_count == len(invalid_data_list)
+
+     
