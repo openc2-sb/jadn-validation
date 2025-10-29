@@ -614,17 +614,17 @@ def test_map_alias_fields_basic():
         "types": [
             ["Root-Test", "Map", [], "", [
                 [1, "A", "Pattern", ["[0"], ""],
-                [2, "B", "Min-Occurs", ["[0", "=["], ""]
+                [2, "B", "Min-Occurs", ["[0"], ""]
             ]],
             ["Pattern", "String", ["=%"], "", []],
-            ["Min-Occurs", "Integer", [], "", []]
+            ["Min-Occurs", "Integer", ["=["], "", []]
         ]
     }
     
     
     valid_data_list = [
             
-        {"[": 2} #["%I am any String"],["%1"],{"String-Thing": "I Am Any String"}, {"C", "1"}, {"[": 2}
+        {"[": 2}, {"%": "Any String"} #["%I am any String"],["%1"],{"String-Thing": "I Am Any String"}, {"C", "1"}, {"[": 2}
                           
     ]
 

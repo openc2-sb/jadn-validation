@@ -268,7 +268,7 @@ class Map:
 
                 clz_instance = create_clz_instance(**clz_kwargs)
                 clz_instance.validate()
-                
+                 
     def check_extra_fields(self):
         # Check if data has any unknown fields
         if self.data is not None:
@@ -278,9 +278,32 @@ class Map:
             if not use_keyless_map(self.j_type.type_options): #check to see if this needs a counter-case
                 for data_key in self.data.keys():
                     is_found = False
+                    print(f"{self.j_type.type_options}")
                     for j_field in self.j_type.fields:
+                        print(f"{self.j_type}")
                         if self.use_ids:
                             if data_key == str(j_field[0]):
+                                is_found = True
+
+                        
+                        elif is_user_defined(j_field[2]):
+                            
+                            ref_type = get_reference_type(self.j_schema, j_field[2])
+                            ref_type_obj = build_j_type(ref_type)
+                            check_type_name(ref_type_obj.type_name, self.j_config.TypeName)
+                            merged_opts = merge_opts(self.j_type.type_options, ref_type_obj.type_options)
+                            print(f"merged options: {merged_opts}")
+
+                            if use_alias(merged_opts):
+                                alias_val = use_alias(merged_opts)
+                                if data_key == alias_val:
+                                    is_found = True
+                            elif data_key == j_field[1]:
+                                is_found = True
+                        elif use_alias(self.j_type.type_options):
+                            alias_val = use_alias(self.j_type.type_options)
+                            print(f"alias: {alias_val}")
+                            if data_key == alias_val:
                                 is_found = True
                         elif data_key == j_field[1]:
                             is_found = True
