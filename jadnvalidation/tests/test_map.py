@@ -577,18 +577,18 @@ def test_map_alias_fields():
         },
         "types": [
             ["Root-Test", "Map", ["~1"], "", [
-                [1, "A", "String-Thing", ["[0"], ""],
-                [2, "B", "Int-Thing", ["[0"], ""]
+                [1, "A", "Pattern", ["[0"], ""],
+                [2, "B", "MinOccurs", ["[0", "=["], ""]
             ]],
-            ["String-Thing", "String", ["=C"], "", []],
-            ["Int-Thing", "Integer", [], "", []]
+            ["Pattern", "String", ["=%"], "", []],
+            ["MinOccurs", "Integer", [], "", []]
         ]
     }
     
     
     valid_data_list = [
             
-        ["CI am any String"],["C1"],["B2"]
+        ["%I am any String"],["%1"],["[2"] #{"String-Thing": "I Am Any String"}, {"C", "1"}, {"[": 2}
                           
     ]
 
@@ -603,3 +603,37 @@ def test_map_alias_fields():
     assert err_count == len(invalid_data_list)
 
      
+def test_map_alias_fields_basic():
+    root = "Root-Test"
+    
+    j_schema = {
+        "meta": {
+            "package": "http://test/v1.0",
+            "roots": ["Root-Test"]
+        },
+        "types": [
+            ["Root-Test", "Map", [], "", [
+                [1, "A", "Pattern", ["[0"], ""],
+                [2, "B", "Min-Occurs", ["[0", "=["], ""]
+            ]],
+            ["Pattern", "String", ["=%"], "", []],
+            ["Min-Occurs", "Integer", [], "", []]
+        ]
+    }
+    
+    
+    valid_data_list = [
+            
+        {"[": 2} #["%I am any String"],["%1"],{"String-Thing": "I Am Any String"}, {"C", "1"}, {"[": 2}
+                          
+    ]
+
+    invalid_data_list = [
+
+        ["3Two"], ["A1"], "B1", ["BHello"]       
+    ]
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+            
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)
+    assert err_count == len(invalid_data_list)

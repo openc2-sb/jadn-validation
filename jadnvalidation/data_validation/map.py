@@ -85,11 +85,9 @@ class Map:
     def check_fields(self):
         funnyArray = []
         funnyArray = use_keyless_map(self.j_type.type_options)
-
+        temp_map = {}
 
         if funnyArray is not None and self.data_format == JSON:
-            party = True
-            temp_map = {}
             alias_val = ''
             for val in self.data:
                 if not isinstance(val, str):
@@ -105,8 +103,6 @@ class Map:
             for j_key, j_field in enumerate(self.j_type.fields):
                 j_field_obj = build_jadn_type_obj(j_field)
 
-
-
                 if is_field_multiplicity(j_field_obj.type_options):
                     j_field_obj = flip_to_array_of(j_field_obj, get_min_occurs(j_field_obj), get_max_occurs(j_field_obj, self.j_config))
 
@@ -116,7 +112,8 @@ class Map:
                     ref_type_obj = build_j_type(ref_type)
                     check_type_name(ref_type_obj.type_name, self.j_config.TypeName)
                     merged_opts = merge_opts(j_field_obj.type_options, ref_type_obj.type_options)
-                    j_field_obj = ref_type_obj
+                    print(f"options: {merged_opts}")
+                    #j_field_obj = ref_type_obj     #copied hastily;examining
                     j_field_obj.type_options = merged_opts        # we don't want this because it will permanently merge them down across fields
 
                 field_data = None
@@ -125,7 +122,7 @@ class Map:
                     if field_data is not None:
                         presence_tracker = True
                 elif use_alias(j_field_obj.type_options): # changed this and the next line to merged_options to wipe it every type
-                    alias_val = use_alias(merged_opts)
+                    alias_val = use_alias(j_field_obj.type_options)
                     print(f"found alias {alias_val}")
                     field_data = get_data_by_name(temp_map, alias_val)
                     if field_data is not None:
@@ -159,7 +156,7 @@ class Map:
                     ref_type_obj = build_j_type(ref_type)
                     check_type_name(ref_type_obj.type_name, self.j_config.TypeName)
                     merged_opts = merge_opts(j_field_obj.type_options, ref_type_obj.type_options)
-                    j_field_obj = ref_type_obj
+                    j_field_obj = ref_type_obj     # copied hastily; think this needs to go
                     j_field_obj.type_options = merged_opts
                     
                     #print(f"field type is : {j_field_obj.base_type}")
@@ -228,20 +225,12 @@ class Map:
                 if is_field_multiplicity(j_field_obj.type_options):
                     j_field_obj = flip_to_array_of(j_field_obj, get_min_occurs(j_field_obj), get_max_occurs(j_field_obj, self.j_config))
 
-                if is_user_defined(j_field_obj.base_type):
-                    ref_type = get_reference_type(self.j_schema, j_field_obj.base_type) # if it references another map with these options this may need to be revisited
-                    ref_type_obj = build_j_type(ref_type)
-                    check_type_name(ref_type_obj.type_name, self.j_config.TypeName)
-                    merged_opts = merge_opts(j_field_obj.type_options, ref_type_obj.type_options)
-                    j_field_obj = ref_type_obj
-                    j_field_obj.type_options = merged_opts
-
                 field_data = None
                 if self.use_ids:
                     field_data = get_data_by_id(self.data, j_field_obj.id)
                 elif use_alias(j_field_obj.type_options):
                     alias_val = use_alias(j_field_obj.type_options)
-                    field_data = get_data_by_name(temp_map, alias_val)
+                    field_data = get_data_by_name(self.data, alias_val)
                 else:
                     field_data = get_data_by_name(self.data, j_field_obj.type_name)                
                 
