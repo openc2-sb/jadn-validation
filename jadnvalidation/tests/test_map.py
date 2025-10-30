@@ -633,13 +633,15 @@ def test_map_keyless_map_inheritence():
             "roots": ["Root-Test"]
         },
         "types": [
-            ["Root-Test", "Map", ["eAbstract-Test", "~1"], "", [
-                [3, "A", "String-Thing", ["[0"], ""],
-                [4, "B", "Int-Thing", ["[0"], ""]
+            ["Root-Test", "Map", ["eIntermed-Test", "~1"], "", [
+                [3, "C", "String-Thing", ["[0"], ""],
+                [4, "D", "Int-Thing", ["[0"], ""]
+            ]],
+            ["Intermed-Test", "Map", ["eAbstract-Test", "~1"], "", [
+                [2, "B", "Int-Thing", ["[0"], ""]
             ]],
             ["Abstract-Test", "Map", ["~1"], "", [
-                [1, "C", "String-Thing", ["[0"], ""],
-                [2, "D", "Int-Thing", ["[0"], ""]
+                [1, "A", "String-Thing", ["[0"], ""]
             ]],
             ["String-Thing", "String", [], "", []],
             ["Int-Thing", "Integer", [], "", []]
@@ -648,7 +650,7 @@ def test_map_keyless_map_inheritence():
     
     valid_data_list = [
             
-        ["AI am any String"],["A1"],["B2"], ["A1", "B2", "C3", "D4"]
+        ["C1"],["D2"],["A1", "B2", "C3", "D4"],["B2", "C3", "D4"],["C3", "D4"]
                           
     ]
 
