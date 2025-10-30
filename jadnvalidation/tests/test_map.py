@@ -50,6 +50,63 @@ def test_map():
     err_count = validate_valid_data(j_schema, root, invalid_data_list)
     assert err_count == len(invalid_data_list) 
 
+def test_map_with_structures():
+    root = "Root-Test"
+    
+    j_schema = {
+        "meta": {
+            "package": "http://test/v1.0",
+            "roots": ["Root-Test"]
+        },
+        "types": [
+            ["Root-Test", "Map", [], "", [
+                [1, "field_value_1", "String", ["[0", "]-1"], ""],
+                [2, "field_value_2", "Record-Name", [], ""],
+                [3, "field_value_3", "Array-Name", ["[0", "]-1"], ""]
+            ]],
+            ["Record-Name", "Record", [], "", [
+                [1, "field_value_1", "String", [], ""],
+                [2, "field_value_2", "String", [], ""]
+            ]],
+            ["Array-Name", "Array", [], "", [
+                [1, "field_value_1", "Integer", [], ""],
+                [2, "field_value_2", "String", [], ""]
+            ]]
+        ]
+    }
+    
+    valid_data_list = [
+            {   "field_value_1": ["placeat repellendus sit", "another_string"],
+                "field_value_2": {"field_value_1": "molestias, sit elit. sit",
+                                  "field_value_2": "molestias, sit elit. sit"},
+                "field_value_3": [[1, "molestias, sit elit. sit"]]
+            }, 
+            {   "field_value_2": {"field_value_1": "molestias, sit elit. sit",
+                                  "field_value_2": "molestias, sit elit. sit"},
+                "field_value_3": [[1, "molestias, sit elit. sit"], [1, "molestias, sit elit. sit"]]
+            }
+    ]
+    
+    invalid_data_list = [
+        {
+            "field_value_1": "placeat repellendus sit",
+            "field_value_2": "molestias, sit elit. sit",
+            "field_value_3": "test extra field validation"
+        }, 
+        {
+            "field_value_x": "test incorrect field name"
+        },
+        {
+            "field_value_1": 123
+        }        
+    ]
+    
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+            
+    err_count = validate_valid_data(j_schema, root, invalid_data_list)
+    assert err_count == len(invalid_data_list) 
+
 def test_map_non_sequential():
     root = "Root-Test"
     

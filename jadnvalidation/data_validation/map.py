@@ -123,16 +123,16 @@ class Map:
                         presence_tracker = True
                 elif use_alias(j_field_obj.type_options): # changed this and the next line to merged_options to wipe it every type
                     alias_val = use_alias(j_field_obj.type_options)
-                    print(f"found alias {alias_val}")
+                    #print(f"found alias {alias_val}")
                     field_data = get_data_by_name(temp_map, alias_val)
                     if field_data is not None:
                         presence_tracker = True
                 else:
                     field_data = get_data_by_name(temp_map, j_field_obj.type_name) 
-                    print(f"field_data is {field_data}, presence_tracker is {presence_tracker}")
+                    #print(f"field_data is {field_data}, presence_tracker is {presence_tracker}")
                     if field_data is not None:
                         presence_tracker = True
-                    print(f"Checking for Key {j_field_obj.type_name}, found value {field_data}")
+                    #print(f"Checking for Key {j_field_obj.type_name}, found value {field_data}")
                 
                 #print(f"presence_tracker is {presence_tracker}")
                 if presence_tracker is False:
@@ -188,7 +188,7 @@ class Map:
 
                 elif is_primitive(j_field_obj.base_type):
                     
-                    print(f"field type is : {j_field_obj.base_type}")
+                    #print(f"field type is : {j_field_obj.base_type}")
                     #basetype assumed String, and is starting as a split string
                     if j_field_obj.base_type=="Integer":
                         #add format checks later
@@ -212,7 +212,7 @@ class Map:
                     if tagged_data is not None:
                         clz_kwargs['tagged_data'] = tagged_data
 
-                    print(f"{j_field_obj.type_name}")
+                    #print(f"{j_field_obj.type_name}")
                     clz_instance = create_clz_instance(**clz_kwargs)
                     clz_instance.validate()
 

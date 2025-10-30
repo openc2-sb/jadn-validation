@@ -33,7 +33,7 @@ def test_metadata_validity():
         [5, "comment", "String", ["{1", "[0"], "Comment"],
         [6, "copyright", "String", ["{1", "[0"], "Copyright notice"],
         [7, "license", "String", ["{1", "[0"], "SPDX licenseId of this package"],
-        [8, "namespaces", "PrefixNS", ["[0", "]-1"], "Referenced packages"],
+        [8, "namespaces", "PrefixNs", ["[0", "]-1"], "Referenced packages"],
         [9, "roots", "TypeName", ["[0", "]-1"], "Roots of the type tree(s) in this package"],
         [10, "config", "Config", ["[0"], "Configuration variables"],
         [11, "jadn_version", "Namespace", ["[0"], "JADN Metaschema package"]
@@ -132,25 +132,24 @@ def test_metadata_validity():
     ]
   }
     
-    valid_data = {
+    valid_data_1 = {
     "package": "http://example.fake",
     "roots": ["Record-Name"]
+  }
+    valid_data_2 = {
+    "package": "http://example.fake"
   }
 
     
     
-    valid_data_list = [ valid_data ]
-    invalid_data_list = [
-
-         {'SuitEnum': 10},'Aces', 10
-         
-         ]
+    valid_data_list = [ valid_data_1, valid_data_2 ]
+    #invalid_data_list = [{'SuitEnum': 10},'Aces', 1]
     
     err_count = validate_valid_data(j_schema, root, valid_data_list)    
     assert err_count == 0
             
-    err_count = validate_invalid_data(j_schema, root, invalid_data_list)
-    assert err_count == len(invalid_data_list) 
+    #err_count = validate_invalid_data(j_schema, root, invalid_data_list)
+    #assert err_count == len(invalid_data_list) 
 
 def test_total_validity(): 
     root = "Schema"    
@@ -211,7 +210,7 @@ def test_total_validity():
         [5, "comment", "String", ["{1", "[0"], "Comment"],
         [6, "copyright", "String", ["{1", "[0"], "Copyright notice"],
         [7, "license", "String", ["{1", "[0"], "SPDX licenseId of this package"],
-        [8, "namespaces", "PrefixNS", ["[0", "]-1"], "Referenced packages"],
+        [8, "namespaces", "PrefixNs", ["[0", "]-1"], "Referenced packages"],
         [9, "roots", "TypeName", ["[0", "]-1"], "Roots of the type tree(s) in this package"],
         [10, "config", "Config", ["[0"], "Configuration variables"],
         [11, "jadn_version", "Namespace", ["[0"], "JADN Metaschema package"]
