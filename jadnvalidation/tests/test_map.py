@@ -622,6 +622,45 @@ def test_map_keyless_map_2():
     assert err_count == 0
         
     err_count = validate_invalid_data(j_schema, root, invalid_data_list)
+    assert err_count == len(invalid_data_list)     
+
+def test_map_keyless_map_inheritence():
+    root = "Root-Test"
+    
+    j_schema = {
+        "meta": {
+            "package": "http://test/v1.0",
+            "roots": ["Root-Test"]
+        },
+        "types": [
+            ["Root-Test", "Map", ["eAbstract-Test", "~1"], "", [
+                [3, "A", "String-Thing", ["[0"], ""],
+                [4, "B", "Int-Thing", ["[0"], ""]
+            ]],
+            ["Abstract-Test", "Map", ["~1"], "", [
+                [1, "C", "String-Thing", ["[0"], ""],
+                [2, "D", "Int-Thing", ["[0"], ""]
+            ]],
+            ["String-Thing", "String", [], "", []],
+            ["Int-Thing", "Integer", [], "", []]
+        ]
+    }
+    
+    valid_data_list = [
+            
+        ["AI am any String"],["A1"],["B2"], ["A1", "B2", "C3", "D4"]
+                          
+    ]
+
+    invalid_data_list = [
+
+        ["3Two"], ["a1"], "A1", ["BHello"]       
+    ]
+    
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+        
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)
     assert err_count == len(invalid_data_list)
     
 def test_map_alias_fields():

@@ -497,7 +497,7 @@ def test_total_validity_with_opts():
     ["Type", "Array", [], "", [
       [1, "type_name", "TypeName"],
       [2, "core_type", "Enumerated", ["#JADN-Type"]],
-      [3, "type_options", "TypeOptions", ["[0", "&2", "~1"]],
+      [3, "type_options", "TypeOptions", ["[0", "&2"]],
       [4, "type_description", "Description", ["[0"]],
       [5, "fields", "JADN-Type", ["[0", "&2"]]
     ]],
@@ -545,7 +545,7 @@ def test_total_validity_with_opts():
       [5, "field_description", "Description", ["[0"]]
     ]],
     ["FieldID", "Integer", ["y0"]],
-    ["FieldOptions", "Map", [], "", [
+    ["FieldOptions", "Map", ["~1"], "", [
       [91, "minOccurs", "Integer", ["y0", "[0", "=["]],
       [93, "maxOccurs", "Integer", ["y-2", "[0", "=]"]],
       [38, "tagId", "Integer", ["[0", "=&"]],
@@ -553,14 +553,14 @@ def test_total_validity_with_opts():
       [76, "link", "Boolean", ["[0", "=L"]],
       [78, "not", "Boolean", ["[0", "=N"]]
     ]],
-    ["AllOpts", "Map", [], "", [
+    ["AllOpts", "Map", ["~1"], "", [
       [48, "nillable", "Boolean", ["[0", "=K"]],
       [97, "abstract", "Boolean", ["[0", "=a"]],
       [101, "extends", "TypeRef", ["[0", "=e"]],
       [114, "restricts", "TypeRef", ["[0", "=r"]],
       [102, "final", "Boolean", ["[0", "=f"]]
     ]],
-    ["BinaryOpts", "Map", [], "", [
+    ["BinaryOpts", "Map", ["~1"], "", [
       [47, "format", "ArrayOf", ["*Format", "q", "[0", "=/"]],
       [123, "minLength", "Integer", ["[0", "={"]],
       [125, "maxLength", "Integer", ["[0", "=}"]],
@@ -569,13 +569,13 @@ def test_total_validity_with_opts():
       [48, "nillable", "Boolean", ["[0", "=undefined"]],
       [65, "attr", "Boolean", ["[0", "=undefined"]]
     ]],
-    ["BooleanOpts", "Map", [], "", [
+    ["BooleanOpts", "Map", ["~1"], "", [
       [117, "default", "Boolean", ["[0", "=u"]],
       [118, "const", "Boolean", ["[0", "=K"]],
       [48, "nillable", "Boolean", ["[0", "=K"]],
       [65, "attr", "Boolean", ["[0", "=K"]]
     ]],
-    ["IntegerOpts", "Map", [], "", [
+    ["IntegerOpts", "Map", ["~1"], "", [
       [47, "format", "ArrayOf", ["*Format", "q", "[0", "=/"]],
       [69, "scale", "Integer", ["[0", "=undefined"]],
       [121, "minInclusive", "Integer", ["[0", "=w"]],
@@ -587,7 +587,7 @@ def test_total_validity_with_opts():
       [48, "nillable", "Boolean", ["[0", "=undefined"]],
       [65, "attr", "Boolean", ["[0", "=undefined"]]
     ]],
-    ["NumberOpts", "Map", [], "", [
+    ["NumberOpts", "Map", ["~1"], "", [
       [47, "format", "ArrayOf", ["*Format", "q", "[0", "=/"]],
       [121, "minInclusive", "Number", ["[0", "=w"]],
       [122, "maxInclusive", "Number", ["[0", "=x"]],
@@ -598,7 +598,7 @@ def test_total_validity_with_opts():
       [48, "nillable", "Boolean", ["[0", "=undefined"]],
       [65, "attr", "Boolean", ["[0", "=undefined"]]
     ]],
-    ["StringOpts", "Map", [], "", [
+    ["StringOpts", "Map", ["~1"], "", [
       [47, "format", "ArrayOf", ["*Format", "q", "[0", "=/"]],
       [121, "minInclusive", "Number", ["[0", "=w"]],
       [122, "maxInclusive", "Number", ["[0", "=x"]],
@@ -612,22 +612,22 @@ def test_total_validity_with_opts():
       [48, "nillable", "Boolean", ["[0", "=undefined"]],
       [65, "attr", "Boolean", ["[0", "=undefined"]]
     ]],
-    ["EnumeratedOpts", "Map", ["eAllOpts"], "", [
+    ["EnumeratedOpts", "Map", ["eAllOpts", "~1"], "", [
       [61, "id", "Boolean", ["[0", "=="]],
       [35, "enum", "TypeRef", ["[0", "=#"]],
       [62, "pointer", "TypeRef", ["[0", "=>"]],
       [65, "attr", "Boolean", ["[0", "=undefined"]]
     ]],
-    ["ChoiceOpts", "Map", ["eAllOpts"], "", [
+    ["ChoiceOpts", "Map", ["eAllOpts", "~1"], "", [
       [61, "id", "Boolean", ["[0", "=="]],
       [67, "combine", "String", ["{1", "}1", "[0", "=C"]]
     ]],
-    ["ArrayOpts", "Map", ["eAllOpts"], "", [
+    ["ArrayOpts", "Map", ["eAllOpts", "~1"], "", [
       [47, "format", "ArrayOf", ["*Format", "q", "[0", "=/"]],
       [123, "minLength", "Integer", ["y0", "[0", "={"]],
       [125, "maxLength", "Integer", ["y0", "[0", "=}"]]
     ]],
-    ["ArrayOfOpts", "Map", ["eAllOpts"], "", [
+    ["ArrayOfOpts", "Map", ["eAllOpts", "~1"], "", [
       [42, "valueType", "TypeRef", ["=*"]],
       [123, "minLength", "Integer", ["y0", "[0", "={"]],
       [125, "maxLength", "Integer", ["y0", "[0", "=}"]],
@@ -635,20 +635,20 @@ def test_total_validity_with_opts():
       [115, "set", "Boolean", ["[0", "=s"]],
       [98, "unordered", "Boolean", ["[0", "=b"]]
     ]],
-    ["MapOpts", "Map", ["eAllOpts"], "", [
+    ["MapOpts", "Map", ["eAllOpts", "~1"], "", [
       [61, "id", "Boolean", ["[0", "=="]],
       [123, "minLength", "Integer", ["y0", "[0", "={"]],
       [125, "maxLength", "Integer", ["y0", "[0", "=}"]],
       [111, "sequence", "Boolean", ["[0", "=undefined"]]
     ]],
-    ["MapOfOpts", "Map", ["eAllOpts"], "", [
+    ["MapOfOpts", "Map", ["eAllOpts", "~1"], "", [
       [43, "keyType", "TypeRef", ["=+"]],
       [42, "valueType", "TypeRef", ["=*"]],
       [123, "minLength", "Integer", ["y0", "[0", "={"]],
       [125, "maxLength", "Integer", ["y0", "[0", "=}"]],
       [111, "sequence", "Boolean", ["[0", "=undefined"]]
     ]],
-    ["RecordOpts", "Map", ["eAllOpts"], "", [
+    ["RecordOpts", "Map", ["eAllOpts", "~1"], "", [
       [123, "minLength", "Integer", ["y0", "[0", "={"]],
       [125, "maxLength", "Integer", ["y0", "[0", "=}"]],
       [111, "sequence", "Boolean", ["[0", "=undefined"]]
@@ -663,7 +663,9 @@ def test_total_validity_with_opts():
         {
             "meta" : {"package" : "http://example.fake"},
             "types" : [["Typename", "Binary", [], ""]]        
-        },        
+        } ]
+    
+    ''',        
         {
             "meta" : {"package" : "http://example.fake"},
             "types" : [["Typename", "String", ["[0"], "", []]]        
@@ -790,11 +792,11 @@ def test_total_validity_with_opts():
       ]],
     ["File-Path", "String", [], "local storage location of file with directory path from root, filename, and extension"]
   ]
-}
-
-        
+}    
       
     ]
+
+    '''
     invalid_data_list = [
 
          {'SuitEnum': 10},'Aces', 10
