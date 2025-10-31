@@ -190,16 +190,19 @@ def to_dict_on_given_char(string_val: str, position: int) -> dict:
     return split_return
 
 def use_keyless_map(j_type_opts: List[str]) -> list:
-    return_val = None
+    """
+    Checks if the keyless map option ('~') is present in the type options.
+    Returns [opt_key, opt_val] if found, None otherwise.
+    """
+    if not j_type_opts:
+        return None
+        
     for opt in j_type_opts:
         opt_key, opt_val = general_utils.split_on_first_char(opt)
-        if opt_val is None:
-            opt_val = True
-        if opt_key == '~':    
-            return_val = [opt_key, opt_val]
-            return return_val
-        
-    return return_val
+        if opt_key == '~':
+            return ['~', opt_val or True]
+    
+    return None
 
 def get_tagid(opts: List[str]) -> int:
     """

@@ -1,5 +1,6 @@
 from jadnvalidation.data_validation.data_validation import DataValidation
 from jadnvalidation.utils.consts import JSON
+from jadnvalidation.utils.mapping_utils import use_keyless_map
 
 
 def validate_valid_data(j_schema: dict, root: str, data_list: list, data_format: str = JSON) -> int:
@@ -52,3 +53,40 @@ class Utils:
                 err_count = err_count + 1
                 print(err)
         return err_count
+
+
+def test_use_keyless_map():
+    """Unit test for use_keyless_map function"""
+    
+    # Test with None input
+    assert use_keyless_map(None) is None
+    
+    # Test with empty list
+    assert use_keyless_map([]) is None
+    
+    # Test with keyless map option present
+    opts_with_keyless = ["~", "other_option"]
+    result = use_keyless_map(opts_with_keyless)
+    assert result == ['~', True]
+    
+    # Test with keyless map option with value
+    opts_with_value = ["~value", "other_option"]
+    result = use_keyless_map(opts_with_value)
+    assert result == ['~', "value"]
+    
+    # Test with no keyless map option
+    opts_without_keyless = ["other_option", "another_option"]
+    result = use_keyless_map(opts_without_keyless)
+    assert result is None
+    
+    # Test with keyless map option in middle of list
+    opts_keyless_middle = ["first_option", "~test", "last_option"]
+    result = use_keyless_map(opts_keyless_middle)
+    assert result == ['~', "test"]
+    
+    # Test with empty string after tilde
+    opts_empty_value = ["~"]
+    result = use_keyless_map(opts_empty_value)
+    assert result == ['~', True]
+    
+    print("All use_keyless_map tests passed!")
