@@ -16,4 +16,4 @@ class Pattern:
         result = search_string(dynamic_regex, self.data)
 
         if not result:
-            raise ValueError(f"Match not found for pattern {self.pattern_string}.  Data {self.data}")
+            raise ValueError(f"Match not found for pattern: {self.pattern_string}  Data: {self.data}")

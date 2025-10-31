@@ -1,7 +1,7 @@
 from jadnvalidation.data_validation.data_validation import DataValidation
-from jadnvalidation.utils.consts import JSON, XML
+from jadnvalidation.data_validation.schemas.jadn_meta_schema import j_meta_schema, j_meta_roots
 
-j_schema = {
+oscal_ap_j_schema = {
   "meta": {
     "package": "http://csrc.nist.gov/ns/oscal/1.1.1/oscal-ap-schema.json",
     "comment": "OSCAL Assessment Plan Model: JSON Schema",
@@ -9,10 +9,10 @@ j_schema = {
     "config": {
       "$MaxBinary": 255,
       "$MaxString": 5555,
-      "$MaxElements": 250,
+      "$MaxElements": 100,
       "$Sys": "$",
       "$TypeName": "^[A-Za-z][-_$A-Za-z0-9]{0,63}$",
-      "$FieldName": "^[A-Za-z][-_A-Za-z0-9]{0,63}$",
+      "$FieldName": "^[A-Za-z][-_$A-Za-z0-9]{0,63}$",
       "$NSID": "^[A-Za-z][A-Za-z0-9]{0,7}$"
     }
   },
@@ -1032,6 +1032,17 @@ j_schema_back_matter = {
 }
 
 
+def test_oscal_ap_schema():
+  is_errors = False
+  try :
+      j_validation = DataValidation(j_meta_schema, j_meta_roots, oscal_ap_j_schema)
+      j_validation.validate()
+  except Exception as err:
+      is_errors = True
+      print(err)  
+      
+  assert is_errors == False
+    
 def test_field_name_validation():
     root = "Root"
     
@@ -1060,18 +1071,15 @@ def test_field_name_validation():
       }
     }
     
-    errorMsgs=[]
+    is_errors = False
     try :
-        j_validation = DataValidation(j_schema, root, data, JSON)
+        j_validation = DataValidation(oscal_ap_j_schema, root, data)
         j_validation.validate()
     except Exception as err:
-        if isinstance(err, ValueError):
-            for error in err.args:
-                errorMsgs.append(error)
-        else:
-            errorMsgs.append(str(err))
+        is_errors = True
+        print(err)
             
-    assert len(errorMsgs) == 0
+    assert is_errors == False
 
 
 def test_back_matter():
@@ -1094,7 +1102,7 @@ def test_back_matter():
     
     errorMsgs=[]
     try :
-        j_validation = DataValidation(j_schema_back_matter, root, data, JSON)
+        j_validation = DataValidation(j_schema_back_matter, root, data)
         j_validation.validate()
     except Exception as err:
         if isinstance(err, ValueError):
@@ -1135,7 +1143,7 @@ def test_assessment_plan():
     
     errorMsgs=[]
     try :
-        j_validation = DataValidation(j_schema, root, data)
+        j_validation = DataValidation(oscal_ap_j_schema, root, data)
         j_validation.validate()
     except Exception as err:
         if isinstance(err, ValueError):

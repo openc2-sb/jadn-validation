@@ -3,6 +3,114 @@ from datetime import datetime
 from jadnvalidation.tests.test_utils import validate_invalid_data, validate_valid_data
 from jadnvalidation.utils.consts import XML
 
+def test_string_uuid():
+    root = "Root-Test"
+  
+    j_schema = {
+      "types": [
+        ["Root-Test", "String", ["/uuid"], "", []]
+      ]
+    }
+    
+    valid_data_list = ['00010203-0405-0607-0809-0a0b0c0d0e0f', '{00010203-0405-0607-0809-0a0b0c0d0e0f}']
+    invalid_data_list = ['1', '', '{00010203}', '17']
+    
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+        
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)
+    assert err_count == len(invalid_data_list)
+
+def test_string_duration():
+    root = "Root-Test"
+  
+    j_schema = {
+      "types": [
+        ["Root-Test", "String", ["/duration"], "", []]
+      ]
+    }
+    
+    valid_data_list = ['P1D', 'P3M1DT6H', 'PT3H1M12S', "P1Y2M4DT5H6M7S"]
+    invalid_data_list = ['1', '', '3M1D6H', '17']
+    
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+        
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)
+    assert err_count == len(invalid_data_list)
+
+def test_string_min_inclusive():
+    root = "Root-Test"
+  
+    j_schema = {
+      "types": [
+        ["Root-Test", "String", ["w4"], "", []]
+      ]
+    }
+    
+    valid_data_list = ['four', 'en-US', 'multiple-small-parts', 'i-navajo', 'custom']
+    invalid_data_list = ['1', '', 'one', '17']
+    
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+        
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)
+    assert err_count == len(invalid_data_list)
+
+def test_string_max_inclusive():
+    root = "Root-Test"
+  
+    j_schema = {
+      "types": [
+        ["Root-Test", "String", ["x4"], "", []]
+      ]
+    }
+    
+    valid_data_list = ['four', '1', '', 'one', '17']
+    invalid_data_list = ['multiple-small-parts', 'i-navajo', 'custom', '55555']
+    
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+        
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)
+    assert err_count == len(invalid_data_list)
+
+def test_string_min_exclusive():
+    root = "Root-Test"
+  
+    j_schema = {
+      "types": [
+        ["Root-Test", "String", ["y4"], "", []]
+      ]
+    }
+    
+    valid_data_list = ['en-US', 'multiple-small-parts', 'i-navajo', 'custom']
+    invalid_data_list = ['1', '', 'one', '17', 'four']
+    
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+        
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)
+    assert err_count == len(invalid_data_list)
+
+def test_string_max_exclusive():
+    root = "Root-Test"
+  
+    j_schema = {
+      "types": [
+        ["Root-Test", "String", ["z4"], "", []]
+      ]
+    }
+    
+    valid_data_list = ['tre', '1', '', 'one', '17']
+    invalid_data_list = ['multiple-small-parts', 'i-navajo', 'custom', '55555', 'four']
+    
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+        
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)
+    assert err_count == len(invalid_data_list)
+    
 def test_string_language():
     root = "Root-Test"
   
@@ -506,6 +614,53 @@ def test_xml_str():
               
     err_count = validate_invalid_data(j_schema, root, invalid_data_list, XML)
     assert err_count == len(invalid_data_list)    
+
+def test_xml_str_minInclusive():
+    root = "Root-Test"
+  
+    j_schema = {
+      "types": [
+        ["Root-Test", "String", ["w3"], "", []]
+      ]
+    }
+    
+    valid_xml_1 = """<Root-Test>value1</Root-Test>"""
+    valid_xml_2 = """<Root-Test>value</Root-Test>"""
+    valid_xml_3 = """<Root-Test>val</Root-Test>"""
+    invalid_xml_1 = """<Root-Test>v</Root-Test>"""
+    invalid_xml_2 = """<Root-Test>v2</Root-Test>"""
+
+    valid_data_list = [valid_xml_1, valid_xml_2, valid_xml_3]
+    invalid_data_list = [invalid_xml_1, invalid_xml_2]
+  
+    err_count = validate_valid_data(j_schema, root, valid_data_list, XML)    
+    assert err_count == 0
+              
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list, XML)
+    assert err_count == len(invalid_data_list)  
+
+def test_xml_str_maxInclusive():
+    root = "Root-Test"
+  
+    j_schema = {
+      "types": [
+        ["Root-Test", "String", ["x4"], "", []]
+      ]
+    }
+    
+    valid_xml_1 = """<Root-Test>valu</Root-Test>"""
+    valid_xml_2 = """<Root-Test>val</Root-Test>"""
+    invalid_xml_1 = """<Root-Test>vlong_value</Root-Test>"""
+    invalid_xml_2 = """<Root-Test>value</Root-Test>"""
+
+    valid_data_list = [valid_xml_1, valid_xml_2]
+    invalid_data_list = [invalid_xml_1, invalid_xml_2]
+  
+    err_count = validate_valid_data(j_schema, root, valid_data_list, XML)    
+    assert err_count == 0
+              
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list, XML)
+    assert err_count == len(invalid_data_list) 
 
 def test_xml_string_normalizedString():
     root = "Root-Test"   

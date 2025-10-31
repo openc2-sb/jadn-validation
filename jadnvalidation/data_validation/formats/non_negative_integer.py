@@ -2,7 +2,7 @@ class NonNegativeInteger:
     
     data: any = None
     
-    def __init__(self, data: any = None):
+    def __init__(self, data: any = None, date_format: any = None):
         self.data = data
     
     def validate(self):

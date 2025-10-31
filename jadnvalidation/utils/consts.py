@@ -5,6 +5,7 @@ class Choice_Consts:
     CHOICE_ALL_OF = "allOf"
     CHOICE_TAG_ID = "tag_ID"
     CHOICE_NOT = "not"
+    CHOICE_TAGGED = None
     
 # RFC 3339: Date and Time Formats
 TIME_FORMAT = "%H:%M:%S"

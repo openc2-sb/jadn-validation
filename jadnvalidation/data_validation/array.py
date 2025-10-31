@@ -1,8 +1,7 @@
 from typing import Union
 
-from build.lib.jadnvalidation.models.jadn.jadn_config import check_sys_char
 from jadnvalidation.models.jadn.jadn_type import build_jadn_type_obj, is_field_multiplicity, is_structure
-from jadnvalidation.models.jadn.jadn_config import Jadn_Config, check_field_name, check_type_name, get_j_config
+from jadnvalidation.models.jadn.jadn_config import Jadn_Config, check_field_name, check_sys_char, check_type_name, get_j_config
 from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type, is_user_defined
 from jadnvalidation.utils.consts import JSON, XML
 from jadnvalidation.utils.general_utils import create_clz_instance, create_fmt_clz_instance, get_item_safe_check, merge_opts, sort_array_by_id
@@ -75,6 +74,21 @@ class Array:
         if is_structure(self.j_type):
             # Order fields by their ID
             self.j_type.fields = sort_array_by_id(self.j_type.fields)        
+        
+            '''
+    def check_type(self):
+
+        if self.data != None and not isinstance(self.data, list):
+            if isinstance(self.data, str):
+                if "/ipv4net" in self.j_type.type_options or "/ipv6net" in self.j_type.type_options:
+                    pass
+            else: raise ValueError(f"Data for type {self.j_type.type_name} of the wrong type. Received: {type(self.data)}")
+        elif self.data is None:
+            if "}0" in self.j_type.type_options:
+                pass
+            else: raise ValueError(f"Data missing for type {self.j_type.type_name}")
+        else: raise ValueError(f"Data for type {self.j_type.type_name} must be a list. Received: {type(self.data)}")
+        '''
         
     def check_min_length(self):
         min_length = get_min_length(self.j_type)

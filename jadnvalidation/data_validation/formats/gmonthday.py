@@ -4,7 +4,7 @@ class GMonthDay:
     
     data: any = None
     
-    def __init__(self, data: any = None):
+    def __init__(self, data: any = None, date_format: any = None):
         if isinstance(data, str):
             self.data = data
         elif isinstance(data, int):
@@ -19,5 +19,6 @@ class GMonthDay:
                     pass
                 else: 
                     raise ValueError(f"Entry does not match gMonthDay: {self.data}")  
+                
             except ValueError:
                 raise ValueError(f"Invalid gMonthDay: {self.data}")

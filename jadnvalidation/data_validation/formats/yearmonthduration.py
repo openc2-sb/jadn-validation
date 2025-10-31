@@ -6,7 +6,7 @@ class YearMonthDuration:
     date_str: str = None
     #datetime_converted: datetime = None
     
-    def __init__(self, date_entry: any = None):
+    def __init__(self, date_entry: any = None, date_format: any = None):
         if isinstance(date_entry, str):
             self.date_str = date_entry
         else:
@@ -23,6 +23,7 @@ class YearMonthDuration:
                 else: 
                     raise ValueError(f"Entry does not match yearMonthDuration: {self.date_str}")  
             except ValueError:
-                raise ValueError(f"Invalid yearMonthDuration: {self.date_str}")        
+                raise ValueError(f"Invalid yearMonthDuration: {self.date_str}")
+             
         else: 
             raise ValueError(f"Could not parse yearMonthDuration")

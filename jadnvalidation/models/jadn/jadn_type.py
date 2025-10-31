@@ -13,7 +13,7 @@ class Primitive(BaseEnum):
 class Enumeration(BaseEnum):
     ENUMERATED = 'Enumerated'
     
-class Specilization(BaseEnum):
+class Specialization(BaseEnum):
     CHOICE = 'Choice'
     
 class Structure(BaseEnum):
@@ -105,7 +105,7 @@ def is_primitive(type: str) -> bool:
         return False
     
 def is_non_primitive(type: str) -> bool:
-    if type in Structure or type in Enumeration or type in Specilization:
+    if type in Structure or type in Enumeration or type in Specialization:
         return True
     else:
         return False
@@ -117,7 +117,7 @@ def is_record_or_map(jadn_type: Jadn_Type) -> bool:
         return False    
     
 def is_specialization(jadn_type: Jadn_Type) -> bool:
-    if jadn_type.base_type in Specilization:
+    if jadn_type.base_type in Specialization:
         return True
     else:
         return False       

@@ -24,7 +24,7 @@ def flip_to_array_of(j_type_obj: Jadn_Type, min_occurs, max_occurs):
     return j_field_obj
 
 def get_choice_type(j_type_opts: List[str]) -> str:
-    choice_type = Choice_Consts.CHOICE_ONE_OF
+    choice_type = Choice_Consts.CHOICE_TAGGED
     
     for type_opt in j_type_opts:
         opt_char_id, opt_val = general_utils.split_on_first_char(type_opt) 
@@ -32,10 +32,12 @@ def get_choice_type(j_type_opts: List[str]) -> str:
             choice_type = Choice_Consts.CHOICE_ALL_OF
         elif (opt_char_id == "C") & (opt_val == "O"):
             choice_type = Choice_Consts.CHOICE_ANY_OF
-        elif (opt_char_id == "C") & (opt_val == "X"):
+        elif (opt_char_id == "C") & (opt_val == "N"):
             choice_type = Choice_Consts.CHOICE_NOT  
-        else:
+        elif (opt_char_id == "C") & (opt_val == "X"):
             choice_type = Choice_Consts.CHOICE_ONE_OF
+        else:
+            choice_type = None # this does not seem to be assigning correctly
             
         break
         
@@ -111,6 +113,9 @@ def get_max_occurs(j_type: Jadn_Type, global_config: Jadn_Config) -> int:
         raise ValueError("MaxOccurs cannot be less than MinOccurs: " + {max_val} + " < " + {min_val})
         
     return max_val
+
+def get_const_val_str(j_type: Jadn_Type) -> int:   
+    return get_opt_str("v", j_type)
 
 def get_min_inclusive(j_type: Jadn_Type) -> int:   
     return get_opt_int("w", j_type)
@@ -213,6 +218,16 @@ def get_tagid(opts: List[str]) -> int:
             if isinstance(opt, str) and len(opt) >= 2 and opt[0] == '&' and opt[1].isdigit():
                 return int(opt[1])
     return None
+
+def is_logical_not(opts: List[str]) -> bool:
+    """
+    Searches opts for a string 'N'. If found, returns True, otherwise False.
+    """
+    if opts:
+        for opt in opts:
+            if isinstance(opt, str) and opt == 'N':
+                return True
+    return False
 
 def get_tagged_data(j_field: Jadn_Type, data: any) -> any:
     """

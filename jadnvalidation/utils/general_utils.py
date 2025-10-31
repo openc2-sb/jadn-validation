@@ -65,12 +65,21 @@ def format_class_name(class_name: str) -> str:
     formatted_class_name = ''.join(word[0].upper() + word[1:] for word in words)
     if formatted_class_name == 'JsonPointer':
         formatted_class_name = 'JadnJsonPointer'
+    if formatted_class_name == 'Base64Binary':
+        formatted_class_name = 'B64'
+    if formatted_class_name == 'X':
+        formatted_class_name = 'HexBinary'
+    if formatted_class_name == 'Float':
+        formatted_class_name = 'F32'
+    if formatted_class_name == 'Double':
+        formatted_class_name = 'F64'
     
     return formatted_class_name
 
 def create_fmt_clz_instance(class_name: str, *args, **kwargs):
     
     modules = {
+        "Attr" : "jadnvalidation.data_validation.formats.attr",
         "Date" : "jadnvalidation.data_validation.formats.date",
         "DateTime" : "jadnvalidation.data_validation.formats.date_time",
         "Duration" : "jadnvalidation.data_validation.formats.duration",
@@ -91,6 +100,8 @@ def create_fmt_clz_instance(class_name: str, *args, **kwargs):
         "F16" : "jadnvalidation.data_validation.formats.f16",
         "F32" : "jadnvalidation.data_validation.formats.f32",
         "F64" : "jadnvalidation.data_validation.formats.f64",
+        "F128" : "jadnvalidation.data_validation.formats.f128",
+        "F256" : "jadnvalidation.data_validation.formats.f256",
         "NonNegativeInteger" : "jadnvalidation.data_validation.formats.non_negative_integer",
         "PositiveInteger" : "jadnvalidation.data_validation.formats.positive_integer",
         "NonPositiveInteger" : "jadnvalidation.data_validation.formats.non_positive_integer",
@@ -114,11 +125,19 @@ def create_fmt_clz_instance(class_name: str, *args, **kwargs):
         "GMonthDay" : "jadnvalidation.data_validation.formats.gmonthday",
         "SignedInteger" : "jadnvalidation.data_validation.formats.signed_integer",
         "UnsignedInteger" : "jadnvalidation.data_validation.formats.unsigned_integer",
-        "TaggedList" : "jadnvalidation.data_validation.formats.tagged_list"
+        "TaggedList" : "jadnvalidation.data_validation.formats.tagged_list",
+        "HexBinary" : "jadnvalidation.data_validation.formats.hex_binary",
+        "B64" : "jadnvalidation.data_validation.formats.b64",
+        "Uuid" : "jadnvalidation.data_validation.formats.uuid",
     }
     
     formatted_class_name = format_class_name(class_name)
-    module = importlib.import_module(modules.get(formatted_class_name))
+    
+    module = None
+    try:
+        module = importlib.import_module(modules.get(formatted_class_name))
+    except Exception as e:
+        print(f"Error importing module for format '{formatted_class_name}': {e}", file=sys.stderr)
     
     if module == None:
         raise ValueError("Unknown format type")
