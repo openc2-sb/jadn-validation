@@ -1,4 +1,5 @@
 ./whls/jadnxml-1.13.0-py2.py3-none-any.whl
+./whls/jadnutils-0.4.0-py2.py3-none-any.whl
 
 jsonpointer==3.0.0
 pytest==8.3.3
