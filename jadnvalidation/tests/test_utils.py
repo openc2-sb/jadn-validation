@@ -102,7 +102,7 @@ def test_get_inherited_fields():
             "version": "1.0"
         },
         "types": [
-            ["Person", "Record", [], "A person", [
+            ["Person", "Record", ["eCompany"], "A person", [
                 [1, "name", "String", [], "Person's name"],
                 [2, "age", "Integer", [], "Person's age"],
                 [3, "email", "String", [], "Optional email"]
@@ -111,7 +111,7 @@ def test_get_inherited_fields():
                 [1, "name", "String", [], "Company name"],
                 [2, "employees", "Person-Array", [], "List of employees"]
             ]],
-            ["Person-Array", "ArrayOf", ["{*Person"], "Array of persons"],
+            ["Person-Array", "ArrayOf", ["*Person"], "Array of persons", []],
             ["Status", "Enumerated", [], "Status values", [
                 [1, "active", "Active status"],
                 [2, "inactive", "Inactive status"]
@@ -120,7 +120,13 @@ def test_get_inherited_fields():
     }
     
     types = sample_schema["types"]
-    field = ["Person", "Record", [], "A person"]
+    field = ["Person", "Record", ["eCompany"], "A person", [
+                [1, "name", "String", [], "Person's name"],
+                [2, "age", "Integer", [], "Person's age"],
+                [3, "email", "String", [], "Optional email"]
+            ]]
     result = get_inherited_fields(types, field)
-    # This function returns empty list when no inheritance options are found
-    assert isinstance(result, list)    
+    
+    # Assert result is a list with something in it
+    assert isinstance(result, list)
+    assert len(result) > 0 
