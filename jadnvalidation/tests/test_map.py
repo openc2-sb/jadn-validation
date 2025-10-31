@@ -564,14 +564,15 @@ def test_map_keyless_map():
         "types": [
             ["Root-Test", "Map", ["~1"], "", [
                 [1, "A", "String", ["[0"], ""],
-                [2, "B", "String", ["[0"], ""]
+                [2, "B", "String", ["[0"], ""],
+                [3, "C", "Boolean", ["[0"], ""]
             ]]
         ]
     }
     
     valid_data_list = [
             
-        ["AI am any String"],["A1"],["BTwo"]
+        ["AI am any String"],["A1"],["BTwo"],["C"]
                           
     ]
 

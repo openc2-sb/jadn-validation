@@ -98,9 +98,14 @@ class Map:
                 if not isinstance(val, str):
                     raise TypeError(f'inparsable item in keyless map: {val}')
                 dict_val = to_dict_on_given_char(val, funnyArray[1])
+                #print(f"line value changed to {dict_val}")
+                #print(f"{dict_val}")
+                if list(dict_val.values()) == '':
+                    dict_val = {list(dict_val.keys())[0] , True} 
+                    #print("updated empty to bool true")
                 temp_map.update(dict_val)
                 
-            print(f"{temp_map}")
+            #print(f"{temp_map}")
 
             presence_tracker = False
             field_count = len(self.j_type.fields)
@@ -169,11 +174,14 @@ class Map:
                     if j_field_obj.base_type=="Integer":
                         #add format checks later
                         field_data = int(field_data)
+                        #print(f"field data changed to {field_data}")
                     if j_field_obj.base_type=="Number":
                         #add format checks later
                         field_data = float(field_data)
+                        #print(f"field data changed to {field_data}")
                     if j_field_obj.base_type=="Boolean":
                         field_data = bool(field_data)
+                        #print(f"field data changed to {field_data}")
                     # i can't see a current example on Binary we can address that if/when we have clarification
 
                     tagged_data = get_tagged_data(j_field_obj, self.data)
@@ -198,11 +206,14 @@ class Map:
                     if j_field_obj.base_type=="Integer":
                         #add format checks later
                         field_data = int(field_data)
+                        #print(f"field data changed to {field_data}")
                     if j_field_obj.base_type=="Number":
                         #add format checks later
                         field_data = float(field_data)
+                        #print(f"field data changed to {field_data}")
                     if j_field_obj.base_type=="Boolean":
                         field_data = bool(field_data)
+                        #print(f"field data changed to {field_data}")
                     # i can't see a current example on Binary we can address that if/when we have clarification
 
                     tagged_data = get_tagged_data(j_field_obj, self.data)
