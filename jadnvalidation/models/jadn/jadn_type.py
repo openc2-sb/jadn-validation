@@ -135,6 +135,8 @@ def is_type(jadn_type: list[any]):
     return False    
     
 def is_user_defined(ktype:str):
+    if ktype is None:
+        return False
     return not is_basetype(ktype)
 
 def build_j_type(j_type: list) -> Jadn_Type | None:

@@ -301,7 +301,7 @@ class Map:
                                 is_found = True
 
                         
-                        elif is_user_defined(j_field[2]):
+                        elif len(j_field) > 2 and is_user_defined(j_field[2]):
                             
                             ref_type = get_reference_type(self.j_schema, j_field[2])
                             ref_type_obj = build_j_type(ref_type)
