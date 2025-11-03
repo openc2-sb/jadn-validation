@@ -4,7 +4,8 @@ from jadnvalidation.models.jadn.jadn_type import Base_Type, Jadn_Type, build_j_t
 from jadnvalidation.utils.consts import JSON, XML
 from jadnvalidation.utils.general_utils import create_clz_instance
 from jadnvalidation.utils.mapping_utils import get_inheritance, is_derived_enumeration, use_field_ids
-from jadnvalidation.utils.type_utils import get_reference_type
+from jadnvalidation.utils.type_utils import get_reference_type, get_schema_type_by_name
+from jadnutils.utils.jadn_utils import get_inherited_fields
 
 common_rules = {
     "e": "check_inheritance", 
@@ -65,15 +66,16 @@ class Enumerated:
         if inherit_from is not None:
             inherited_type = get_reference_type(self.j_schema, inherit_from)
             inherited_type_obj = build_j_type(inherited_type)
-            
+
             if inherited_type is None:
                 raise ValueError(f"Type {self.j_type.type_name} inherits from unknown type {inherit_from}")
             
             if self.j_type.base_type != inherited_type_obj.base_type:
                 raise ValueError(f"Type {self.j_type.type_name} inherits from type {inherit_from} with different base type {inherited_type_obj.base_type}. Received: {self.j_type.base_type}")
             
-            # Prepend inherited fields to current fields
-            self.j_type.fields = inherited_type_obj.fields + self.j_type.fields     
+            schema_types = self.j_schema.get('types', [])
+            self_type = get_schema_type_by_name(schema_types, self.j_type.type_name)
+            self.j_type.fields = get_inherited_fields(schema_types, self_type, self.j_type.fields)   
         
     def json_check_type(self):
         if self.data is not None:

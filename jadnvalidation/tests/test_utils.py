@@ -112,7 +112,7 @@ def test_get_reference_type():
         "types": [
             ["String", "String", [], "Base string type"],
             ["Integer", "Integer", [], "Base integer type"],
-            ["Person", "Record", [], "A person record", [
+            ["Person", "Record", ["eCompany"], "A person record", [
                 [1, "name", "String", [], "Person's name"],
                 [2, "age", "Integer", [], "Person's age"]
             ]],
