@@ -76,7 +76,7 @@ class Map:
             
             schema_types = self.j_schema.get('types', [])
             self_type = get_schema_type_by_name(schema_types, self.j_type.type_name)
-            self.j_type.fields = get_inherited_fields(schema_types, self_type, self.j_type.fields)      
+            self.j_type.fields = get_inherited_fields(schema_types, self_type)
         
     def check_min_length(self):
         min_length = get_min_length(self.j_type)
