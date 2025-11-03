@@ -1,8 +1,10 @@
 {
-    "python.testing.pytestArgs": [
-        "jadnvalidation/tests",
-        "-s"
-    ],
-    "python.testing.unittestEnabled": false,
-    "python.testing.pytestEnabled": true
+  "python.analysis.extraPaths": [
+    "/Users/jryan/Desktop/JADN_Repos/jadn-validation/.venv/lib/python3.10/site-packages"
+  ],
+  "python.testing.pytestArgs": [
+    "jadnvalidation"
+  ],
+  "python.testing.unittestEnabled": false,
+  "python.testing.pytestEnabled": true
 }
