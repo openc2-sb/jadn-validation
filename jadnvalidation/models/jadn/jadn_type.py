@@ -157,13 +157,17 @@ def build_j_type(j_type: list) -> Jadn_Type | None:
 def build_jadn_type_obj(j_type: list) -> Jadn_Type | None: 
     jadn_type_obj = None
 
-    if is_enumerated(j_type):
+    if is_field(j_type):
+        # Field should have at least 4 elements: [id, name, base_type, options, ...]
+        # Handle malformed fields that might be missing base_type/options
+        base_type = safe_get(j_type, 2, None)
+        type_options = safe_get(j_type, 3, [])
         jadn_type_obj = Jadn_Type(
                 id=j_type[0],
                 type_name=j_type[1], 
-                base_type=None, 
-                type_options=[], 
-                type_description=j_type[2])
+                base_type=base_type, 
+                type_options=type_options, 
+                type_description=safe_get(j_type, 4, ""))
     elif is_type(j_type):
         jadn_type_obj = Jadn_Type(
                 type_name=j_type[0], 
@@ -171,13 +175,13 @@ def build_jadn_type_obj(j_type: list) -> Jadn_Type | None:
                 type_options=j_type[2], 
                 type_description=j_type[3],
                 fields=safe_get(j_type, 4, []))
-    elif is_field(j_type):
+    elif is_enumerated(j_type):
         jadn_type_obj = Jadn_Type(
                 id=j_type[0],
                 type_name=j_type[1], 
-                base_type=j_type[2], 
-                type_options=j_type[3], 
-                type_description=safe_get(j_type, 4, ""))
+                base_type=None, 
+                type_options=[], 
+                type_description=j_type[2])
 
     else:
         print("unknown jadn item")

@@ -496,11 +496,11 @@ def test_total_validity_with_opts():
     ["FieldName", "String", ["%^[a-z][_A-Za-z0-9]{0,63}$"], "Name of a field in a structured type"],
     ["TypeRef", "String", [], "Reference to a type, matching ($NSID ':')? $TypeName"],
     ["Type", "Array", [], "", [
-      [1, "type_name", "TypeName"],
-      [2, "core_type", "Enumerated", ["#JADN-Type"]],
-      [3, "type_options", "TypeOptions", ["[0", "&2"]],
-      [4, "type_description", "Description", ["[0"]],
-      [5, "fields", "JADN-Type", ["[0", "&2"]]
+      [1, "type_name", "TypeName", [], ""],
+      [2, "core_type", "Enumerated", ["#JADN-Type"], ""],
+      [3, "type_options", "TypeOptions", ["[0", "&2"], ""],
+      [4, "type_description", "Description", ["[0"], ""],
+      [5, "fields", "JADN-Type", ["[0", "&2"], ""]
     ]],
     ["JADN-Type", "Choice", [], "", [
       [1, "Binary", "Empty"],

@@ -44,7 +44,11 @@ def create_clz_instance(class_name: str, *args, **kwargs):
         "String" : "jadnvalidation.data_validation.string"
     }
 
-    module = importlib.import_module(modules.get(class_name))
+    module_name = modules.get(class_name)
+    if module_name is None:
+        raise ValueError(f"Unknown data type: {class_name}")
+    
+    module = importlib.import_module(module_name)
     
     if module == None:
         raise ValueError("Unknown data type")

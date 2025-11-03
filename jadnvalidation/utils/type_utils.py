@@ -15,10 +15,6 @@ def get_schema_type_by_name(j_types: list, name: str):
 
 def get_reference_type(jschema, type_name):
     if type_name is None:
-        import traceback
-        print("DEBUG: get_reference_type called with None type_name!")
-        print("DEBUG: Call stack:")
-        traceback.print_stack()
         raise ValueError("type_name cannot be None")
     
     j_types = jschema.get('types')
@@ -28,7 +24,6 @@ def get_reference_type(jschema, type_name):
         ref_type = get_reference_type(jschema, ref_type[1])  
 
     if not ref_type:
-        print(f"DEBUG: Unknown type_name = '{type_name}'")  # Debug print to see the actual value
         raise ValueError(f"Unknown type {type_name} referenced" )
     
     return ref_type
