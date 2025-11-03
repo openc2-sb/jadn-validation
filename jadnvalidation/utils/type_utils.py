@@ -17,7 +17,7 @@ def get_reference_type(jschema, type_name):
     j_types = jschema.get('types')
     ref_type = get_schema_type_by_name(j_types, type_name)
     # this is returning none w/ alias
-    if not is_basetype(ref_type[1]):
+    if ref_type and not is_basetype(ref_type[1]):
         ref_type = get_reference_type(jschema, ref_type[1])  
 
     if not ref_type:

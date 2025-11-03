@@ -1,6 +1,7 @@
 from jadnvalidation.data_validation.data_validation import DataValidation
 from jadnvalidation.utils.consts import JSON
 from jadnvalidation.utils.mapping_utils import use_keyless_map
+from jadnvalidation.utils.type_utils import get_reference_type
 from jadnutils.utils.jadn_utils import get_inherited_fields
 
 
@@ -130,3 +131,57 @@ def test_get_inherited_fields():
     # Assert result is a list with something in it
     assert isinstance(result, list)
     assert len(result) > 0 
+
+
+def test_get_reference_type():
+    """Test get_reference_type function."""
+    
+    sample_schema = {
+        "meta": {
+            "title": "Test Schema",
+            "version": "1.0"
+        },
+        "types": [
+            ["String", "String", [], "Base string type"],
+            ["Integer", "Integer", [], "Base integer type"],
+            ["Person", "Record", [], "A person record", [
+                [1, "name", "String", [], "Person's name"],
+                [2, "age", "Integer", [], "Person's age"]
+            ]],
+            ["PersonAlias", "Person", [], "Alias to Person type"],
+            ["NestedAlias", "PersonAlias", [], "Nested alias to Person"]
+        ]
+    }
+    
+    # Test with base type (should return the type itself)
+    result = get_reference_type(sample_schema, "String")
+    assert result is not None
+    assert result[0] == "String"
+    assert result[1] == "String"
+    
+    # Test with record type
+    result = get_reference_type(sample_schema, "Person")
+    assert result is not None
+    assert result[0] == "Person"
+    assert result[1] == "Record"
+    
+    # Test with alias type (should resolve to base type)
+    result = get_reference_type(sample_schema, "PersonAlias")
+    assert result is not None
+    assert result[0] == "Person"
+    assert result[1] == "Record"
+    
+    # Test with nested alias (should resolve to base type)
+    result = get_reference_type(sample_schema, "NestedAlias")
+    assert result is not None
+    assert result[0] == "Person"
+    assert result[1] == "Record"
+    
+    # Test with unknown type (should raise ValueError)
+    try:
+        get_reference_type(sample_schema, "UnknownType")
+        assert False, "Should have raised ValueError"
+    except ValueError as e:
+        assert "Unknown type UnknownType referenced" in str(e)
+    
+    print("All get_reference_type tests passed!") 
