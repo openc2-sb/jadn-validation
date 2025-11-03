@@ -2,6 +2,7 @@
 from jadnvalidation.data_validation.data_validation import DataValidation
 from jadnvalidation.tests.test_utils import validate_invalid_data, validate_valid_data
 from jadnvalidation.utils.consts import XML
+from jadnvalidation.utils.type_utils import validate_field_type_references, validate_type_references
 
 
 def test_metadata_validity(): 
@@ -444,7 +445,6 @@ def test_total_validity():
     err_count = validate_invalid_data(j_schema, root, invalid_data_list)
     assert err_count == len(invalid_data_list) 
 
-
 def test_total_validity_with_opts(): 
     root = "Schema"    
   
@@ -798,6 +798,12 @@ def test_total_validity_with_opts():
     invalid_data_list = [
          {'SuitEnum': 10},'Aces', 10         
     ]
+    
+    errors = validate_type_references(j_schema)
+    assert errors == []    
+    
+    errors = validate_field_type_references(j_schema)
+    assert errors == []    
     
     err_count = validate_valid_data(j_schema, root, valid_data_list)    
     assert err_count == 0
