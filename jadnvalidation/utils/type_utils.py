@@ -2,7 +2,7 @@ from jadnvalidation.models.jadn.jadn_type import is_basetype
 from jadnvalidation.utils.general_utils import get_item_safe_check
 
 
-def get_schema_type_by_name(j_types: list, name: str):
+def get_schema_type_by_name(j_types: list, name: str) -> list | None:
     type_list = [j_type for j_type in j_types if j_type[0] == name]
     type = None
     

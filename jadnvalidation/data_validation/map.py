@@ -75,8 +75,8 @@ class Map:
                 raise ValueError(f"Type {self.j_type.type_name} inherits from type {inherit_from} with different base type {inherited_type_obj.base_type}. Received: {self.j_type.base_type}")
             
             schema_types = self.j_schema.get('types', [])
-            self_type = get_schema_type_by_name(schema_types, self.j_type.type_name)
-            self.j_type.fields = get_inherited_fields(schema_types, self_type)
+            raw_type = get_schema_type_by_name(schema_types, self.j_type.type_name)
+            self.j_type.fields = get_inherited_fields(schema_types, raw_type, self.j_type.fields)
         
     def check_min_length(self):
         min_length = get_min_length(self.j_type)
