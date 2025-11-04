@@ -857,3 +857,8 @@ def test_with_options():
     
     err_count = validate_valid_data(j_schema, root, valid_data_list)    
     assert err_count == 0
+    
+def test_simple_metaschema_validation(): 
+    root = "Schema"
+  
+    j_schema = {}

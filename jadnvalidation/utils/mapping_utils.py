@@ -61,6 +61,8 @@ def get_max_length(j_type: Jadn_Type, global_config: Jadn_Config = None) -> int:
         max_length = global_config.MaxString
     elif j_type.base_type == Base_Type.BINARY.value:
         max_length = global_config.MaxBinary
+    elif j_type.base_type == Base_Type.ARRAY.value:
+        max_length = global_config.MaxElements
     else:
         max_length = None
     
@@ -320,30 +322,65 @@ def get_pattern(j_type: Jadn_Type):
     return get_opt_str("%", j_type)
 
 def use_field_ids(j_type_opts: List[str]) -> bool:
-    use_id = False
+    """
+    Checks if field IDs should be used (= option without value).
     
-    if j_type_opts:
-        for type_opt in j_type_opts:
-            opt_char_id, opt_val = general_utils.split_on_first_char(type_opt)
-            if opt_char_id == "=":
-                if opt_val == None or opt_val == '':
-                    use_id = True
-                    return use_id
-                break   
+    Args:
+        j_type_opts: List of type options
+        
+    Returns:
+        bool: True if '=' option exists without a value, False otherwise
+    """
+    if not j_type_opts:
+        return False
     
-    return use_id
+    for type_opt in j_type_opts:
+        opt_char_id, opt_val = general_utils.split_on_first_char(type_opt)
+        if opt_char_id == "=":
+            # Return True only if '=' exists without a value (empty or None)
+            return not opt_val
+    
+    return False
 
-def use_alias(j_type_opts: List[str]) -> bool | str:
-    use_alias = False
-    alias_str = ""
+def has_alias_option(j_type_opts: List[str]) -> bool:
+    """
+    Checks if any alias option ('=') exists in type options.
     
-    if j_type_opts:
-        for type_opt in j_type_opts:
-            opt_char_id, opt_val = general_utils.split_on_first_char(type_opt)
-            if opt_char_id == "=":
-                if opt_val is not None:
-                    alias_str = opt_val
-                    return alias_str
-                break   
+    Args:
+        j_type_opts: List of type options
+        
+    Returns:
+        bool: True if any '=' option exists (with or without value), False otherwise
+    """
+    if not j_type_opts:
+        return False
     
-    return use_alias
+    for type_opt in j_type_opts:
+        opt_char_id, opt_val = general_utils.split_on_first_char(type_opt)
+        if opt_char_id == "=":
+            return True
+    
+    return False
+
+def use_alias(j_type_opts: List[str]) -> str | None:
+    """
+    Checks for alias option ('=') in type options.
+    Returns the alias string if found, None otherwise.
+    
+    Args:
+        j_type_opts: List of type options
+        
+    Returns:
+        str: The alias value if '=' option exists with a value
+        None: If no alias option found or if '=' option exists without a value
+    """
+    if not j_type_opts:
+        return None
+    
+    for type_opt in j_type_opts:
+        opt_char_id, opt_val = general_utils.split_on_first_char(type_opt)
+        if opt_char_id == "=":
+            # Return the alias value if it exists and is not empty
+            return opt_val if opt_val else None
+    
+    return None

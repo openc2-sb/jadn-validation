@@ -1,8 +1,7 @@
 from jadnvalidation.data_validation.data_validation import DataValidation
 from jadnvalidation.utils.consts import JSON
-from jadnvalidation.utils.mapping_utils import use_keyless_map
+from jadnvalidation.utils.mapping_utils import use_keyless_map, use_alias, use_field_ids, has_alias_option
 from jadnvalidation.utils.type_utils import get_reference_type, validate_type_references, validate_field_type_references
-# from jadnutils.utils.jadn_utils import get_inherited_fields
 
 
 def validate_valid_data(j_schema: dict, root: str, data_list: list, data_format: str = JSON) -> int:
@@ -92,6 +91,37 @@ def test_use_keyless_map():
     assert result == ['~', True]
     
     print("All use_keyless_map tests passed!")
+
+
+def test_alias_functions():
+    """Unit tests for alias-related functions"""
+    
+    # Test use_alias function
+    assert use_alias(None) is None
+    assert use_alias([]) is None
+    assert use_alias(["other", "options"]) is None
+    assert use_alias(["=myalias", "other"]) == "myalias"
+    assert use_alias(["=", "other"]) is None
+    assert use_alias(["=", "other"]) is None  # Empty value
+    assert use_alias(["first", "=testalias", "last"]) == "testalias"
+    
+    # Test use_field_ids function
+    assert use_field_ids(None) is False
+    assert use_field_ids([]) is False
+    assert use_field_ids(["other", "options"]) is False
+    assert use_field_ids(["=myalias", "other"]) is False
+    assert use_field_ids(["=", "other"]) is True
+    assert use_field_ids(["first", "=", "last"]) is True
+    
+    # Test has_alias_option function
+    assert has_alias_option(None) is False
+    assert has_alias_option([]) is False
+    assert has_alias_option(["other", "options"]) is False
+    assert has_alias_option(["=myalias", "other"]) is True
+    assert has_alias_option(["=", "other"]) is True
+    assert has_alias_option(["first", "=testalias", "last"]) is True
+    
+    print("All alias function tests passed!")
     
  # tests hitting jadnutils function    
 def test_get_inherited_fields():

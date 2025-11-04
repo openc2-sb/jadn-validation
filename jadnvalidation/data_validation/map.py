@@ -5,7 +5,7 @@ from jadnvalidation.models.jadn.jadn_config import Jadn_Config, check_field_name
 from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type, is_user_defined, is_primitive
 from jadnvalidation.utils.consts import JSON, XML
 from jadnvalidation.utils.general_utils import create_clz_instance, get_data_by_id, get_data_by_name, merge_opts
-from jadnvalidation.utils.mapping_utils import flip_to_array_of, get_inheritance, get_max_length, get_max_occurs, get_min_length, get_min_occurs, get_tagged_data, is_optional, use_field_ids, use_alias, use_keyless_map, to_dict_on_given_char
+from jadnvalidation.utils.mapping_utils import flip_to_array_of, get_inheritance, get_max_length, get_max_occurs, get_min_length, get_min_occurs, get_tagged_data, has_alias_option, is_optional, use_field_ids, use_alias, use_keyless_map, to_dict_on_given_char
 from jadnvalidation.utils.type_utils import get_reference_type, get_schema_type_by_name
 from jadnutils.utils.jadn_utils import get_inherited_fields
 
@@ -123,7 +123,7 @@ class Map:
                     ref_type_obj = build_j_type(ref_type)
                     check_type_name(ref_type_obj.type_name, self.j_config.TypeName)
                     merged_opts = merge_opts(j_field_obj.type_options, ref_type_obj.type_options)
-                    print(f"options: {merged_opts}")
+                    # print(f"options: {merged_opts}")
                     #j_field_obj = ref_type_obj     #copied hastily;examining
                     j_field_obj.type_options = merged_opts        # we don't want this because it will permanently merge them down across fields
 
@@ -132,7 +132,7 @@ class Map:
                     field_data = get_data_by_id(temp_map, j_field_obj.id)
                     if field_data is not None:
                         presence_tracker = True
-                elif use_alias(j_field_obj.type_options): # changed this and the next line to merged_options to wipe it every type
+                elif has_alias_option(j_field_obj.type_options): # changed this and the next line to merged_options to wipe it every type
                     alias_val = use_alias(j_field_obj.type_options)
                     #print(f"found alias {alias_val}")
                     field_data = get_data_by_name(temp_map, alias_val)

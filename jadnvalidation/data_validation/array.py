@@ -70,8 +70,11 @@ class Array:
                 raise ValueError(f"Type {self.j_type.type_name} inherits from type {inherit_from} with different base type {inherited_type_obj.base_type}. Received: {self.j_type.base_type}")
             
             schema_types = self.j_schema.get('types', [])
-            self_type = get_schema_type_by_name(schema_types, self.j_type.type_name)
-            self.j_type.fields = get_inherited_fields(schema_types, self_type, self.j_type.fields)
+            raw_type = get_schema_type_by_name(schema_types, self.j_type.type_name)
+            # self_type = get_schema_type_by_name(schema_types, self.j_type.type_name)
+            # self.j_type.fields = get_inherited_fields(schema_types, self_type, self.j_type.fields)
+            self.j_type.fields = get_inherited_fields(schema_types, raw_type)
+            test = None
 
     def check_and_order_fields(self):
         if is_structure(self.j_type):
