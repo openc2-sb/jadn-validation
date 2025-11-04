@@ -93,12 +93,12 @@ def test_array_inheritance():
         ]
     
     invalid_data_list = [
-            # [1, 2, 3, "item_1", "item_2", "item_3", "extra"],
-            # [1, 2, 3, 99, "item_1", "item_2", "item_3"],
-            # [None, 2, 3, None, "item_2", "item_3"],
-            # [None, None, None, None, None, None],
+            [1, 2, 3, "item_1", "item_2", "item_3", "extra"],
+            [1, 2, 3, 99, "item_1", "item_2", "item_3"],
+            [None, 2, 3, None, "item_2", "item_3"],
+            [None, None, None, None, None, None],
             [1, 2, 3, 4, 5, 6],
-            # ["item_1", "item_2", "item_3", "item_4", "item_5", "item_6"],
+            ["item_1", "item_2", "item_3", "item_4", "item_5", "item_6"],
         ]
         
     # err_count = validate_valid_data(j_schema, root, valid_data_list)    

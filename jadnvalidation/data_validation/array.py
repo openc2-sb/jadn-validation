@@ -71,9 +71,7 @@ class Array:
             
             schema_types = self.j_schema.get('types', [])
             raw_type = get_schema_type_by_name(schema_types, self.j_type.type_name)
-            # self_type = get_schema_type_by_name(schema_types, self.j_type.type_name)
-            # self.j_type.fields = get_inherited_fields(schema_types, self_type, self.j_type.fields)
-            self.j_type.fields = get_inherited_fields(schema_types, raw_type)
+            self.j_type.fields = get_inherited_fields(schema_types, raw_type, self.j_type.fields)
             test = None
 
     def check_and_order_fields(self):
