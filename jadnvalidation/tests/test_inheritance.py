@@ -101,8 +101,8 @@ def test_array_inheritance():
             ["item_1", "item_2", "item_3", "item_4", "item_5", "item_6"],
         ]
         
-    # err_count = validate_valid_data(j_schema, root, valid_data_list)    
-    # assert err_count == 0
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
         
     err_count = validate_invalid_data(j_schema, root, invalid_data_list)    
     assert err_count == len(invalid_data_list)

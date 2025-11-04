@@ -48,7 +48,6 @@ class Array:
         self.errors = []
         
     def check_type(self):
-        # print(type(self.data))
         if isinstance(self.data, str):
             if "/ipv4-net" in self.j_type.type_options or "/ipv6-net" in self.j_type.type_options:
                 pass
@@ -72,7 +71,6 @@ class Array:
             schema_types = self.j_schema.get('types', [])
             raw_type = get_schema_type_by_name(schema_types, self.j_type.type_name)
             self.j_type.fields = get_inherited_fields(schema_types, raw_type, self.j_type.fields)
-            test = None
 
     def check_and_order_fields(self):
         if is_structure(self.j_type):
@@ -102,7 +100,7 @@ class Array:
     def check_max_length(self):
         max_length = get_max_length(self.j_type, self.j_config)
         
-        if max_length is None or max_length == 0:
+        if max_length is None or max_length == 0 or max_length == Jadn_Config().MaxElements:
             max_length = len(self.j_type.fields)
         
         if max_length is not None and len(self.data) > max_length:
