@@ -967,9 +967,9 @@ def test_total_validity_with_optsCOPY():
       [2, "namespace", "Namespace", [], "Namespace IRI"]
     ]],
     ["Config", "Map", ["{1"], "Config vars override JADN defaults", [
-      [1, "$MaxBinary", "Integer", ["y1", "[0", "u255"], "Package max octets"],
-      [2, "$MaxString", "Integer", ["y1", "[0", "u255"], "Package max characters"],
-      [3, "$MaxElements", "Integer", ["y1", "[0", "u255"], "Package max items/properties"],
+      [1, "$MaxBinary", "Integer", ["w1", "[0", "u255"], "Package max octets"],
+      [2, "$MaxString", "Integer", ["w1", "[0", "u255"], "Package max characters"],
+      [3, "$MaxElements", "Integer", ["w1", "[0", "u255"], "Package max items/properties"],
       [4, "$Sys", "String", ["{1", "}1", "[0", "u."], "System character for TypeName"],
       [5, "$TypeName", "String", ["/regex", "[0", "^[A-Z][-.A-Za-z0-9]{0,63}$"], ""],
       [6, "$FieldName", "String", ["/regex", "[0", "u^[a-z][_A-Za-z0-9]{0,63}$"], ""],
@@ -1046,8 +1046,8 @@ def test_total_validity_with_optsCOPY():
     ]],
     ["FieldID", "Integer", ["y0"]],
     ["FieldOpts", "Map", ["~1"], "", [
-      [91, "minOccurs", "Integer", ["y0", "[0", "=["]],
-      [93, "maxOccurs", "Integer", ["y-2", "[0", "=]"]],
+      [91, "minOccurs", "Integer", ["w0", "[0", "=["]],
+      [93, "maxOccurs", "Integer", ["w-2", "[0", "=]"]],
       [38, "tagId", "Integer", ["[0", "=&"]],
       [75, "key", "Boolean", ["[0", "=K"]],
       [76, "link", "Boolean", ["[0", "=L"]],
@@ -1066,14 +1066,14 @@ def test_total_validity_with_optsCOPY():
       [119, "minExclusive", "Integer", ["[0", "=y"]],
       [120, "maxExclusive", "Integer", ["[0", "=z"]],
       [37, "pattern", "String", ["/regex", "[0", "=%"]],
-      [43, "keyType", "String", ["=+"], "edited type, was TypeRef"],
-      [42, "valueType", "String", ["=*"], "edited type, was TypeRef"],
+      [43, "keyType", "String", ["[0", "=+"], "edited type, was TypeRef"],
+      [42, "valueType", "String", ["[0", "=*"], "edited type, was TypeRef"],
       [61, "id", "ID-Types", ["[0", "=="]],
       [35, "enum", "String", ["[0", "=#"], "edited type, was TypeRef"],
       [62, "pointer", "String", ["[0", "=>"], "edited type, was TypeRef"],
       [999, "keyless", "Integer", ["y0", "[0", "=~"]],
       [67, "combine", "String", ["{1", "}1", "[0", "=C"]],
-      [113, "unique, ordered", "Boolean", ["[0", "=q"]],
+      [113, "unique_ordered", "Boolean", ["[0", "=q"]],
       [115, "set", "Boolean", ["[0", "=s"]],
       [98, "unordered", "Boolean", ["[0", "=b"]],
       [111, "sequence", "Boolean", ["[0", "=undefined"]]
@@ -1170,8 +1170,8 @@ def test_total_validity_with_optsCOPY():
       [117, "default", "Number", ["[0", "=u"]],
       [118, "const", "Number", ["[0", "=v"]],
       [37, "pattern", "String", ["/regex", "[0", "=%"]],
-      [123, "minLength", "Integer", ["y0", "[0", "={"]],
-      [125, "maxLength", "Integer", ["y0", "[0", "=}"]],
+      [123, "minLength", "Integer", ["w0", "[0", "={"]],
+      [125, "maxLength", "Integer", ["w0", "[0", "=}"]],
       [48, "nillable", "Boolean", ["[0", "=undefined"]],
       [65, "attr", "Boolean", ["[0", "=undefined"]]
     ]],
@@ -1184,8 +1184,8 @@ def test_total_validity_with_optsCOPY():
       [117, "default", "Number", ["[0", "=u"]],
       [118, "const", "Number", ["[0", "=v"]],
       [37, "pattern", "String", ["/regex", "[0", "=%"]],
-      [123, "minLength", "Integer", ["y0", "[0", "={"]],
-      [125, "maxLength", "Integer", ["y0", "[0", "=}"]],
+      [123, "minLength", "Integer", ["w0", "[0", "={"]],
+      [125, "maxLength", "Integer", ["w0", "[0", "=}"]],
       [48, "nillable", "Boolean", ["[0", "=undefined"]],
       [65, "attr", "Boolean", ["[0", "=undefined"]]
     ]],
@@ -1211,66 +1211,66 @@ def test_total_validity_with_optsCOPY():
     ]],
     ["ArrayOpts", "Map", ["eAllOpts", "~1"], "", [
       [47, "format", "ArrayOf", ["*Format", "q", "[0", "=/"]],
-      [123, "minLength", "Integer", ["y0", "[0", "={"]],
-      [125, "maxLength", "Integer", ["y0", "[0", "=}"]]
+      [123, "minLength", "Integer", ["w0", "[0", "={"]],
+      [125, "maxLength", "Integer", ["w0", "[0", "=}"]]
     ]],
     ["ArrayFieldOpts", "Map", ["eFieldOpts", "~1"], "", [
       [47, "format", "ArrayOf", ["*Format", "q", "[0", "=/"]],
-      [123, "minLength", "Integer", ["y0", "[0", "={"]],
-      [125, "maxLength", "Integer", ["y0", "[0", "=}"]]
+      [123, "minLength", "Integer", ["w0", "[0", "={"]],
+      [125, "maxLength", "Integer", ["w0", "[0", "=}"]]
     ]],
     ["ArrayOfOpts", "Map", ["eAllOpts", "~1"], "", [
       [42, "valueType", "TypeRef", ["=*"]],
-      [123, "minLength", "Integer", ["y0", "[0", "={"]],
-      [125, "maxLength", "Integer", ["y0", "[0", "=}"]],
+      [123, "minLength", "Integer", ["w0", "[0", "={"]],
+      [125, "maxLength", "Integer", ["w0", "[0", "=}"]],
       [113, "unique, ordered", "Boolean", ["[0", "=q"]],
       [115, "set", "Boolean", ["[0", "=s"]],
       [98, "unordered", "Boolean", ["[0", "=b"]]
     ]],
     ["ArrayOfFieldOpts", "Map", ["eFieldOpts", "~1"], "", [
       [42, "valueType", "TypeRef", ["=*"]],
-      [123, "minLength", "Integer", ["y0", "[0", "={"]],
-      [125, "maxLength", "Integer", ["y0", "[0", "=}"]],
+      [123, "minLength", "Integer", ["w0", "[0", "={"]],
+      [125, "maxLength", "Integer", ["w0", "[0", "=}"]],
       [113, "unique, ordered", "Boolean", ["[0", "=q"]],
       [115, "set", "Boolean", ["[0", "=s"]],
       [98, "unordered", "Boolean", ["[0", "=b"]]
     ]],
     ["MapOpts", "Map", ["eAllOpts", "~1"], "", [
       [61, "id", "ID-Types", ["[0", "=="]],
-      [123, "minLength", "Integer", ["y0", "[0", "={"]],
-      [125, "maxLength", "Integer", ["y0", "[0", "=}"]],
+      [123, "minLength", "Integer", ["w0", "[0", "={"]],
+      [125, "maxLength", "Integer", ["w0", "[0", "=}"]],
       [111, "sequence", "Boolean", ["[0", "=undefined"]],
-      [999, "keyless", "Integer", ["y0", "[0", "=~"]]
+      [999, "keyless", "Integer", ["w0", "[0", "=~"]]
     ]],
     ["MapFieldOpts", "Map", ["eFieldOpts", "~1"], "", [
       [61, "id", "ID-Types", ["[0", "=="]],
-      [123, "minLength", "Integer", ["y0", "[0", "={"]],
-      [125, "maxLength", "Integer", ["y0", "[0", "=}"]],
+      [123, "minLength", "Integer", ["w0", "[0", "={"]],
+      [125, "maxLength", "Integer", ["w0", "[0", "=}"]],
       [111, "sequence", "Boolean", ["[0", "=undefined"]],
-      [999, "keyless", "Integer", ["y0", "[0", "=~"]]
+      [999, "keyless", "Integer", ["w0", "[0", "=~"]]
     ]],
     ["MapOfOpts", "Map", ["eAllOpts", "~1"], "", [
       [43, "keyType", "TypeRef", ["=+"]],
       [42, "valueType", "TypeRef", ["=*"]],
-      [123, "minLength", "Integer", ["y0", "[0", "={"]],
-      [125, "maxLength", "Integer", ["y0", "[0", "=}"]],
+      [123, "minLength", "Integer", ["w0", "[0", "={"]],
+      [125, "maxLength", "Integer", ["w0", "[0", "=}"]],
       [111, "sequence", "Boolean", ["[0", "=undefined"]]
     ]],
     ["MapOfFieldOpts", "Map", ["eFieldOpts", "~1"], "", [
       [43, "keyType", "TypeRef", ["=+"]],
       [42, "valueType", "TypeRef", ["=*"]],
-      [123, "minLength", "Integer", ["y0", "[0", "={"]],
-      [125, "maxLength", "Integer", ["y0", "[0", "=}"]],
+      [123, "minLength", "Integer", ["w0", "[0", "={"]],
+      [125, "maxLength", "Integer", ["w0", "[0", "=}"]],
       [111, "sequence", "Boolean", ["[0", "=undefined"]]
     ]],
     ["RecordOpts", "Map", ["eAllOpts", "~1"], "", [
-      [123, "minLength", "Integer", ["y0", "[0", "={"]],
-      [125, "maxLength", "Integer", ["y0", "[0", "=}"]],
+      [123, "minLength", "Integer", ["w0", "[0", "={"]],
+      [125, "maxLength", "Integer", ["w0", "[0", "=}"]],
       [111, "sequence", "Boolean", ["[0", "=undefined"]]
     ]],
     ["RecordFieldOpts", "Map", ["eFieldOpts", "~1"], "", [
-      [123, "minLength", "Integer", ["y0", "[0", "={"]],
-      [125, "maxLength", "Integer", ["y0", "[0", "=}"]],
+      [123, "minLength", "Integer", ["w0", "[0", "={"]],
+      [125, "maxLength", "Integer", ["w0", "[0", "=}"]],
       [111, "sequence", "Boolean", ["[0", "=undefined"]]
     ]],
     ["ID-Types", "Choice", ["CX"], "", [
