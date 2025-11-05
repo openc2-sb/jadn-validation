@@ -102,7 +102,7 @@ def validate_field_type_references(schema):
                 continue
                 
             # Skip type references that start with special prefixes (like #, *, +)
-            # These are option indicators, not actual type references
+            # These are option indicators, not actual type references TODO FIX THIS THEY SHOULD STILL BE CHECKED
             if field_type.startswith(('#', '*', '+')):
                 continue
                 

@@ -77,6 +77,7 @@ class Map:
             schema_types = self.j_schema.get('types', [])
             raw_type = get_schema_type_by_name(schema_types, self.j_type.type_name)
             self.j_type.fields = get_inherited_fields(schema_types, raw_type, self.j_type.fields)
+            #print(f"{len(self.j_type.fields)} fields in inherited object")
         
     def check_min_length(self):
         min_length = get_min_length(self.j_type)
@@ -123,16 +124,16 @@ class Map:
                     ref_type_obj = build_j_type(ref_type)
                     check_type_name(ref_type_obj.type_name, self.j_config.TypeName)
                     merged_opts = merge_opts(j_field_obj.type_options, ref_type_obj.type_options)
-                    # print(f"options: {merged_opts}")
-                    #j_field_obj = ref_type_obj     #copied hastily;examining
-                    j_field_obj.type_options = merged_opts        # we don't want this because it will permanently merge them down across fields
+                    #print(f"options: {merged_opts}")
+                    #j_field_obj = ref_type_obj    
+                    j_field_obj.type_options = merged_opts       
 
                 field_data = None
                 if self.use_ids:
                     field_data = get_data_by_id(temp_map, j_field_obj.id)
                     if field_data is not None:
                         presence_tracker = True
-                elif has_alias_option(j_field_obj.type_options): # changed this and the next line to merged_options to wipe it every type
+                elif has_alias_option(j_field_obj.type_options): 
                     alias_val = use_alias(j_field_obj.type_options)
                     #print(f"found alias {alias_val}")
                     field_data = get_data_by_name(temp_map, alias_val)
@@ -148,8 +149,9 @@ class Map:
                 #print(f"presence_tracker is {presence_tracker}")
                 if presence_tracker is False:
                     missing_fields = missing_fields+1
-                    if missing_fields >= field_count:
-                        raise ValueError(f"unexpected item in bagging area") # put different error msg here later
+                    if missing_fields > field_count:
+                        #print(f"{missing_fields} >= {field_count}")
+                        raise ValueError(f"unexpected item in Type {j_field_obj.type_name} received {field_data}. expecting {len(self.j_type.fields)} fields" ) 
                     
                 if field_data is None:
                     if is_optional(j_field_obj):
@@ -167,21 +169,24 @@ class Map:
                     ref_type_obj = build_j_type(ref_type)
                     check_type_name(ref_type_obj.type_name, self.j_config.TypeName)
                     merged_opts = merge_opts(j_field_obj.type_options, ref_type_obj.type_options)
-                    j_field_obj = ref_type_obj     # copied hastily; think this needs to go
+                    j_field_obj = ref_type_obj     
                     j_field_obj.type_options = merged_opts
                     
                     #print(f"field type is : {j_field_obj.base_type}")
                     #basetype assumed String, and is starting as a split string
                     if j_field_obj.base_type=="Integer":
                         #add format checks later
-                        field_data = int(field_data)
+                        if field_data is not None:
+                            field_data = int(field_data)
                         #print(f"field data changed to {field_data}")
                     if j_field_obj.base_type=="Number":
                         #add format checks later
-                        field_data = float(field_data)
+                        if field_data is not None:
+                            field_data = float(field_data)
                         #print(f"field data changed to {field_data}")
                     if j_field_obj.base_type=="Boolean":
-                        field_data = bool(field_data)
+                        if field_data is not None:
+                            field_data = bool(field_data)
                         #print(f"field data changed to {field_data}")
                     # i can't see a current example on Binary we can address that if/when we have clarification
 
@@ -295,9 +300,9 @@ class Map:
             if not use_keyless_map(self.j_type.type_options): #check to see if this needs a counter-case
                 for data_key in self.data.keys():
                     is_found = False
-                    print(f"{self.j_type.type_options}")
+                    #print(f"{self.j_type.type_options}")
                     for j_field in self.j_type.fields:
-                        print(f"{self.j_type}")
+                        #print(f"{self.j_type}")
                         if self.use_ids:
                             if data_key == str(j_field[0]):
                                 is_found = True
@@ -309,7 +314,7 @@ class Map:
                             ref_type_obj = build_j_type(ref_type)
                             check_type_name(ref_type_obj.type_name, self.j_config.TypeName)
                             merged_opts = merge_opts(self.j_type.type_options, ref_type_obj.type_options)
-                            print(f"merged options: {merged_opts}")
+                            #print(f"merged options: {merged_opts}")
 
                             if use_alias(merged_opts):
                                 alias_val = use_alias(merged_opts)
@@ -319,7 +324,7 @@ class Map:
                                 is_found = True
                         elif use_alias(self.j_type.type_options):
                             alias_val = use_alias(self.j_type.type_options)
-                            print(f"alias: {alias_val}")
+                            #print(f"alias: {alias_val}")
                             if data_key == alias_val:
                                 is_found = True
                         elif data_key == j_field[1]:
