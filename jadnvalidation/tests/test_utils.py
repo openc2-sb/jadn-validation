@@ -2,6 +2,11 @@ from jadnvalidation.data_validation.data_validation import DataValidation
 from jadnvalidation.utils.consts import JSON
 from jadnvalidation.utils.mapping_utils import use_keyless_map, use_alias, use_field_ids, has_alias_option
 from jadnvalidation.utils.type_utils import get_reference_type, validate_type_references, validate_field_type_references
+from jadnvalidation.models.jadn.jadn_type import (
+    is_primitive, is_basetype, is_enumeration, is_specialization, is_structure, 
+    is_non_primitive, is_record_or_map, Jadn_Type, Primitive, Base_Type, 
+    Enumeration, Specialization, Structure
+)
 
 
 def validate_valid_data(j_schema: dict, root: str, data_list: list, data_format: str = JSON) -> int:
@@ -122,6 +127,108 @@ def test_alias_functions():
     assert has_alias_option(["first", "=testalias", "last"]) is True
     
     print("All alias function tests passed!")
+
+
+def test_enum_functions():
+    """Unit tests for enum-related functions with simplified standard enum checks"""
+    
+    # Test is_primitive function
+    assert is_primitive("String") is True
+    assert is_primitive("Integer") is True
+    assert is_primitive("Boolean") is True
+    assert is_primitive("Binary") is True
+    assert is_primitive("Number") is True
+    assert is_primitive("Array") is False
+    assert is_primitive("Record") is False
+    assert is_primitive("Unknown") is False
+    assert is_primitive("") is False
+    
+    # Test is_basetype function
+    assert is_basetype("String") is True
+    assert is_basetype("Array") is True
+    assert is_basetype("Record") is True
+    assert is_basetype("Choice") is True
+    assert is_basetype("ArrayOf") is True
+    assert is_basetype("MapOf") is True
+    assert is_basetype("Unknown") is False
+    assert is_basetype("") is False
+    
+    # Test is_non_primitive function
+    assert is_non_primitive("Array") is True
+    assert is_non_primitive("Record") is True
+    assert is_non_primitive("Map") is True
+    assert is_non_primitive("Choice") is True
+    assert is_non_primitive("Enumerated") is True
+    assert is_non_primitive("String") is False
+    assert is_non_primitive("Integer") is False
+    assert is_non_primitive("Unknown") is False
+    
+    # Test functions with Jadn_Type objects
+    record_type = Jadn_Type("TestRecord", "Record")
+    map_type = Jadn_Type("TestMap", "Map")
+    string_type = Jadn_Type("TestString", "String")
+    choice_type = Jadn_Type("TestChoice", "Choice")
+    enum_type = Jadn_Type("TestEnum", "Enumerated")
+    array_type = Jadn_Type("TestArray", "Array")
+    
+    # Test is_record_or_map
+    assert is_record_or_map(record_type) is True
+    assert is_record_or_map(map_type) is True
+    assert is_record_or_map(string_type) is False
+    assert is_record_or_map(choice_type) is False
+    
+    # Test is_specialization
+    assert is_specialization(choice_type) is True
+    assert is_specialization(record_type) is False
+    assert is_specialization(string_type) is False
+    
+    # Test is_enumeration
+    assert is_enumeration(enum_type) is True
+    assert is_enumeration(record_type) is False
+    assert is_enumeration(string_type) is False
+    
+    # Test is_structure
+    assert is_structure(array_type) is True
+    assert is_structure(record_type) is True
+    assert is_structure(map_type) is True
+    assert is_structure(choice_type) is False
+    assert is_structure(string_type) is False
+    
+    print("All enum function tests passed!")
+
+
+def test_enum_values():
+    """Test that enum values are correctly defined"""
+    
+    # Test Primitive enum values
+    primitive_values = [item.value for item in Primitive]
+    expected_primitives = ['Binary', 'Boolean', 'Integer', 'Number', 'String']
+    assert set(primitive_values) == set(expected_primitives)
+    
+    # Test Structure enum values
+    structure_values = [item.value for item in Structure]
+    expected_structures = ['Array', 'Map', 'Record']
+    assert set(structure_values) == set(expected_structures)
+    
+    # Test Specialization enum values
+    specialization_values = [item.value for item in Specialization]
+    expected_specializations = ['Choice']
+    assert set(specialization_values) == set(expected_specializations)
+    
+    # Test Enumeration enum values
+    enumeration_values = [item.value for item in Enumeration]
+    expected_enumerations = ['Enumerated']
+    assert set(enumeration_values) == set(expected_enumerations)
+    
+    # Test Base_Type enum values (includes all types)
+    base_type_values = [item.value for item in Base_Type]
+    expected_base_types = [
+        'Binary', 'Boolean', 'Integer', 'Number', 'String',
+        'Array', 'ArrayOf', 'Choice', 'Enumerated', 'Map', 'MapOf', 'Record'
+    ]
+    assert set(base_type_values) == set(expected_base_types)
+    
+    print("All enum values tests passed!")
     
  # tests hitting jadnutils function    
 def test_get_inherited_fields():

@@ -1,28 +1,28 @@
 from typing import Any
+from enum import Enum
 
-from jadnvalidation.utils.enum_utils import BaseEnum
 from jadnvalidation.utils.general_utils import safe_get
 
-class Primitive(BaseEnum):  
+class Primitive(Enum):  
     BINARY = 'Binary'
     BOOLEAN = 'Boolean'
     INTEGER = 'Integer'
     NUMBER = 'Number'
     STRING = 'String'
     
-class Enumeration(BaseEnum):
+class Enumeration(Enum):
     ENUMERATED = 'Enumerated'
     
-class Specialization(BaseEnum):
+class Specialization(Enum):
     CHOICE = 'Choice'
     
-class Structure(BaseEnum):
+class Structure(Enum):
     ARRAY = 'Array'
     MAP = 'Map'
     RECORD = 'Record'
 
 # Core Types
-class Base_Type(BaseEnum):
+class Base_Type(Enum):
     BINARY = 'Binary'
     BOOLEAN = 'Boolean'
     INTEGER = 'Integer'
@@ -61,10 +61,7 @@ def is_array(jadn_type: Jadn_Type) -> bool:
         return False  
             
 def is_basetype(type: str) -> bool:
-    if type in Base_Type:
-        return True
-    else:
-        return False        
+    return type in [item.value for item in Base_Type]        
     
 def is_enumerated(jadn_type: list[any]):
     if len(jadn_type) == 3:
@@ -72,10 +69,7 @@ def is_enumerated(jadn_type: list[any]):
     return False
     
 def is_enumeration(jadn_type: Jadn_Type) -> bool:
-    if jadn_type.base_type in Enumeration:
-        return True
-    else:
-        return False
+    return jadn_type.base_type in [item.value for item in Enumeration]
     
 def is_field(jadn_type: list[any]):
     if len(jadn_type) > 0:
@@ -99,34 +93,22 @@ def is_field_multiplicity(opts: list) -> bool:
     return False
 
 def is_primitive(type: str) -> bool:
-    if type in Primitive:
-        return True
-    else:
-        return False
+    return type in [item.value for item in Primitive]
     
 def is_non_primitive(type: str) -> bool:
-    if type in Structure or type in Enumeration or type in Specialization:
-        return True
-    else:
-        return False
+    return (type in [item.value for item in Structure] or 
+            type in [item.value for item in Enumeration] or 
+            type in [item.value for item in Specialization])
     
 def is_record_or_map(jadn_type: Jadn_Type) -> bool:
-    if jadn_type.base_type == Base_Type.RECORD.value or jadn_type.base_type == Base_Type.MAP.value:
-        return True
-    else:
-        return False    
+    return (jadn_type.base_type == Base_Type.RECORD.value or 
+            jadn_type.base_type == Base_Type.MAP.value)
     
 def is_specialization(jadn_type: Jadn_Type) -> bool:
-    if jadn_type.base_type in Specialization:
-        return True
-    else:
-        return False       
+    return jadn_type.base_type in [item.value for item in Specialization]
     
 def is_structure(jadn_type: Jadn_Type) -> bool:
-    if jadn_type.base_type in Structure:
-        return True
-    else:
-        return False
+    return jadn_type.base_type in [item.value for item in Structure]
     
 def is_type(jadn_type: list[any]):
     if len(jadn_type) > 0:
