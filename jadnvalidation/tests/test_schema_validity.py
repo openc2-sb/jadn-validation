@@ -713,7 +713,7 @@ def test_total_validity_with_opts():
       [42, "valueType", "TypeRef", ["=*"]],
       [123, "minLength", "Integer", ["y0", "[0", "={"]],
       [125, "maxLength", "Integer", ["y0", "[0", "=}"]],
-      [113, "unique, ordered", "Boolean", ["[0", "=q"]],
+      [113, "unique_ordered", "Boolean", ["[0", "=q"]],
       [115, "set", "Boolean", ["[0", "=s"]],
       [98, "unordered", "Boolean", ["[0", "=b"]]
     ]],
@@ -721,7 +721,7 @@ def test_total_validity_with_opts():
       [42, "valueType", "TypeRef", ["=*"]],
       [123, "minLength", "Integer", ["y0", "[0", "={"]],
       [125, "maxLength", "Integer", ["y0", "[0", "=}"]],
-      [113, "unique, ordered", "Boolean", ["[0", "=q"]],
+      [113, "unique_ordered", "Boolean", ["[0", "=q"]],
       [115, "set", "Boolean", ["[0", "=s"]],
       [98, "unordered", "Boolean", ["[0", "=b"]]
     ]],
@@ -1030,20 +1030,6 @@ def test_total_validity_with_optsCOPY():
       [4, "field_options", "FieldOpts", ["[0", "~1"]],
       [5, "field_description", "Description", ["[0"]]
     ]],
-    ["FieldOptions", "Choice", [], "", [
-      [1, "Binary", "BinaryFieldOpts"],
-      [2, "Boolean", "BooleanFieldOpts"],
-      [3, "Integer", "IntegerFieldOpts"],
-      [4, "Number", "NumberFieldOpts"],
-      [5, "String", "StringFieldOpts"],
-      [6, "Enumerated", "EnumeratedFieldOpts"],
-      [7, "Choice", "ChoiceFieldOpts"],
-      [8, "Array", "ArrayFieldOpts"],
-      [9, "ArrayOf", "ArrayOfFieldOpts"],
-      [10, "Map", "MapFieldOpts"],
-      [11, "MapOf", "MapOfFieldOpts"],
-      [12, "Record", "RecordFieldOpts"]
-    ]],
     ["FieldID", "Integer", ["y0"]],
     ["FieldOpts", "Map", ["~1"], "", [
       [91, "minOccurs", "Integer", ["w0", "[0", "=["]],
@@ -1094,22 +1080,7 @@ def test_total_validity_with_optsCOPY():
       [48, "nillable", "Boolean", ["[0", "=undefined"]],
       [65, "attr", "Boolean", ["[0", "=undefined"]]
     ]],
-    ["BinaryFieldOpts", "Map", ["eFieldOpts", "~1"], "", [
-      [47, "format", "ArrayOf", ["*Format", "q", "[0", "=/"]],
-      [123, "minLength", "Integer", ["[0", "={"]],
-      [125, "maxLength", "Integer", ["[0", "=}"]],
-      [117, "default", "Binary", ["[0", "=u"]],
-      [118, "const", "Binary", ["[0", "=v"]],
-      [48, "nillable", "Boolean", ["[0", "=undefined"]],
-      [65, "attr", "Boolean", ["[0", "=undefined"]]
-    ]],
     ["BooleanOpts", "Map", ["eAllOpts", "~1"], "", [
-      [117, "default", "Boolean", ["[0", "=u"]],
-      [118, "const", "Boolean", ["[0", "=K"]],
-      [48, "nillable", "Boolean", ["[0", "=K"]],
-      [65, "attr", "Boolean", ["[0", "=K"]]
-    ]],
-    ["BooleanFieldOpts", "Map", ["eFieldOpts", "~1"], "", [
       [117, "default", "Boolean", ["[0", "=u"]],
       [118, "const", "Boolean", ["[0", "=K"]],
       [48, "nillable", "Boolean", ["[0", "=K"]],
@@ -1127,30 +1098,7 @@ def test_total_validity_with_optsCOPY():
       [48, "nillable", "Boolean", ["[0", "=undefined"]],
       [65, "attr", "Boolean", ["[0", "=undefined"]]
     ]],
-    ["IntegerFieldOpts", "Map", ["eFieldOpts", "~1"], "", [
-      [47, "format", "ArrayOf", ["*Format", "q", "[0", "=/"]],
-      [69, "scale", "Integer", ["[0", "=undefined"]],
-      [121, "minInclusive", "Integer", ["[0", "=w"]],
-      [122, "maxInclusive", "Integer", ["[0", "=x"]],
-      [119, "minExclusive", "Integer", ["[0", "=y"]],
-      [120, "maxExclusive", "Integer", ["[0", "=z"]],
-      [117, "default", "Integer", ["[0", "=u"]],
-      [118, "const", "Integer", ["[0", "=v"]],
-      [48, "nillable", "Boolean", ["[0", "=undefined"]],
-      [65, "attr", "Boolean", ["[0", "=undefined"]]
-    ]],
     ["NumberOpts", "Map", ["eAllOpts", "~1"], "", [
-      [47, "format", "ArrayOf", ["*Format", "q", "[0", "=/"]],
-      [121, "minInclusive", "Number", ["[0", "=w"]],
-      [122, "maxInclusive", "Number", ["[0", "=x"]],
-      [119, "minExclusive", "Number", ["[0", "=y"]],
-      [120, "maxExclusive", "Number", ["[0", "=z"]],
-      [117, "default", "Number", ["[0", "=u"]],
-      [118, "const", "Number", ["[0", "=v"]],
-      [48, "nillable", "Boolean", ["[0", "=undefined"]],
-      [65, "attr", "Boolean", ["[0", "=undefined"]]
-    ]],
-    ["NumberFieldOpts", "Map", ["eFieldOpts", "~1"], "", [
       [47, "format", "ArrayOf", ["*Format", "q", "[0", "=/"]],
       [121, "minInclusive", "Number", ["[0", "=w"]],
       [122, "maxInclusive", "Number", ["[0", "=x"]],
@@ -1175,27 +1123,7 @@ def test_total_validity_with_optsCOPY():
       [48, "nillable", "Boolean", ["[0", "=undefined"]],
       [65, "attr", "Boolean", ["[0", "=undefined"]]
     ]],
-    ["StringFieldOpts", "Map", ["eFieldOpts", "~1"], "", [
-      [47, "format", "ArrayOf", ["*Format", "q", "[0", "=/"]],
-      [121, "minInclusive", "Number", ["[0", "=w"]],
-      [122, "maxInclusive", "Number", ["[0", "=x"]],
-      [119, "minExclusive", "Number", ["[0", "=y"]],
-      [120, "maxExclusive", "Number", ["[0", "=z"]],
-      [117, "default", "Number", ["[0", "=u"]],
-      [118, "const", "Number", ["[0", "=v"]],
-      [37, "pattern", "String", ["/regex", "[0", "=%"]],
-      [123, "minLength", "Integer", ["w0", "[0", "={"]],
-      [125, "maxLength", "Integer", ["w0", "[0", "=}"]],
-      [48, "nillable", "Boolean", ["[0", "=undefined"]],
-      [65, "attr", "Boolean", ["[0", "=undefined"]]
-    ]],
     ["EnumeratedOpts", "Map", ["eAllOpts", "~1"], "", [
-      [61, "id", "ID-Types", ["[0", "=="]],
-      [35, "enum", "TypeRef", ["[0", "=#"]],
-      [62, "pointer", "TypeRef", ["[0", "=>"]],
-      [65, "attr", "Boolean", ["[0", "=undefined"]]
-    ]],
-    ["EnumeratedFieldOpts", "Map", ["eFieldOpts", "~1"], "", [
       [61, "id", "ID-Types", ["[0", "=="]],
       [35, "enum", "TypeRef", ["[0", "=#"]],
       [62, "pointer", "TypeRef", ["[0", "=>"]],
@@ -1205,16 +1133,7 @@ def test_total_validity_with_optsCOPY():
       [61, "id", "ID-Types", ["[0", "=="]],
       [67, "combine", "String", ["{1", "}1", "[0", "=C"]]
     ]],
-    ["ChoiceFieldOpts", "Map", ["eFieldOpts", "~1"], "", [
-      [61, "id", "ID-Types", ["[0", "=="]],
-      [67, "combine", "String", ["{1", "}1", "[0", "=C"]]
-    ]],
     ["ArrayOpts", "Map", ["eAllOpts", "~1"], "", [
-      [47, "format", "ArrayOf", ["*Format", "q", "[0", "=/"]],
-      [123, "minLength", "Integer", ["w0", "[0", "={"]],
-      [125, "maxLength", "Integer", ["w0", "[0", "=}"]]
-    ]],
-    ["ArrayFieldOpts", "Map", ["eFieldOpts", "~1"], "", [
       [47, "format", "ArrayOf", ["*Format", "q", "[0", "=/"]],
       [123, "minLength", "Integer", ["w0", "[0", "={"]],
       [125, "maxLength", "Integer", ["w0", "[0", "=}"]]
@@ -1223,26 +1142,11 @@ def test_total_validity_with_optsCOPY():
       [42, "valueType", "TypeRef", ["=*"]],
       [123, "minLength", "Integer", ["w0", "[0", "={"]],
       [125, "maxLength", "Integer", ["w0", "[0", "=}"]],
-      [113, "unique, ordered", "Boolean", ["[0", "=q"]],
-      [115, "set", "Boolean", ["[0", "=s"]],
-      [98, "unordered", "Boolean", ["[0", "=b"]]
-    ]],
-    ["ArrayOfFieldOpts", "Map", ["eFieldOpts", "~1"], "", [
-      [42, "valueType", "TypeRef", ["=*"]],
-      [123, "minLength", "Integer", ["w0", "[0", "={"]],
-      [125, "maxLength", "Integer", ["w0", "[0", "=}"]],
-      [113, "unique, ordered", "Boolean", ["[0", "=q"]],
+      [113, "unique_ordered", "Boolean", ["[0", "=q"]],
       [115, "set", "Boolean", ["[0", "=s"]],
       [98, "unordered", "Boolean", ["[0", "=b"]]
     ]],
     ["MapOpts", "Map", ["eAllOpts", "~1"], "", [
-      [61, "id", "ID-Types", ["[0", "=="]],
-      [123, "minLength", "Integer", ["w0", "[0", "={"]],
-      [125, "maxLength", "Integer", ["w0", "[0", "=}"]],
-      [111, "sequence", "Boolean", ["[0", "=undefined"]],
-      [999, "keyless", "Integer", ["w0", "[0", "=~"]]
-    ]],
-    ["MapFieldOpts", "Map", ["eFieldOpts", "~1"], "", [
       [61, "id", "ID-Types", ["[0", "=="]],
       [123, "minLength", "Integer", ["w0", "[0", "={"]],
       [125, "maxLength", "Integer", ["w0", "[0", "=}"]],
@@ -1256,19 +1160,7 @@ def test_total_validity_with_optsCOPY():
       [125, "maxLength", "Integer", ["w0", "[0", "=}"]],
       [111, "sequence", "Boolean", ["[0", "=undefined"]]
     ]],
-    ["MapOfFieldOpts", "Map", ["eFieldOpts", "~1"], "", [
-      [43, "keyType", "TypeRef", ["=+"]],
-      [42, "valueType", "TypeRef", ["=*"]],
-      [123, "minLength", "Integer", ["w0", "[0", "={"]],
-      [125, "maxLength", "Integer", ["w0", "[0", "=}"]],
-      [111, "sequence", "Boolean", ["[0", "=undefined"]]
-    ]],
     ["RecordOpts", "Map", ["eAllOpts", "~1"], "", [
-      [123, "minLength", "Integer", ["w0", "[0", "={"]],
-      [125, "maxLength", "Integer", ["w0", "[0", "=}"]],
-      [111, "sequence", "Boolean", ["[0", "=undefined"]]
-    ]],
-    ["RecordFieldOpts", "Map", ["eFieldOpts", "~1"], "", [
       [123, "minLength", "Integer", ["w0", "[0", "={"]],
       [125, "maxLength", "Integer", ["w0", "[0", "=}"]],
       [111, "sequence", "Boolean", ["[0", "=undefined"]]

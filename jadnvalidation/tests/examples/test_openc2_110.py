@@ -1,7 +1,7 @@
 import traceback
 from jadnvalidation.data_validation.data_validation import DataValidation
 from jadnvalidation.utils.consts import JSON
-from jadnvalidation.data_validation.schemas.jadn_meta_schema import j_meta_schema, j_meta_roots
+from jadnvalidation.data_validation.schemas.jadn_meta_schema import j_meta_schema, j_meta_roots, j_meta_schema_updated
 
 
 j_schema = {
@@ -77,7 +77,7 @@ j_schema = {
       [1, "versions", "Versions", ["[0"], "List of OpenC2 language versions supported by this Actuator"],
       [2, "profiles", "Profiles", ["[0"], "List of profiles supported by this Actuator"],
       [3, "pairs", "Action-Targets", ["[0"], "List of targets applicable to each supported Action"],
-      [4, "rate_limit", "Number", ["y0.0", "[0"], "Maximum number of requests per minute supported by design or policy"],
+      [4, "rate_limit", "Number", ["y0", "[0"], "Maximum number of requests per minute supported by design or policy"],
       [5, "args", "Enumerated", ["#Args", "[0", "]0"], "List of supported Command Arguments"]
     ]],
     ["Action-Targets", "MapOf", ["*Targets", "+Action", "{1"], "Map of all actions to all targets"],
@@ -264,6 +264,34 @@ def test_schema():
     
     try:            
         j_validation = DataValidation(j_meta_schema, j_meta_roots, j_schema)
+        j_validation.validate()
+    except Exception as e:
+        is_valid = False
+        print(f"Schema Validation Error: {str(e)}")
+        traceback.print_exc() 
+        
+    assert is_valid
+
+      
+def test_schema_updated():
+    is_valid = True
+    
+    primitive_types = {"String", "Integer", "Boolean", "Binary"}
+
+    num_incorrect = 0
+    for t in j_schema["types"]:
+        # If type definition has less than 5 items and is a primitive, add empty array as 5th item
+        if len(t) < 5 and t[1] in primitive_types:
+            num_incorrect += 1
+            print(f"Patching type {t[0]} to add empty array as 5th item") 
+  
+    if num_incorrect > 0:
+        print(f"Patched {num_incorrect} type definitions in schema")
+    
+    assert num_incorrect == 0, f"Schema has {num_incorrect} type definitions with less than 5 items"  
+    
+    try:            
+        j_validation = DataValidation(j_meta_schema_updated, j_meta_roots, j_schema)
         j_validation.validate()
     except Exception as e:
         is_valid = False
