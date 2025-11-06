@@ -571,21 +571,16 @@ def test_map_keyless_map():
     }
     
     valid_data_list = [
-            
-        ["AI am any String"],["A1"],["BTwo"],["C"]
-                          
+        ["AI am any String"],["A1"],["BTwo"],["CTrue"]   
     ]
 
     invalid_data_list = [
-
-        ["3Two"], ["a1"], "A1",
+        ["3Two"], 
+        ["a1"], 
+        "A1",
         {"field_value_21": "data 1"}, 
         {"field_value_x": "test incorrect field name"},
-        {"field_value_1": 123}        
-    ]
-    invalid_data_list = [
-
-        ["3Two"], ["a1"]        
+        {"field_value_1": 123}
     ]
     
     err_count = validate_valid_data(j_schema, root, valid_data_list)    

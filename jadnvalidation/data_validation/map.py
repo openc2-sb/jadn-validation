@@ -92,7 +92,7 @@ class Map:
     def check_fields(self):
         funnyArray = []
         funnyArray = use_keyless_map(self.j_type.type_options)
-        temp_map = {}
+        funny_data_map = {}
 
         if funnyArray is not None and self.data_format == JSON:
             alias_val = ''
@@ -105,13 +105,14 @@ class Map:
                 if list(dict_val.values()) == '':
                     dict_val = {list(dict_val.keys())[0] , True} 
                     #print("updated empty to bool true")
-                temp_map.update(dict_val)
+                funny_data_map.update(dict_val)
                 
             #print(f"{temp_map}")
 
-            presence_tracker = False
+            # presence_tracker = False
             field_count = len(self.j_type.fields)
             missing_fields = 0
+            
             for j_key, j_field in enumerate(self.j_type.fields):
                 j_field_obj = build_jadn_type_obj(j_field)
 
@@ -130,34 +131,37 @@ class Map:
 
                 field_data = None
                 if self.use_ids:
-                    field_data = get_data_by_id(temp_map, j_field_obj.id)
+                    field_data = get_data_by_id(funny_data_map, j_field_obj.id)
                     if field_data is not None:
                         presence_tracker = True
                 elif has_alias_option(j_field_obj.type_options): 
                     alias_val = use_alias(j_field_obj.type_options)
                     #print(f"found alias {alias_val}")
-                    field_data = get_data_by_name(temp_map, alias_val)
+                    field_data = get_data_by_name(funny_data_map, alias_val)
                     if field_data is not None:
                         presence_tracker = True
                 else:
-                    field_data = get_data_by_name(temp_map, j_field_obj.type_name) 
-                    #print(f"field_data is {field_data}, presence_tracker is {presence_tracker}")
-                    if field_data is not None:
-                        presence_tracker = True
-                    #print(f"Checking for Key {j_field_obj.type_name}, found value {field_data}")
+                    field_data = get_data_by_name(funny_data_map, j_field_obj.type_name) 
+                    
+                    # if field_data is None:
+                    #     missing_fields = missing_fields + 1 
+                    #     continue
+                    # else:
+                    #     presence_tracker = True
                 
-                #print(f"presence_tracker is {presence_tracker}")
-                if presence_tracker is False:
-                    missing_fields = missing_fields+1
-                    if missing_fields > field_count:
-                        #print(f"{missing_fields} >= {field_count}")
-                        raise ValueError(f"unexpected item in Type {j_field_obj.type_name} received {field_data}. expecting {len(self.j_type.fields)} fields" ) 
+                # if presence_tracker is False:
+                #     missing_fields = missing_fields+1
+                #     if missing_fields > field_count:
+                #         #print(f"{missing_fields} >= {field_count}")
+                #         raise ValueError(f"unexpected item in Type {j_field_obj.type_name} received {field_data}. expecting {len(self.j_type.fields)} fields" ) 
                     
                 if field_data is None:
                     if is_optional(j_field_obj):
+                        missing_fields = missing_fields + 1                         
                         continue
                     else:
                         raise ValueError(f"Field '{j_field_obj.type_name}' is missing from data")
+                    
                 check_sys_char(j_field_obj.type_name, self.j_config.Sys)
                 check_field_name(j_field_obj.type_name, self.j_config.FieldName)    
 
@@ -171,24 +175,18 @@ class Map:
                     merged_opts = merge_opts(j_field_obj.type_options, ref_type_obj.type_options)
                     j_field_obj = ref_type_obj     
                     j_field_obj.type_options = merged_opts
-                    
-                    #print(f"field type is : {j_field_obj.base_type}")
-                    #basetype assumed String, and is starting as a split string
+
+                    # Perhaps move this to a callable function...
                     if j_field_obj.base_type=="Integer":
-                        #add format checks later
                         if field_data is not None:
                             field_data = int(field_data)
-                        #print(f"field data changed to {field_data}")
                     if j_field_obj.base_type=="Number":
-                        #add format checks later
                         if field_data is not None:
                             field_data = float(field_data)
-                        #print(f"field data changed to {field_data}")
                     if j_field_obj.base_type=="Boolean":
                         if field_data is not None:
                             field_data = bool(field_data)
-                        #print(f"field data changed to {field_data}")
-                    # i can't see a current example on Binary we can address that if/when we have clarification
+                    # # Other types?
 
                     tagged_data = get_tagged_data(j_field_obj, self.data)
                     
@@ -207,8 +205,6 @@ class Map:
 
                 elif is_primitive(j_field_obj.base_type):
                     
-                    #print(f"field type is : {j_field_obj.base_type}")
-                    #basetype assumed String, and is starting as a split string
                     if j_field_obj.base_type=="Integer":
                         #add format checks later
                         field_data = int(field_data)
@@ -237,6 +233,9 @@ class Map:
                     #print(f"{j_field_obj.type_name}")
                     clz_instance = create_clz_instance(**clz_kwargs)
                     clz_instance.validate()
+                    
+            if field_count == missing_fields:
+                raise ValueError(f"unexpected option in {funny_data_map[0] : funny_data_map[1]}" )
 
 
         else:
