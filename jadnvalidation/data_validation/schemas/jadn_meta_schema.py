@@ -44,7 +44,7 @@ j_meta_schema = {
             [11, "jadn_version", "Namespace", ["[0"], "JADN Metaschema package"]
         ]],
 
-        ["PrefixNs", "Array", [], "Prefix corresponding to a namespace IRI", [
+        ["PrefixNS", "Array", [], "Prefix corresponding to a namespace IRI", [
             [1, "prefix", "NSID", [], "Namespace prefix string"],
             [2, "namespace", "Namespace", [], "Namespace IRI"]
         ]],

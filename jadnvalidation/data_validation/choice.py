@@ -7,6 +7,7 @@ from jadnvalidation.utils.mapping_utils import flip_to_array_of, get_choice_type
 from jadnvalidation.utils.consts import JSON, XML, Choice_Consts
 from jadnvalidation.utils.type_utils import get_reference_type, get_schema_type_by_name
 from jadnutils.utils.jadn_utils import get_inherited_fields
+
 common_rules = {
     "e": "check_inheritance", 
     # "type": "check_type",
@@ -212,6 +213,18 @@ class Choice:
         else: pass
 
     def process_default(self, use_ids):
+
+        if self.data is None:
+            raise ValueError(f"Choice '{self.j_type.type_name}' data cannot be None")
+        
+        if isinstance(self.data, str):
+            if self.data == "":
+                raise ValueError(f"Choice '{self.j_type.type_name}' data cannot be empty string")
+            else:
+                raise ValueError(f"Choice '{self.j_type.type_name}' data must be a dict, not string")
+        
+        if not isinstance(self.data, dict):
+            raise ValueError(f"Choice '{self.j_type.type_name}' data must be a dict, got {type(self.data).__name__}")
 
         # only one choice is allowed        
         if len(self.data) != 1:
