@@ -4,7 +4,7 @@ from jadnvalidation.models.jadn.jadn_type import build_jadn_type_obj, is_field_m
 from jadnvalidation.models.jadn.jadn_config import Jadn_Config, check_field_name, check_sys_char, check_type_name, get_j_config
 from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type, is_user_defined, is_primitive
 from jadnvalidation.utils.consts import JSON, XML
-from jadnvalidation.utils.general_utils import create_clz_instance, get_data_by_id, get_data_by_name, merge_opts
+from jadnvalidation.utils.general_utils import create_clz_instance, get_data_by_id, get_data_by_name, is_none, merge_opts
 from jadnvalidation.utils.mapping_utils import flip_to_array_of, get_inheritance, get_max_length, get_max_occurs, get_min_length, get_min_occurs, get_tagged_data, has_alias_option, is_optional, use_field_ids, use_alias, use_keyless_map, to_dict_on_given_char
 from jadnvalidation.utils.type_utils import get_reference_type, get_schema_type_by_name
 from jadnutils.utils.jadn_utils import get_inherited_fields
@@ -38,6 +38,10 @@ class Map:
             j_type = build_j_type(j_type)
         
         self.j_type = j_type
+        
+        if data is None or data == {} or data == [] or data == '':
+            print("hit")
+        
         self.data = data
         self.data_format = data_format         
         
@@ -129,17 +133,18 @@ class Map:
                     #j_field_obj = ref_type_obj    
                     j_field_obj.type_options = merged_opts       
 
+                # Get the data for the field
                 field_data = None
                 if self.use_ids:
                     field_data = get_data_by_id(funny_data_map, j_field_obj.id)
-                    if field_data is not None:
-                        presence_tracker = True
+                    # if field_data is not None:
+                    #     presence_tracker = True
                 elif has_alias_option(j_field_obj.type_options): 
                     alias_val = use_alias(j_field_obj.type_options)
                     #print(f"found alias {alias_val}")
                     field_data = get_data_by_name(funny_data_map, alias_val)
-                    if field_data is not None:
-                        presence_tracker = True
+                    # if field_data is not None:
+                    #     presence_tracker = True
                 else:
                     field_data = get_data_by_name(funny_data_map, j_field_obj.type_name) 
                     
@@ -155,7 +160,7 @@ class Map:
                 #         #print(f"{missing_fields} >= {field_count}")
                 #         raise ValueError(f"unexpected item in Type {j_field_obj.type_name} received {field_data}. expecting {len(self.j_type.fields)} fields" ) 
                     
-                if field_data is None:
+                if is_none(field_data):
                     if is_optional(j_field_obj):
                         missing_fields = missing_fields + 1                         
                         continue
@@ -235,7 +240,7 @@ class Map:
                     clz_instance.validate()
                     
             if field_count == missing_fields:
-                raise ValueError(f"unexpected option in {funny_data_map[0] : funny_data_map[1]}" )
+                raise ValueError(f"unexpected option in funny_data_map: {funny_data_map}, funny_data_array: {funnyArray}, field_data: {field_data}, j_field_obj: {j_field_obj}" )
 
 
         else:
