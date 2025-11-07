@@ -248,7 +248,7 @@ def test_response():
 def test_schema():
     is_valid = True
     
-    primitive_types = {"String", "Integer", "Boolean", "Binary"}
+    primitive_types = {"String", "Integer", "Boolean", "Binary", "Number"}
 
     num_incorrect = 0
     for t in j_schema["types"]:
@@ -276,7 +276,7 @@ def test_schema():
 def test_schema_updated():
     is_valid = True
     
-    primitive_types = {"String", "Integer", "Boolean", "Binary"}
+    primitive_types = {"String", "Integer", "Boolean", "Binary", "Number"}
 
     num_incorrect = 0
     for t in j_schema["types"]:

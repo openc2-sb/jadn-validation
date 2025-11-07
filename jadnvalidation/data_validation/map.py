@@ -111,7 +111,7 @@ class Map:
 
             presence_tracker = False
             field_count = len(self.j_type.fields)
-            missing_fields = 0
+            unused_fields = 0
             for j_key, j_field in enumerate(self.j_type.fields):
                 j_field_obj = build_jadn_type_obj(j_field)
 
@@ -148,16 +148,16 @@ class Map:
                 
                 #print(f"presence_tracker is {presence_tracker}")
                 if presence_tracker is False:
-                    missing_fields = missing_fields+1
-                    if missing_fields > field_count:
+                    unused_fields = unused_fields+1
+                    if unused_fields >= field_count:
                         #print(f"{missing_fields} >= {field_count}")
-                        raise ValueError(f"unexpected item in Type {j_field_obj.type_name} received {field_data}. expecting {len(self.j_type.fields)} fields" ) 
+                        raise ValueError(f"unexpected item in Type {j_field_obj.type_name} received {field_data}. checked {unused_fields} fields" ) 
                     
                 if field_data is None:
                     if is_optional(j_field_obj):
                         continue
                     else:
-                        raise ValueError(f"Field '{j_field_obj.type_name}' is missing from data")
+                        raise ValueError(f"Field '{j_field_obj.type_name}' is missing from data in {self.j_type.type_name}")
                 check_sys_char(j_field_obj.type_name, self.j_config.Sys)
                 check_field_name(j_field_obj.type_name, self.j_config.FieldName)    
 

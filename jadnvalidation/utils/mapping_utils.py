@@ -357,7 +357,7 @@ def has_alias_option(j_type_opts: List[str]) -> bool:
     
     for type_opt in j_type_opts:
         opt_char_id, opt_val = general_utils.split_on_first_char(type_opt)
-        if opt_char_id == "=":
+        if opt_char_id == "Z":
             return True
     
     return False
