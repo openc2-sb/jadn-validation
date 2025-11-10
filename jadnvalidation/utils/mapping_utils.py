@@ -196,21 +196,6 @@ def to_dict_on_given_char(string_val: str, position: int) -> dict:
     #split_return.update({string_val[:(position-1)]: string_val[position:]}) # really should work but dosnt
     return split_return
 
-def use_keyless_map(j_type_opts: List[str]) -> list:
-    """
-    Checks if the keyless map option ('~') is present in the type options.
-    Returns [opt_key, opt_val] if found, None otherwise.
-    """
-    if not j_type_opts:
-        return None
-        
-    for opt in j_type_opts:
-        opt_key, opt_val = general_utils.split_on_first_char(opt)
-        if opt_key == '~':
-            return ['~', opt_val or True]
-    
-    return None
-
 def get_tagid(opts: List[str]) -> int:
     """
     Searches opts for a string that starts with '&'. If found, returns the integer value of the second character.

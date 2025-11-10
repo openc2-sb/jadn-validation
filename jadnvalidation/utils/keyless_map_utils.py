@@ -2,7 +2,9 @@
 Utilities for handling keyless map operations in JADN validation.
 """
 
+from typing import List
 from jadnvalidation.models.jadn.jadn_type import Base_Type
+from jadnvalidation.utils import general_utils
 
 
 def convert_str_data_to_true_type(j_field_obj, field_data: str, check_none=True):
@@ -37,3 +39,37 @@ def convert_str_data_to_true_type(j_field_obj, field_data: str, check_none=True)
     # Apply conversion if type is supported, otherwise return original data (UserDefined types are not converted here)
     converter = type_converters.get(j_field_obj.base_type)
     return converter(field_data) if converter else field_data
+
+
+def convert_field_str_data_to_true_type(j_field_obj, field_data, check_none=True):
+    """
+    Convert string field_data to the appropriate Python type based on j_field_obj.base_type.
+    Specifically designed for converting string data from keyless maps to proper types.
+    
+    This is an alias for convert_str_data_to_true_type with a more descriptive name.
+    
+    Args:
+        j_field_obj: The field object containing base_type information
+        field_data: The data to convert (expected to be string for conversion)
+        check_none: If True, only convert if field_data is not None
+        
+    Returns:
+        The converted field_data (string converted to appropriate type, or original if not string)
+    """
+    return convert_str_data_to_true_type(j_field_obj, field_data, check_none)
+
+
+def use_keyless_map(j_type_opts: List[str]) -> list:
+    """
+    Checks if the keyless map option ('~') is present in the type options.
+    Returns [opt_key, opt_val] if found, None otherwise.
+    """
+    if not j_type_opts:
+        return None
+        
+    for opt in j_type_opts:
+        opt_key, opt_val = general_utils.split_on_first_char(opt)
+        if opt_key == '~':
+            return ['~', opt_val or True]
+    
+    return None
