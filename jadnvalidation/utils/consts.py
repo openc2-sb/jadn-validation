@@ -16,3 +16,5 @@ HOSTNAME_MAX_LENGTH = 255
 CBOR = "cbor"
 JSON = "json"
 XML = "xml"
+CONCISE = "concise"
+COMPACT = "compact"

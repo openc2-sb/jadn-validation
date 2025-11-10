@@ -3,7 +3,7 @@ from typing import Union
 
 from jadnvalidation.models.jadn.jadn_config import Jadn_Config, check_type_name, get_j_config
 from jadnvalidation.models.jadn.jadn_type import build_jadn_type_obj
-from jadnvalidation.utils.consts import CBOR, JSON, XML
+from jadnvalidation.utils.consts import CBOR, JSON, XML, COMPACT, CONCISE
 from jadnvalidation.utils.general_utils import create_clz_instance
 from jadnxml.builder.xml_builder import build_py_from_xml
 
@@ -31,7 +31,10 @@ class DataValidation:
             if self.data_format == JSON:
                 # TODO: Move str to json conversion here
                 # self.data = 
-                pass             
+                pass
+
+            elif self.data_format == CONCISE or self.data_format == COMPACT:
+                pass  # Concise/json -> verbose converter          
             
             elif self.data_format == XML:
                 self.data = build_py_from_xml(self.j_schema, self.root, self.data)
