@@ -2,10 +2,11 @@ from typing import Union
 
 from jadnvalidation.models.jadn.jadn_type import build_jadn_type_obj, is_field_multiplicity
 from jadnvalidation.models.jadn.jadn_config import Jadn_Config, check_field_name, check_sys_char, check_type_name, get_j_config
-from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type, is_user_defined, is_primitive
+from jadnvalidation.models.jadn.jadn_type import Base_Type, Jadn_Type, build_j_type, is_user_defined, is_primitive
 from jadnvalidation.utils.consts import JSON, XML
 from jadnvalidation.utils.general_utils import create_clz_instance, get_data_by_id, get_data_by_name, is_none, merge_opts
 from jadnvalidation.utils.mapping_utils import flip_to_array_of, get_inheritance, get_max_length, get_max_occurs, get_min_length, get_min_occurs, get_tagged_data, has_alias_option, is_optional, use_field_ids, use_alias, use_keyless_map, to_dict_on_given_char
+from jadnvalidation.utils.keyless_map_utils import convert_str_data_to_true_type
 from jadnvalidation.utils.type_utils import get_reference_type, get_schema_type_by_name
 from jadnutils.utils.jadn_utils import get_inherited_fields
 
@@ -104,16 +105,12 @@ class Map:
                 if not isinstance(val, str):
                     raise TypeError(f'inparsable item in keyless map: {val}')
                 dict_val = to_dict_on_given_char(val, funnyArray[1])
-                #print(f"line value changed to {dict_val}")
-                #print(f"{dict_val}")
+
                 if list(dict_val.values()) == '':
                     dict_val = {list(dict_val.keys())[0] , True} 
-                    #print("updated empty to bool true")
+
                 funny_data_map.update(dict_val)
                 
-            #print(f"{temp_map}")
-
-            # presence_tracker = False
             field_count = len(self.j_type.fields)
             missing_fields = 0
             
@@ -129,36 +126,20 @@ class Map:
                     ref_type_obj = build_j_type(ref_type)
                     check_type_name(ref_type_obj.type_name, self.j_config.TypeName)
                     merged_opts = merge_opts(j_field_obj.type_options, ref_type_obj.type_options)
-                    #print(f"options: {merged_opts}")
-                    #j_field_obj = ref_type_obj    
+
                     j_field_obj.type_options = merged_opts       
 
                 # Get the data for the field
                 field_data = None
                 if self.use_ids:
                     field_data = get_data_by_id(funny_data_map, j_field_obj.id)
-                    # if field_data is not None:
-                    #     presence_tracker = True
+
                 elif has_alias_option(j_field_obj.type_options): 
                     alias_val = use_alias(j_field_obj.type_options)
-                    #print(f"found alias {alias_val}")
                     field_data = get_data_by_name(funny_data_map, alias_val)
-                    # if field_data is not None:
-                    #     presence_tracker = True
+
                 else:
                     field_data = get_data_by_name(funny_data_map, j_field_obj.type_name) 
-                    
-                    # if field_data is None:
-                    #     missing_fields = missing_fields + 1 
-                    #     continue
-                    # else:
-                    #     presence_tracker = True
-                
-                # if presence_tracker is False:
-                #     missing_fields = missing_fields+1
-                #     if missing_fields > field_count:
-                #         #print(f"{missing_fields} >= {field_count}")
-                #         raise ValueError(f"unexpected item in Type {j_field_obj.type_name} received {field_data}. expecting {len(self.j_type.fields)} fields" ) 
                     
                 if is_none(field_data):
                     if is_optional(j_field_obj):
@@ -181,18 +162,7 @@ class Map:
                     j_field_obj = ref_type_obj     
                     j_field_obj.type_options = merged_opts
 
-                    # Perhaps move this to a callable function...
-                    if j_field_obj.base_type=="Integer":
-                        if field_data is not None:
-                            field_data = int(field_data)
-                    if j_field_obj.base_type=="Number":
-                        if field_data is not None:
-                            field_data = float(field_data)
-                    if j_field_obj.base_type=="Boolean":
-                        if field_data is not None:
-                            field_data = bool(field_data)
-                    # # Other types?
-
+                    field_data = convert_str_data_to_true_type(j_field_obj, field_data, check_none=True)
                     tagged_data = get_tagged_data(j_field_obj, self.data)
                     
                     clz_kwargs = dict(
@@ -210,19 +180,7 @@ class Map:
 
                 elif is_primitive(j_field_obj.base_type):
                     
-                    if j_field_obj.base_type=="Integer":
-                        #add format checks later
-                        field_data = int(field_data)
-                        #print(f"field data changed to {field_data}")
-                    if j_field_obj.base_type=="Number":
-                        #add format checks later
-                        field_data = float(field_data)
-                        #print(f"field data changed to {field_data}")
-                    if j_field_obj.base_type=="Boolean":
-                        field_data = bool(field_data)
-                        #print(f"field data changed to {field_data}")
-                    # i can't see a current example on Binary we can address that if/when we have clarification
-
+                    field_data = convert_str_data_to_true_type(j_field_obj, field_data, check_none=False)
                     tagged_data = get_tagged_data(j_field_obj, self.data)
                     
                     clz_kwargs = dict(
@@ -235,7 +193,6 @@ class Map:
                     if tagged_data is not None:
                         clz_kwargs['tagged_data'] = tagged_data
 
-                    #print(f"{j_field_obj.type_name}")
                     clz_instance = create_clz_instance(**clz_kwargs)
                     clz_instance.validate()
                     
