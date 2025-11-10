@@ -5,6 +5,7 @@ Utilities for handling keyless map operations in JADN validation.
 from typing import List
 from jadnvalidation.models.jadn.jadn_type import Base_Type
 from jadnvalidation.utils import general_utils
+from jadnvalidation.utils.mapping_utils import to_dict_on_given_char
 
 
 def convert_str_data_to_true_type(j_field_obj, field_data: str, check_none=True):
@@ -73,3 +74,33 @@ def use_keyless_map(j_type_opts: List[str]) -> list:
             return ['~', opt_val or True]
     
     return None
+
+
+def build_keyless_map(data, separator_position):
+    """
+    Build a keyless map dictionary from a list of string data.
+    
+    Args:
+        data: List of strings to process into keyless map format
+        separator_position: The position/character for splitting key-value pairs (from keyless map option)
+        
+    Returns:
+        Dictionary containing the processed keyless map data
+        
+    Raises:
+        TypeError: If any item in data is not a string
+    """
+    funny_data_map = {}
+    
+    for val in data:
+        if not isinstance(val, str):
+            raise TypeError(f'inparsable item in keyless map: {val}')
+        
+        dict_val = to_dict_on_given_char(val, separator_position)
+
+        if list(dict_val.values()) == '':
+            dict_val = {list(dict_val.keys())[0], True} 
+
+        funny_data_map.update(dict_val)
+    
+    return funny_data_map

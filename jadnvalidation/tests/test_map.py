@@ -602,8 +602,8 @@ def test_map_keyless_map_2():
                 [1, "A", "String-Thing", ["[0"], ""],
                 [2, "B", "Int-Thing", ["[0"], ""]
             ]],
-            ["String-Thing", "String", [], "", []],
-            ["Int-Thing", "Integer", [], "", []]
+            ["String-Thing", "String", ["[0"], "", []],
+            ["Int-Thing", "Integer", ["[0"], "", []]
         ]
     }
     
@@ -678,8 +678,8 @@ def test_map_alias_fields():
                 [1, "A", "Pattern", ["[0"], ""],
                 [2, "B", "MinOccurs", ["[0", "=["], ""]
             ]],
-            ["Pattern", "String", ["=%"], "", []],
-            ["MinOccurs", "Integer", [], "", []]
+            ["Pattern", "String", ["[0", "=%"], "", []],
+            ["MinOccurs", "Integer", ["[0"], "", []]
         ]
     }
     
