@@ -2,7 +2,7 @@ from typing import Union
 
 from jadnvalidation.models.jadn.jadn_type import build_jadn_type_obj, is_field_multiplicity
 from jadnvalidation.models.jadn.jadn_config import Jadn_Config, check_field_name, check_sys_char, check_type_name, get_j_config
-from jadnvalidation.models.jadn.jadn_type import Base_Type, Jadn_Type, build_j_type, is_user_defined, is_primitive
+from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type, is_user_defined, is_primitive
 from jadnvalidation.utils.consts import JSON, XML
 from jadnvalidation.utils.general_utils import create_clz_instance, get_data_by_id, get_data_by_name, is_none, merge_opts
 from jadnvalidation.utils.mapping_utils import flip_to_array_of, get_inheritance, get_max_length, get_max_occurs, get_min_length, get_min_occurs, get_tagged_data, has_alias_option, is_optional, use_field_ids, use_alias, use_keyless_map, to_dict_on_given_char
