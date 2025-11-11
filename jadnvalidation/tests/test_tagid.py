@@ -25,7 +25,7 @@ def test_tagid_in_array():
                 [1, "field_value_a", "String", [], ""],
                 [2, "field_value_b", "String", [], ""]
             ]],
-            ["Array-Empty", "Array", [], "", []]
+            ["Array-Empty", "Array", ["}0"], "", []]
         ]
     }
     
@@ -104,7 +104,7 @@ def test_tagid_in_record():
                 [1, "field_value_a", "String", [], ""],
                 [2, "field_value_b", "String", [], ""]
             ]],
-            ["Array-Empty", "Array", [], "", []]
+            ["Array-Empty", "Array", ["}0"], "", []]
         ]
     }
     
@@ -176,7 +176,7 @@ def test_tagid_in_map():
     
     j_schema = {
         "types": [
-            ["Root-Test", "Record", [], "", [
+            ["Root-Test", "Map", [], "", [
                 [1, "type_name", "String", [], ""],
                 [2, "selected_type", "Selected-Type", [], ""],
                 [3, "fields", "JADN-Type", ["&2"], ""]
