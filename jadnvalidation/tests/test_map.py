@@ -571,21 +571,16 @@ def test_map_keyless_map():
     }
     
     valid_data_list = [
-            
-        ["AI am any String"],["A1"],["BTwo"],["C"]
-                          
+        ["AI am any String"],["A1"],["BTwo"],["CTrue"]   
     ]
 
     invalid_data_list = [
-
-        ["3Two"], ["a1"], "A1",
+        ["3Two"], 
+        ["a1"], 
+        "A1",
         {"field_value_21": "data 1"}, 
         {"field_value_x": "test incorrect field name"},
-        {"field_value_1": 123}        
-    ]
-    invalid_data_list = [
-
-        ["3Two"], ["a1"]        
+        {"field_value_1": 123}
     ]
     
     err_count = validate_valid_data(j_schema, root, valid_data_list)    
@@ -607,8 +602,8 @@ def test_map_keyless_map_2():
                 [1, "A", "String-Thing", ["[0"], ""],
                 [2, "B", "Int-Thing", ["[0"], ""]
             ]],
-            ["String-Thing", "String", [], "", []],
-            ["Int-Thing", "Integer", [], "", []]
+            ["String-Thing", "String", ["[0"], "", []],
+            ["Int-Thing", "Integer", ["[0"], "", []]
         ]
     }
     
@@ -683,8 +678,8 @@ def test_map_alias_fields():
                 [1, "A", "Pattern", ["[0"], ""],
                 [2, "B", "MinOccurs", ["[0", "=["], ""]
             ]],
-            ["Pattern", "String", ["=%"], "", []],
-            ["MinOccurs", "Integer", [], "", []]
+            ["Pattern", "String", ["[0", "=%"], "", []],
+            ["MinOccurs", "Integer", ["[0"], "", []]
         ]
     }
     

@@ -4,7 +4,7 @@ from jadnvalidation.models.jadn.jadn_type import build_jadn_type_obj, is_field_m
 from jadnvalidation.models.jadn.jadn_config import Jadn_Config, check_field_name, check_sys_char, check_type_name, get_j_config
 from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type, is_user_defined
 from jadnvalidation.utils.consts import JSON, XML
-from jadnvalidation.utils.general_utils import create_clz_instance, create_fmt_clz_instance, get_item_safe_check, merge_opts, sort_array_by_id
+from jadnvalidation.utils.general_utils import create_clz_instance, create_fmt_clz_instance, get_item_safe_check, is_none, merge_opts, sort_array_by_id
 from jadnvalidation.utils.mapping_utils import flip_to_array_of, get_format, get_inheritance, get_max_length, get_max_occurs, get_min_length, get_min_occurs, get_tagged_data, is_optional
 from jadnvalidation.utils.type_utils import get_reference_type, get_schema_type_by_name
 from jadnutils.utils.jadn_utils import get_inherited_fields
@@ -119,7 +119,7 @@ class Array:
             j_field_obj = build_jadn_type_obj(j_field)
             field_data = get_item_safe_check(self.data, j_index)    
             
-            if field_data is None:
+            if is_none(field_data):
                 if is_optional(j_field_obj):
                     continue
                 else:

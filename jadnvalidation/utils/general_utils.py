@@ -26,6 +26,15 @@ def create_regex(pattern_string):
     return re.compile(pattern_string)
   except re.error as e:
     raise ValueError(f"Invalid regex pattern: {e}")
+
+def is_none(field_data):
+    """
+    Check if field_data is None or equivalent to missing/undefined values.
+    Returns True if the data is None, empty list, or empty dict.
+    Note: Empty string ('') is considered a valid value, not a missing value.
+    """
+    return field_data is None #or field_data == [] or field_data == {}
+    # empty arrays are not None data in JADN
     
 # (class_name, j_schema: dict = {}, j_type: Union[list, Jadn_Type] = None, data: any = None)
 def create_clz_instance(class_name: str, *args, **kwargs):

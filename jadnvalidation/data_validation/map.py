@@ -4,8 +4,9 @@ from jadnvalidation.models.jadn.jadn_type import build_jadn_type_obj, is_field_m
 from jadnvalidation.models.jadn.jadn_config import Jadn_Config, check_field_name, check_sys_char, check_type_name, get_j_config
 from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type, is_user_defined, is_primitive
 from jadnvalidation.utils.consts import JSON, XML
-from jadnvalidation.utils.general_utils import create_clz_instance, get_data_by_id, get_data_by_name, merge_opts
-from jadnvalidation.utils.mapping_utils import flip_to_array_of, get_inheritance, get_max_length, get_max_occurs, get_min_length, get_min_occurs, get_tagged_data, has_alias_option, is_optional, use_field_ids, use_alias, use_keyless_map, to_dict_on_given_char
+from jadnvalidation.utils.general_utils import create_clz_instance, get_data_by_id, get_data_by_name, is_none, merge_opts
+from jadnvalidation.utils.mapping_utils import flip_to_array_of, get_inheritance, get_max_length, get_max_occurs, get_min_length, get_min_occurs, get_tagged_data, is_optional, use_field_ids, use_alias, get_alias, to_dict_on_given_char
+from jadnvalidation.utils.keyless_map_utils import convert_str_data_to_true_type, use_keyless_map, build_keyless_map
 from jadnvalidation.utils.type_utils import get_reference_type, get_schema_type_by_name
 from jadnutils.utils.jadn_utils import get_inherited_fields
 
@@ -38,6 +39,10 @@ class Map:
             j_type = build_j_type(j_type)
         
         self.j_type = j_type
+        
+        if data is None or data == {} or data == [] or data == '':
+            print("hit")
+        
         self.data = data
         self.data_format = data_format         
         
@@ -77,7 +82,52 @@ class Map:
             schema_types = self.j_schema.get('types', [])
             raw_type = get_schema_type_by_name(schema_types, self.j_type.type_name)
             self.j_type.fields = get_inherited_fields(schema_types, raw_type, self.j_type.fields)
-            #print(f"{len(self.j_type.fields)} fields in inherited object")
+    
+    def get_field_data(self, j_field_obj, data_source):
+        """
+        Get the data for a field from the data source based on field configuration.
+        
+        Args:
+            j_field_obj: The field object containing id, type_name, and type_options
+            data_source: The data source (dict or map) to retrieve data from
+            
+        Returns:
+            The field data value or None if not found
+        """
+        field_data = None
+        if self.use_ids:
+            field_data = get_data_by_id(data_source, j_field_obj.id)
+
+        elif (alias_val := get_alias(j_field_obj.type_options)) is not None: 
+            field_data = get_data_by_name(data_source, alias_val)
+
+        else:
+            field_data = get_data_by_name(data_source, j_field_obj.type_name)
+            
+        return field_data
+    
+    def build_field_ref_obj(self, j_field_obj, ref_type):
+        """
+        Build a field reference object by merging field options with referenced type options.
+        
+        Args:
+            j_field_obj: The original field object
+            ref_type: The referenced type definition
+            
+        Returns:
+            The modified field object with merged options and preserved type name
+        """
+        ref_type_obj = build_j_type(ref_type)
+        check_type_name(ref_type_obj.type_name, self.j_config.TypeName)
+        
+        merged_opts = merge_opts(j_field_obj.type_options, ref_type_obj.type_options)
+        orig_type_name = j_field_obj.type_name
+        
+        j_field_obj = ref_type_obj
+        j_field_obj.type_name = orig_type_name
+        j_field_obj.type_options = merged_opts
+        
+        return j_field_obj
         
     def check_min_length(self):
         min_length = get_min_length(self.j_type)
@@ -90,28 +140,13 @@ class Map:
             self.errors.append(f"Number of fields length must be less than {max_length}. Received: {len(self.data)}")
         
     def check_fields(self):
-        funnyArray = []
-        funnyArray = use_keyless_map(self.j_type.type_options)
-        temp_map = {}
-
-        if funnyArray is not None and self.data_format == JSON:
-            alias_val = ''
-            for val in self.data:
-                if not isinstance(val, str):
-                    raise TypeError(f'inparsable item in keyless map: {val}')
-                dict_val = to_dict_on_given_char(val, funnyArray[1])
-                #print(f"line value changed to {dict_val}")
-                #print(f"{dict_val}")
-                if list(dict_val.values()) == '':
-                    dict_val = {list(dict_val.keys())[0] , True} 
-                    #print("updated empty to bool true")
-                temp_map.update(dict_val)
-                
-            #print(f"{temp_map}")
-
-            presence_tracker = False
+        keyless_found = use_keyless_map(self.j_type.type_options)
+        if keyless_found is not None and self.data_format == JSON:
+            
+            keyless_map_data = build_keyless_map(self.data, keyless_found[1])
             field_count = len(self.j_type.fields)
-            unused_fields = 0
+            missing_fields = 0
+            
             for j_key, j_field in enumerate(self.j_type.fields):
                 j_field_obj = build_jadn_type_obj(j_field)
 
@@ -148,49 +183,34 @@ class Map:
                 
                 #print(f"presence_tracker is {presence_tracker}")
                 if presence_tracker is False:
-                    unused_fields = unused_fields+1
-                    if unused_fields >= field_count:
+                    missing_fields = missing_fields+1
+                    if missing_fields > field_count:
                         #print(f"{missing_fields} >= {field_count}")
-                        raise ValueError(f"unexpected item in Type {j_field_obj.type_name} received {field_data}. checked {unused_fields} fields" ) 
+                        raise ValueError(f"unexpected item in Type {j_field_obj.type_name} received {field_data}. expecting {len(self.j_type.fields)} fields" ) 
                     
                 if field_data is None:
                     if is_optional(j_field_obj):
                         continue
                     else:
-                        raise ValueError(f"Field '{j_field_obj.type_name}' is missing from data in {self.j_type.type_name}")
+                        raise ValueError(f"Field '{j_field_obj.type_name}' is missing from data")
                 check_sys_char(j_field_obj.type_name, self.j_config.Sys)
-                check_field_name(j_field_obj.type_name, self.j_config.FieldName)    
-
-                if is_field_multiplicity(j_field_obj.type_options):
-                    j_field_obj = flip_to_array_of(j_field_obj, get_min_occurs(j_field_obj), get_max_occurs(j_field_obj, self.j_config))
-
+                check_field_name(j_field_obj.type_name, self.j_config.FieldName)                  
+                
                 if is_user_defined(j_field_obj.base_type):
                     ref_type = get_reference_type(self.j_schema, j_field_obj.base_type) # if it references another map with these options this may need to be revisited
-                    ref_type_obj = build_j_type(ref_type)
-                    check_type_name(ref_type_obj.type_name, self.j_config.TypeName)
-                    merged_opts = merge_opts(j_field_obj.type_options, ref_type_obj.type_options)
-                    j_field_obj = ref_type_obj     
-                    j_field_obj.type_options = merged_opts
+                    j_field_obj = self.build_field_ref_obj(j_field_obj, ref_type)
                     
-                    #print(f"field type is : {j_field_obj.base_type}")
-                    #basetype assumed String, and is starting as a split string
-                    if j_field_obj.base_type=="Integer":
-                        #add format checks later
-                        if field_data is not None:
-                            field_data = int(field_data)
-                        #print(f"field data changed to {field_data}")
-                    if j_field_obj.base_type=="Number":
-                        #add format checks later
-                        if field_data is not None:
-                            field_data = float(field_data)
-                        #print(f"field data changed to {field_data}")
-                    if j_field_obj.base_type=="Boolean":
-                        if field_data is not None:
-                            field_data = bool(field_data)
-                        #print(f"field data changed to {field_data}")
-                    # i can't see a current example on Binary we can address that if/when we have clarification
+                    field_data = self.get_field_data(j_field_obj, keyless_map_data)
 
+                    field_data = convert_str_data_to_true_type(j_field_obj, field_data, check_none=True)
                     tagged_data = get_tagged_data(j_field_obj, self.data)
+                    
+                    if is_none(field_data):
+                        if is_optional(j_field_obj):
+                            missing_fields = missing_fields + 1                         
+                            continue
+                        else:
+                            raise ValueError(f"Field '{j_field_obj.type_name}' is missing from data")  
                     
                     clz_kwargs = dict(
                         class_name=j_field_obj.base_type,
@@ -199,6 +219,7 @@ class Map:
                         data=field_data,
                         data_format=self.data_format
                     )
+                    
                     if tagged_data is not None:
                         clz_kwargs['tagged_data'] = tagged_data
 
@@ -206,23 +227,17 @@ class Map:
                     clz_instance.validate()
 
                 elif is_primitive(j_field_obj.base_type):
-                    
-                    #print(f"field type is : {j_field_obj.base_type}")
-                    #basetype assumed String, and is starting as a split string
-                    if j_field_obj.base_type=="Integer":
-                        #add format checks later
-                        field_data = int(field_data)
-                        #print(f"field data changed to {field_data}")
-                    if j_field_obj.base_type=="Number":
-                        #add format checks later
-                        field_data = float(field_data)
-                        #print(f"field data changed to {field_data}")
-                    if j_field_obj.base_type=="Boolean":
-                        field_data = bool(field_data)
-                        #print(f"field data changed to {field_data}")
-                    # i can't see a current example on Binary we can address that if/when we have clarification
-
+                
+                    field_data = self.get_field_data(j_field_obj, keyless_map_data)    
+                    field_data = convert_str_data_to_true_type(j_field_obj, field_data, check_none=False)
                     tagged_data = get_tagged_data(j_field_obj, self.data)
+                    
+                    if is_none(field_data):
+                        if is_optional(j_field_obj):
+                            missing_fields = missing_fields + 1                         
+                            continue
+                        else:
+                            raise ValueError(f"Field '{j_field_obj.type_name}' is missing from data")                    
                     
                     clz_kwargs = dict(
                         class_name=j_field_obj.base_type,
@@ -231,30 +246,25 @@ class Map:
                         data=field_data,
                         data_format=self.data_format
                     )
+                    
                     if tagged_data is not None:
                         clz_kwargs['tagged_data'] = tagged_data
 
-                    #print(f"{j_field_obj.type_name}")
                     clz_instance = create_clz_instance(**clz_kwargs)
                     clz_instance.validate()
+                    
+            if field_count == missing_fields:
+                raise ValueError(f"unexpected option in funny_data_map: {keyless_map_data}, funny_data_array: {keyless_found}, field_data: {field_data}, j_field_obj: {j_field_obj}" )
 
 
         else:
             for j_key, j_field in enumerate(self.j_type.fields):
                 j_field_obj = build_jadn_type_obj(j_field)
-                alias_val = ''
 
                 if is_field_multiplicity(j_field_obj.type_options):
                     j_field_obj = flip_to_array_of(j_field_obj, get_min_occurs(j_field_obj), get_max_occurs(j_field_obj, self.j_config))
 
-                field_data = None
-                if self.use_ids:
-                    field_data = get_data_by_id(self.data, j_field_obj.id)
-                elif use_alias(j_field_obj.type_options):
-                    alias_val = use_alias(j_field_obj.type_options)
-                    field_data = get_data_by_name(self.data, alias_val)
-                else:
-                    field_data = get_data_by_name(self.data, j_field_obj.type_name)                
+                field_data = self.get_field_data(j_field_obj, self.data)                
                 
                 if field_data is None:
                     if is_optional(j_field_obj):
@@ -270,11 +280,7 @@ class Map:
 
                 if is_user_defined(j_field_obj.base_type):
                     ref_type = get_reference_type(self.j_schema, j_field_obj.base_type)
-                    ref_type_obj = build_j_type(ref_type)
-                    check_type_name(ref_type_obj.type_name, self.j_config.TypeName)
-                    merged_opts = merge_opts(j_field_obj.type_options, ref_type_obj.type_options)
-                    j_field_obj = ref_type_obj
-                    j_field_obj.type_options = merged_opts
+                    j_field_obj = self.build_field_ref_obj(j_field_obj, ref_type)                    
                     
                 tagged_data = get_tagged_data(j_field_obj, self.data)
                     
@@ -316,14 +322,12 @@ class Map:
                             merged_opts = merge_opts(self.j_type.type_options, ref_type_obj.type_options)
                             #print(f"merged options: {merged_opts}")
 
-                            if use_alias(merged_opts):
-                                alias_val = use_alias(merged_opts)
+                            if (alias_val := get_alias(merged_opts)) is not None:
                                 if data_key == alias_val:
                                     is_found = True
                             elif data_key == j_field[1]:
                                 is_found = True
-                        elif use_alias(self.j_type.type_options):
-                            alias_val = use_alias(self.j_type.type_options)
+                        elif (alias_val := get_alias(self.j_type.type_options)) is not None:
                             #print(f"alias: {alias_val}")
                             if data_key == alias_val:
                                 is_found = True

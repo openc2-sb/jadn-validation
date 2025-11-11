@@ -1,6 +1,7 @@
 from jadnvalidation.data_validation.data_validation import DataValidation
 from jadnvalidation.utils.consts import JSON
-from jadnvalidation.utils.mapping_utils import use_keyless_map, use_alias, use_field_ids, has_alias_option
+from jadnvalidation.utils.mapping_utils import use_alias, use_field_ids, has_alias_option, get_alias
+from jadnvalidation.utils.keyless_map_utils import use_keyless_map
 from jadnvalidation.utils.type_utils import get_reference_type, validate_type_references, validate_field_type_references
 from jadnvalidation.models.jadn.jadn_type import (
     is_primitive, is_basetype, is_enumeration, is_specialization, is_structure, 
@@ -125,6 +126,18 @@ def test_alias_functions():
     assert has_alias_option(["=myalias", "other"]) is True
     assert has_alias_option(["=", "other"]) is True
     assert has_alias_option(["first", "=testalias", "last"]) is True
+    
+    # Test get_alias function (primary alias function)
+    assert get_alias(None) is None
+    assert get_alias([]) is None
+    assert get_alias(["other", "options"]) is None
+    assert get_alias(["=myalias", "other"]) == "myalias"
+    assert get_alias(["=", "other"]) is None  # Empty value
+    assert get_alias(["first", "=testalias", "last"]) == "testalias"
+    
+    # Test that use_alias is now just an alias for get_alias
+    test_opts = ["=myalias", "other"]
+    assert use_alias(test_opts) == get_alias(test_opts)
     
     print("All alias function tests passed!")
 
