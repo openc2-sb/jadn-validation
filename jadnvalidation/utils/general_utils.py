@@ -379,9 +379,9 @@ def merge_opts(opts1: list, opts2: list) -> list:
             merged.append(opt)
         else:
             duplicates.append(opt)
-
-    if duplicates:
-        print(f"[merge_opts] Duplicate opts removed (by first char): {duplicates}")
+    # hiding this popup; can be replaced later
+    #if duplicates:
+        #print(f"[merge_opts] Duplicate opts removed (by first char): {duplicates}")
 
     return merged
 

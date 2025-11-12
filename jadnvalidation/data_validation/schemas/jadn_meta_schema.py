@@ -231,7 +231,6 @@ j_meta_schema_updated ={
       [75, "key", "Boolean", ["[0", "ZK"]],
       [76, "link", "Boolean", ["[0", "ZL"]],
       [78, "not", "Boolean", ["[0", "ZN"]],
-      [47, "format", "ArrayOf", ["*Format", "q", "[0", "Z/"]],
       [123, "minLength", "Integer", ["[0", "Z{"]],
       [125, "maxLength", "Integer", ["[0", "Z}"]],
       [117, "default", "Binary", ["[0", "Zu"]],
@@ -273,7 +272,7 @@ j_meta_schema_updated ={
       [118, "const", "Boolean", ["[0", "Zv"]]
     ]],
     ["IntegerOpts", "Map", ["eAllOpts", "~1"], "", [
-      [47, "format", "String", ["%^[a-zA-Z0-9]{1,16$", "[0", "Z/"]],
+      [47, "format", "String", ["%^[a-zA-Z0-9-]{1,16}$", "[0", "Z/"]],
       [69, "scale", "Integer", ["[0", "Zundefined"]],
       [121, "minInclusive", "Integer", ["[0", "Zw"]],
       [122, "maxInclusive", "Integer", ["[0", "Zx"]],

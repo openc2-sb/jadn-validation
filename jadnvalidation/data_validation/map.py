@@ -155,12 +155,19 @@ class Map:
                 j_field_obj = build_jadn_type_obj(j_field)
                 if (alias_val := get_alias(j_field_obj.type_options)) is not None:
                     implicit_keys.append(alias_val)
+                    print(f"added accepted key {alias_val}")
                 elif is_user_defined(j_field_obj.base_type):
                     ref_type = get_reference_type(self.j_schema, j_field_obj.base_type)
                     j_field_obj = self.build_field_ref_obj(j_field_obj, ref_type) 
                     if (alias_val := get_alias(j_field_obj.type_options)) is not None:
                         implicit_keys.append(alias_val)
-                else: implicit_keys.append(j_field[1])
+                        print(f"added accepted key {alias_val}")
+                    else: 
+                        implicit_keys.append(j_field[1])
+                        print(f"added accepted key {alias_val}")
+                else: 
+                    implicit_keys.append(j_field[1])
+                    print(f"added accepted key {alias_val}")
             print(f"Keys {implicit_keys}")
             for key, value in keyless_map_data.items():
                 print(f"{keyless_map_data.items()}")

@@ -139,7 +139,7 @@ j_schema = {
     ["IRI", "String", ["/iri"], "Internationalized Resource Identifier, [RFC3987]", []],
     ["MAC-Addr", "Binary", ["/eui"], "Media Access Control / Extended Unique Identifier address - EUI-48 or EUI-64 as defined in [EUI]", []],
     ["Process", "Map", ["{1"], "", [
-      [1, "pid", "Integer", ["{0", "[0"], "Process ID of the process"],
+      [1, "pid", "Integer", ["w0", "[0"], "Process ID of the process"],
       [2, "name", "String", ["[0"], "Name of the process"],
       [3, "cwd", "String", ["[0"], "Current working directory of the process"],
       [4, "executable", "File", ["[0"], "Executable that was executed to start the process"],
@@ -148,8 +148,8 @@ j_schema = {
     ]],
     ["Properties", "ArrayOf", ["*String", "{1", "q"], "A list of names that uniquely identify properties of an Actuator."],
     ["URI", "String", ["/uri"], "Uniform Resource Identifier, [RFC3986]", []],
-    ["Date-Time", "Integer", ["{0"], "Date and Time", []],
-    ["Duration", "Integer", ["{0"], "A length of time", []],
+    ["Date-Time", "Integer", ["w0"], "Date and Time", []],
+    ["Duration", "Integer", ["w0"], "A length of time", []],
     ["Feature", "Enumerated", [], "Specifies the results to be returned from a query features Command", [
       [1, "versions", "List of OpenC2 Language versions supported by this Actuator"],
       [2, "profiles", "List of profiles supported by this Actuator"],
@@ -176,7 +176,7 @@ j_schema = {
       [1, "bin", "Binary", [], "Specifies the data contained in the artifact"],
       [2, "url", "URI", [], "MUST be a valid URL that resolves to the un-encoded content"]
     ]],
-    ["Port", "Integer", ["{0", "}65535"], "Transport Protocol Port Number, [RFC6335]", []],
+    ["Port", "Integer", ["w0", "z65535"], "Transport Protocol Port Number, [RFC6335]", []],
     ["Response-Type", "Enumerated", [], "", [
       [0, "none", "No response"],
       [1, "ack", "Respond when Command received"],

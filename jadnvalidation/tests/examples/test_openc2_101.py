@@ -92,7 +92,7 @@ j_schema = {
         [4, "rate_limit", "Number", ["[0"], "Maximum number of requests per minute supported by design or policy"]
       ]],
     ["Action-Targets", "MapOf", ["*Targets", "+Action", "{1"], "Map of each action supported by this actuator to the list of targets applicable to that action"],
-    ["Targets", "ArrayOf", ["*>Target", "{1", "}1", "q"], "List of JSON Pointers to Target types"],
+    ["Targets", "ArrayOf", ["*Target", "{1", "}1", "q"], "List of JSON Pointers to Target types"], # add pointer option back later
     ["Status-Code", "Enumerated", ["="], "", [
         [102, "Processing", "an interim Response used to inform the Producer that the Consumer has accepted the Command but has not yet completed it."],
         [200, "OK", "the Command has succeeded."],
@@ -149,7 +149,7 @@ j_schema = {
     ["IRI", "String", ["/iri"], "Internationalized Resource Identifier, [[RFC3987]](#rfc3987).", []],
     ["MAC-Addr", "Binary", ["/eui"], "Media Access Control / Extended Unique Identifier address - EUI-48 or EUI-64 as defined in [[EUI]](#eui).", []],
     ["Process", "Map", ["{1"], "", [
-        [1, "pid", "Integer", ["{0", "[0"], "Process ID of the process"],
+        [1, "pid", "Integer", ["w0", "[0"], "Process ID of the process"],
         [2, "name", "String", ["[0"], "Name of the process"],
         [3, "cwd", "String", ["[0"], "Current working directory of the process"],
         [4, "executable", "File", ["[0"], "Executable that was executed to start the process"],
@@ -158,8 +158,8 @@ j_schema = {
       ]],
     ["Properties", "ArrayOf", ["*String", "{1", "q"], "A list of names that uniquely identify properties of an Actuator."],
     ["URI", "String", ["/uri"], "Uniform Resource Identifier, [[RFC3986]](#rfc3986).", []],
-    ["Date-Time", "Integer", ["{0"], "Date and Time", []],
-    ["Duration", "Integer", ["{0"], "A length of time", []],
+    ["Date-Time", "Integer", ["w0"], "Date and Time", []],
+    ["Duration", "Integer", ["w0"], "A length of time", []],
     ["Feature", "Enumerated", [], "Specifies the results to be returned from a query features Command", [
         [1, "versions", "List of OpenC2 Language versions supported by this Actuator"],
         [2, "profiles", "List of profiles supported by this Actuator"],
@@ -186,7 +186,7 @@ j_schema = {
         [1, "bin", "Binary", [], "Specifies the data contained in the artifact"],
         [2, "url", "URI", [], "MUST be a valid URL that resolves to the un-encoded content"]
       ]],
-    ["Port", "Integer", ["{0", "}65535"], "Transport Protocol Port Number, [[RFC6335]](#rfc6335)", []],
+    ["Port", "Integer", ["w0", "z65535"], "Transport Protocol Port Number, [[RFC6335]](#rfc6335)", []],
     ["Response-Type", "Enumerated", [], "", [
         [0, "none", "No response"],
         [1, "ack", "Respond when Command received"],
@@ -312,7 +312,7 @@ def test_invalid_command():
 def test_schema():
     is_valid = True
     
-    primitive_types = {"String", "Integer", "Boolean", "Binary"}
+    primitive_types = {"String", "Integer", "Boolean", "Binary", "Number"}
 
     num_incorrect = 0
     for t in j_schema["types"]:
@@ -339,7 +339,7 @@ def test_schema():
 def test_schema_updated():
     is_valid = True
     
-    primitive_types = {"String", "Integer", "Boolean", "Binary"}
+    primitive_types = {"String", "Integer", "Boolean", "Binary", "Number"}
 
     num_incorrect = 0
     for t in j_schema["types"]:
