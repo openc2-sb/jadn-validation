@@ -329,13 +329,13 @@ def use_field_ids(j_type_opts: List[str]) -> bool:
 
 def has_alias_option(j_type_opts: List[str]) -> bool:
     """
-    Checks if any alias option ('=') exists in type options.
+    Checks if any alias option ('Z') exists in type options.
     
     Args:
         j_type_opts: List of type options
         
     Returns:
-        bool: True if any '=' option exists (with or without value), False otherwise
+        bool: True if any 'Z' option exists (with or without value), False otherwise
     """
     if not j_type_opts:
         return False
@@ -362,22 +362,22 @@ def use_alias(j_type_opts: List[str]) -> str | None:
 
 def get_alias(j_type_opts: List[str]) -> str | None:
     """
-    Checks for alias option ('=') in type options and returns the alias value.
+    Checks for alias option ('Z') in type options and returns the alias value.
     This is the primary function for alias handling.
     
     Args:
         j_type_opts: List of type options
         
     Returns:
-        str: The alias value if '=' option exists with a value
-        None: If no alias option found or if '=' option exists without a value
+        str: The alias value if 'Z' option exists with a value
+        None: If no alias option found or if 'Z' option exists without a value
     """
     if not j_type_opts:
         return None
     
     for type_opt in j_type_opts:
         opt_char_id, opt_val = general_utils.split_on_first_char(type_opt)
-        if opt_char_id == "=":
+        if opt_char_id == "Z":
             # Return the alias value if it exists and is not empty
             return opt_val if opt_val else None
     

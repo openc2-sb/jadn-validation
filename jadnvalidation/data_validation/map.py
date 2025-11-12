@@ -42,6 +42,7 @@ class Map:
         
         if data is None or data == {} or data == [] or data == '':
             print("hit")
+            print(f"none or empty data : {data} : found for type {j_type.type_name}")
         
         self.data = data
         self.data_format = data_format         
@@ -149,50 +150,7 @@ class Map:
             
             for j_key, j_field in enumerate(self.j_type.fields):
                 j_field_obj = build_jadn_type_obj(j_field)
-
-                if is_field_multiplicity(j_field_obj.type_options):
-                    j_field_obj = flip_to_array_of(j_field_obj, get_min_occurs(j_field_obj), get_max_occurs(j_field_obj, self.j_config))
-
-                merged_opts = []
-                if is_user_defined(j_field_obj.base_type):
-                    ref_type = get_reference_type(self.j_schema, j_field_obj.base_type) # if it references another map with these options this may need to be revisited
-                    ref_type_obj = build_j_type(ref_type)
-                    check_type_name(ref_type_obj.type_name, self.j_config.TypeName)
-                    merged_opts = merge_opts(j_field_obj.type_options, ref_type_obj.type_options)
-                    #print(f"options: {merged_opts}")
-                    #j_field_obj = ref_type_obj    
-                    j_field_obj.type_options = merged_opts       
-
-                field_data = None
-                if self.use_ids:
-                    field_data = get_data_by_id(temp_map, j_field_obj.id)
-                    if field_data is not None:
-                        presence_tracker = True
-                elif has_alias_option(j_field_obj.type_options): 
-                    alias_val = use_alias(j_field_obj.type_options)
-                    #print(f"found alias {alias_val}")
-                    field_data = get_data_by_name(temp_map, alias_val)
-                    if field_data is not None:
-                        presence_tracker = True
-                else:
-                    field_data = get_data_by_name(temp_map, j_field_obj.type_name) 
-                    #print(f"field_data is {field_data}, presence_tracker is {presence_tracker}")
-                    if field_data is not None:
-                        presence_tracker = True
-                    #print(f"Checking for Key {j_field_obj.type_name}, found value {field_data}")
                 
-                #print(f"presence_tracker is {presence_tracker}")
-                if presence_tracker is False:
-                    missing_fields = missing_fields+1
-                    if missing_fields > field_count:
-                        #print(f"{missing_fields} >= {field_count}")
-                        raise ValueError(f"unexpected item in Type {j_field_obj.type_name} received {field_data}. expecting {len(self.j_type.fields)} fields" ) 
-                    
-                if field_data is None:
-                    if is_optional(j_field_obj):
-                        continue
-                    else:
-                        raise ValueError(f"Field '{j_field_obj.type_name}' is missing from data")
                 check_sys_char(j_field_obj.type_name, self.j_config.Sys)
                 check_field_name(j_field_obj.type_name, self.j_config.FieldName)                  
                 
@@ -253,9 +211,9 @@ class Map:
                     clz_instance = create_clz_instance(**clz_kwargs)
                     clz_instance.validate()
                     
-            if field_count == missing_fields:
-                raise ValueError(f"unexpected option in funny_data_map: {keyless_map_data}, funny_data_array: {keyless_found}, field_data: {field_data}, j_field_obj: {j_field_obj}" )
-
+            if field_count < missing_fields:
+                raise ValueError(f"unexpected keyless value in field {j_field_obj.type_name}: {field_data}" )
+                #alternate error: "unexpected option in funny_data_map: {keyless_map_data}, funny_data_array: {keyless_found}, field_data: {field_data}, j_field_obj: {j_field_obj}"
 
         else:
             for j_key, j_field in enumerate(self.j_type.fields):

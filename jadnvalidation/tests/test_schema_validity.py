@@ -767,7 +767,7 @@ def test_total_validity_with_opts():
       [1, "id_index", "Boolean", ["[0", "=="]],
       [2, "alias", "String", ["[0", "=="]]        
     ]],
-    ["Format", "String", ["%^/[a-zA-Z0-9]{1,16}+$"]],
+    ["Format", "String", ["%^[a-zA-Z0-9-]{1,16}$"]],
     ["Description", "String"]
   ]
 }
@@ -930,7 +930,7 @@ def test_simple_metaschema_validation():
     j_schema = {}
 
 
-def test_total_validity_with_optsCOPY(): 
+def test_total_validity_with_optsUPDATED(): 
     root = "Schema"    
   
     j_schema = {
@@ -967,13 +967,13 @@ def test_total_validity_with_optsCOPY():
       [2, "namespace", "Namespace", [], "Namespace IRI"]
     ]],
     ["Config", "Map", ["{1"], "Config vars override JADN defaults", [
-      [1, "$MaxBinary", "Integer", ["w1", "[0", "u255"], "Package max octets"],
-      [2, "$MaxString", "Integer", ["w1", "[0", "u255"], "Package max characters"],
-      [3, "$MaxElements", "Integer", ["w1", "[0", "u255"], "Package max items/properties"],
-      [4, "$Sys", "String", ["{1", "}1", "[0", "u."], "System character for TypeName"],
-      [5, "$TypeName", "String", ["/regex", "[0", "^[A-Z][-.A-Za-z0-9]{0,63}$"], ""],
-      [6, "$FieldName", "String", ["/regex", "[0", "u^[a-z][_A-Za-z0-9]{0,63}$"], ""],
-      [7, "$NSID", "String", ["/regex", "[0", "u^([A-Za-z][A-Za-z0-9]{0,7})?$"], ""]
+      [1, "$MaxBinary", "Integer", ["w1", "[0"], "Package max octets"],
+      [2, "$MaxString", "Integer", ["w1", "[0"], "Package max characters"],
+      [3, "$MaxElements", "Integer", ["w1", "[0"], "Package max items/properties"],
+      [4, "$Sys", "String", ["{1", "}1", "[0"], "System character for TypeName"],
+      [5, "$TypeName", "String", ["/regex", "[0"], ""],
+      [6, "$FieldName", "String", ["/regex", "[0"], ""],
+      [7, "$NSID", "String", ["/regex", "[0"], ""]
     ]],
     ["Namespace", "String", ["/uri"], "Unique name of a package"],
     ["NSID", "String", ["%^([A-Za-z][A-Za-z0-9]{0,7})?$"], "Namespace prefix matching $NSID"],
@@ -1019,7 +1019,7 @@ def test_total_validity_with_optsCOPY():
     ["Items", "ArrayOf", ["*Item"]],
     ["Fields", "ArrayOf", ["*Field"]],
     ["Item", "Array", [], "", [
-      [1, "item_id", "FieldID"],
+      [1, "item_id", "ItemID"],
       [2, "item_value", "String", ["[0"]],
       [3, "item_description", "Description", ["[0"]]
     ]],
@@ -1031,6 +1031,7 @@ def test_total_validity_with_optsCOPY():
       [5, "field_description", "Description", ["[0"]]
     ]],
     ["FieldID", "Integer", ["y0"]],
+    ["ItemID", "Integer", []],
     ["FieldOpts", "Map", ["~1"], "", [
       [91, "minOccurs", "Integer", ["w0", "[0", "Z["]],
       [93, "maxOccurs", "Integer", ["w-2", "[0", "Z]"]],
@@ -1038,12 +1039,11 @@ def test_total_validity_with_optsCOPY():
       [75, "key", "Boolean", ["[0", "ZK"]],
       [76, "link", "Boolean", ["[0", "ZL"]],
       [78, "not", "Boolean", ["[0", "ZN"]],
-      [47, "format", "ArrayOf", ["*Format", "q", "[0", "Z/"]],
       [123, "minLength", "Integer", ["[0", "Z{"]],
       [125, "maxLength", "Integer", ["[0", "Z}"]],
       [117, "default", "Binary", ["[0", "Zu"]],
       [118, "const", "Binary", ["[0", "Zv"]],
-      [47, "format", "String", ["%^/[a-zA-Z0-9]{1,16}+$", "[0", "Z/"]],
+      [47, "format", "String", ["%^[a-zA-Z0-9-]{1,16}$", "[0", "Z/"]],
       [69, "scale", "Integer", ["[0", "Zundefined"]],
       [121, "minInclusive", "Integer", ["[0", "Zw"]],
       [122, "maxInclusive", "Integer", ["[0", "Zx"]],
@@ -1057,7 +1057,7 @@ def test_total_validity_with_optsCOPY():
       [62, "pointer", "String", ["[0", "Z>"], "edited type, was TypeRef"],
       [999, "keyless", "Integer", ["y0", "[0", "Z~"]],
       [67, "combine", "String", ["{1", "}1", "[0", "ZC"]],
-      [113, "unique/ordered", "Boolean", ["[0", "Zq"]],
+      [113, "unique_ordered", "Boolean", ["[0", "Zq"]],
       [115, "set", "Boolean", ["[0", "Zs"]],
       [98, "unordered", "Boolean", ["[0", "Zb"]],
       [998, "alias", "String", ["[0", "ZZ"]]   
@@ -1069,7 +1069,7 @@ def test_total_validity_with_optsCOPY():
       [102, "final", "Boolean", ["[0", "Zf"]]
     ]],
     ["BinaryOpts", "Map", ["eAllOpts", "~1"], "", [
-      [47, "format", "String", ["%^/[a-zA-Z0-9]{1,16}+$", "[0", "Z/"]],
+      [47, "format", "String", ["%^[a-zA-Z0-9-]{1,16}$", "[0", "Z/"]],
       [123, "minLength", "Integer", ["[0", "Z{"]],
       [125, "maxLength", "Integer", ["w0", "[0", "Z}"]],
       [117, "default", "Binary", ["[0", "Zu"]],
@@ -1080,7 +1080,7 @@ def test_total_validity_with_optsCOPY():
       [118, "const", "Boolean", ["[0", "Zv"]]
     ]],
     ["IntegerOpts", "Map", ["eAllOpts", "~1"], "", [
-      [47, "format", "String", ["%^/[a-zA-Z0-9]{1,16}+$", "[0", "Z/"]],
+      [47, "format", "String", ["%^[a-zA-Z0-9-]{1,16}$", "[0", "Z/"]],
       [69, "scale", "Integer", ["[0", "Zundefined"]],
       [121, "minInclusive", "Integer", ["[0", "Zw"]],
       [122, "maxInclusive", "Integer", ["[0", "Zx"]],
@@ -1090,7 +1090,7 @@ def test_total_validity_with_optsCOPY():
       [118, "const", "Integer", ["[0", "Zv"]]
     ]],
     ["NumberOpts", "Map", ["eAllOpts", "~1"], "", [
-      [47, "format", "String", ["%^/[a-zA-Z0-9]{1,16}+$", "[0", "Z/"]],
+      [47, "format", "String", ["%^[a-zA-Z0-9-]{1,16}$", "[0", "Z/"]],
       [121, "minInclusive", "Number", ["[0", "Zw"]],
       [122, "maxInclusive", "Number", ["[0", "Zx"]],
       [119, "minExclusive", "Number", ["[0", "Zy"]],
@@ -1099,7 +1099,7 @@ def test_total_validity_with_optsCOPY():
       [118, "const", "Number", ["[0", "Zv"]]
     ]],
     ["StringOpts", "Map", ["eAllOpts", "~1"], "", [
-      [47, "format", "ArrayOf", ["*Format", "q", "[0", "Z/"]],
+      [47, "format", "String", ["%^[a-zA-Z0-9-]{1,16}$", "[0", "Z/"]],
       [121, "minInclusive", "Number", ["[0", "Zw"]],
       [122, "maxInclusive", "Number", ["[0", "Zx"]],
       [119, "minExclusive", "Number", ["[0", "Zy"]],
@@ -1107,8 +1107,8 @@ def test_total_validity_with_optsCOPY():
       [117, "default", "Number", ["[0", "Zu"]],
       [118, "const", "Number", ["[0", "Zv"]],
       [37, "pattern", "String", ["/regex", "[0", "Z%"]],
-      [123, "minLength", "Integer", ["w0", "[0", "Z{"]],
-      [125, "maxLength", "Integer", ["w0", "[0", "Z}"]]
+      [125, "maxLength", "Integer", ["w0", "[0", "Z}"]],
+      [123, "minLength", "Integer", ["w0", "[0", "Z{"]]
     ]],
     ["EnumeratedOpts", "Map", ["eAllOpts", "~1"], "", [
       [61, "id", "Boolean", ["[0", "Z="]],
@@ -1120,7 +1120,7 @@ def test_total_validity_with_optsCOPY():
       [67, "combine", "String", ["{1", "}1", "[0", "ZC"]]
     ]],
     ["ArrayOpts", "Map", ["eAllOpts", "~1"], "", [
-      [47, "format", "ArrayOf", ["*Format", "q", "[0", "Z/"]],
+      [47, "format", "String", ["%^[a-zA-Z0-9-]{1,16}$", "[0", "Z/"]],
       [123, "minLength", "Integer", ["w0", "[0", "Z{"]],
       [125, "maxLength", "Integer", ["w0", "[0", "Z}"]]
     ]],
@@ -1128,7 +1128,7 @@ def test_total_validity_with_optsCOPY():
       [42, "valueType", "TypeRef", ["Z*"]],
       [123, "minLength", "Integer", ["w0", "[0", "Z{"]],
       [125, "maxLength", "Integer", ["w0", "[0", "Z}"]],
-      [113, "unique/ordered", "Boolean", ["[0", "Zq"]],
+      [113, "unique_ordered", "Boolean", ["[0", "Zq"]],
       [115, "set", "Boolean", ["[0", "Zs"]],
       [98, "unordered", "Boolean", ["[0", "Zb"]]
     ]],
@@ -1149,12 +1149,118 @@ def test_total_validity_with_optsCOPY():
       [123, "minLength", "Integer", ["w0", "[0", "Z{"]],
       [125, "maxLength", "Integer", ["w0", "[0", "Z}"]]
     ]],
-    ["Format", "String", ["%^/[a-zA-Z0-9]{1,16}+$"]],
+    ["Format", "String", ["%^[a-zA-Z0-9]{1,16$"]],
     ["Description", "String"]
   ]
 }
     
-    valid_data_list = [          
+    valid_data_list = [   {
+  "meta": {
+    "title": "Music Library",
+    "package": "http://fake-audio.org/music-lib",
+    "version": "1.1",
+    "description": "This information model defines a library of audio tracks, organized by album, with associated metadata regarding each track. It is modeled on the types of library data maintained by common websites and music file tag editors.",
+    "license": "CC0-1.0",
+    "roots": ["Library"]
+  },
+  "types": [
+    ["Library", "MapOf", ["+Barcode", "*Album", "{1"], "Top level of the library is a map of CDs by barcode", []],
+    ["Barcode", "String", ["%^\\d{12}$"], "A UPC-A barcode is 12 digits", []],
+    ["Album", "Record", [], "model for the album", [
+        [1, "album_artist", "Artist", [], "primary artist associated with this album"],
+        [2, "album_title", "String", [], "publisher's title for this album"],
+        [3, "pub_data", "Publication-Data", [], "metadata about the album's publication"],
+        [4, "tracks", "Track", ["]0"], "individual track descriptions and content"],
+        [5, "total_tracks", "Integer", ["{1"], "total track count"],
+        [6, "cover_art", "Image", ["[0"], "cover art image for this album"]
+      ]],
+    ["Publication-Data", "Record", [], "who and when of publication", [
+        [1, "publisher", "String", [], "record label that released this album"],
+        [2, "release_date", "String", ["/date"], "and when did they let this drop"]
+      ]],
+    ["Image", "Record", [], "pretty picture for the album or track", [
+        [1, "image_format", "Image-Format", [], "what type of image file?"],
+        [2, "image_content", "Binary", [], "the image data in the identified format"]
+      ]],
+    ["Image-Format", "Enumerated", [], "can only be one, but can extend list", [
+        [1, "PNG", ""],
+        [2, "JPG", ""],
+        [3, "GIF", ""]
+      ]],
+    ["Artist", "Record", [], "interesting information about a performer", [
+        [1, "artist_name", "String", [], "who is this person"],
+        [2, "instruments", "Instrument", ["q", "]0"], "and what do they play"]
+      ]],
+    ["Instrument", "Enumerated", [], "collection of instruments (non-exhaustive)", [
+        [1, "vocals", ""],
+        [2, "guitar", ""],
+        [3, "bass", ""],
+        [4, "drums", ""],
+        [5, "keyboards", ""],
+        [6, "percussion", ""],
+        [7, "brass", ""],
+        [8, "woodwinds", ""],
+        [9, "harmonica", ""]
+      ]],
+    ["Track", "Record", [], "for each track there's a file with the audio and a metadata record", [
+        [1, "location", "File-Path", [], "path to the audio file location in local storage"],
+        [2, "metadata", "Track-Info", [], "description of the track"]
+      ]],
+    ["Track-Info", "Record", [], "information about the individual audio tracks", [
+        [1, "track_number", "Integer", ["[1"], "track sequence number"],
+        [2, "title", "String", [], "track title"],
+        [3, "length", "Integer", ["{1"], "length of track in seconds; anticipated user display is mm:ss; minimum length is 1 second"],
+        [4, "audio_format", "Audio-Format", [], "format of the digital audio"],
+        [5, "featured_artist", "Artist", ["q", "[0", "]0"], "notable guest performers"],
+        [6, "track_art", "Image", ["[0"], "each track can have optionally have individual artwork"],
+        [7, "genre", "Genre", [], ""]
+      ]],
+    ["Audio-Format", "Enumerated", [], "can only be one, but can extend list", [
+        [1, "MP3", ""],
+        [2, "OGG", ""],
+        [3, "FLAC", ""],
+        [4, "MP4", ""],
+        [5, "AAC", ""],
+        [6, "WMA", ""],
+        [7, "WAV", ""]
+      ]],
+    ["Genre", "Enumerated", [], "Enumeration of common genres", [
+        [1, "rock", ""],
+        [2, "jazz", ""],
+        [3, "hip_hop", ""],
+        [4, "electronic", ""],
+        [5, "folk_country_world", ""],
+        [6, "classical", ""],
+        [7, "spoken_word", ""]
+      ]],
+    ["File-Path", "String", [], "local storage location of file with directory path from root, filename, and extension"]
+  ]
+}   
+    
+
+    ]
+
+    
+    invalid_data_list = [
+         {'SuitEnum': 10},'Aces', 10         
+    ]
+    
+    errors = validate_type_references(j_schema)
+    assert errors == []    
+    
+    errors = validate_field_type_references(j_schema)
+    assert errors == []    
+    
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+            
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)
+    assert err_count == len(invalid_data_list) 
+
+    """
+    ---
+    
+           
         {
   "meta": {
     "title": "Music Library",
@@ -1237,22 +1343,6 @@ def test_total_validity_with_optsCOPY():
     ["File-Path", "String", [], "local storage location of file with directory path from root, filename, and extension"]
   ]
 }   
-
-    ]
-
     
-    invalid_data_list = [
-         {'SuitEnum': 10},'Aces', 10         
-    ]
-    
-    errors = validate_type_references(j_schema)
-    assert errors == []    
-    
-    errors = validate_field_type_references(j_schema)
-    assert errors == []    
-    
-    err_count = validate_valid_data(j_schema, root, valid_data_list)    
-    assert err_count == 0
-            
-    err_count = validate_invalid_data(j_schema, root, invalid_data_list)
-    assert err_count == len(invalid_data_list) 
+    ---
+    """

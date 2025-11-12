@@ -106,37 +106,37 @@ def test_alias_functions():
     assert use_alias(None) is None
     assert use_alias([]) is None
     assert use_alias(["other", "options"]) is None
-    assert use_alias(["=myalias", "other"]) == "myalias"
-    assert use_alias(["=", "other"]) is None
-    assert use_alias(["=", "other"]) is None  # Empty value
-    assert use_alias(["first", "=testalias", "last"]) == "testalias"
-    
-    # Test use_field_ids function
-    assert use_field_ids(None) is False
-    assert use_field_ids([]) is False
-    assert use_field_ids(["other", "options"]) is False
-    assert use_field_ids(["=myalias", "other"]) is False
-    assert use_field_ids(["=", "other"]) is True
-    assert use_field_ids(["first", "=", "last"]) is True
-    
+    assert use_alias(["Zmyalias", "other"]) == "myalias"
+    assert use_alias(["Z", "other"]) is None
+    assert use_alias(["Z", "other"]) is None  # Empty value
+    assert use_alias(["first", "Ztestalias", "last"]) == "testalias" 
+
+    # Test use_field_ids function (THIS no longer uses the same character)
+    #assert use_field_ids(None) is False
+    #assert use_field_ids([]) is False
+    #assert use_field_ids(["other", "options"]) is False
+    #assert use_field_ids(["Zmyalias", "other"]) is False
+    #assert use_field_ids(["Z", "other"]) is True
+    #assert use_field_ids(["first", "Z", "last"]) is True
+
     # Test has_alias_option function
     assert has_alias_option(None) is False
     assert has_alias_option([]) is False
     assert has_alias_option(["other", "options"]) is False
-    assert has_alias_option(["=myalias", "other"]) is True
-    assert has_alias_option(["=", "other"]) is True
-    assert has_alias_option(["first", "=testalias", "last"]) is True
+    assert has_alias_option(["Zmyalias", "other"]) is True
+    assert has_alias_option(["Z", "other"]) is True
+    assert has_alias_option(["first", "Ztestalias", "last"]) is True
     
     # Test get_alias function (primary alias function)
     assert get_alias(None) is None
     assert get_alias([]) is None
     assert get_alias(["other", "options"]) is None
-    assert get_alias(["=myalias", "other"]) == "myalias"
-    assert get_alias(["=", "other"]) is None  # Empty value
-    assert get_alias(["first", "=testalias", "last"]) == "testalias"
+    assert get_alias(["Zmyalias", "other"]) == "myalias"
+    assert get_alias(["Z", "other"]) is None  # Empty value
+    assert get_alias(["first", "Ztestalias", "last"]) == "testalias"
     
     # Test that use_alias is now just an alias for get_alias
-    test_opts = ["=myalias", "other"]
+    test_opts = ["Zmyalias", "other"]
     assert use_alias(test_opts) == get_alias(test_opts)
     
     print("All alias function tests passed!")

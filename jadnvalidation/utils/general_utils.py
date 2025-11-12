@@ -25,7 +25,7 @@ def create_regex(pattern_string):
   try:
     return re.compile(pattern_string)
   except re.error as e:
-    raise ValueError(f"Invalid regex pattern: {e}")
+    raise ValueError(f"Invalid regex pattern: {e}. cannot create regex {pattern_string}")
 
 def is_none(field_data):
     """
