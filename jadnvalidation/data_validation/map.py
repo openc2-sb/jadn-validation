@@ -5,7 +5,7 @@ from jadnvalidation.models.jadn.jadn_config import Jadn_Config, check_field_name
 from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type, is_user_defined, is_primitive
 from jadnvalidation.utils.consts import JSON, XML
 from jadnvalidation.utils.general_utils import create_clz_instance, get_data_by_id, get_data_by_name, is_none, merge_opts
-from jadnvalidation.utils.mapping_utils import flip_to_array_of, get_inheritance, get_max_length, get_max_occurs, get_min_length, get_min_occurs, get_tagged_data, is_optional, use_field_ids, use_alias, get_alias, to_dict_on_given_char
+from jadnvalidation.utils.mapping_utils import flip_to_array_of, get_inheritance, get_max_length, get_max_occurs, get_min_length, get_min_occurs, get_tagged_data, is_optional, use_field_ids, get_alias
 from jadnvalidation.utils.keyless_map_utils import convert_str_data_to_true_type, use_keyless_map, build_keyless_map
 from jadnvalidation.utils.type_utils import get_reference_type, get_schema_type_by_name
 from jadnutils.utils.jadn_utils import get_inherited_fields
@@ -39,10 +39,6 @@ class Map:
             j_type = build_j_type(j_type)
         
         self.j_type = j_type
-        
-        # if data is None or data == {} or data == [] or data == '':
-            # print("hit")
-            # print(f"none or empty data : {data} : found for type {j_type.type_name}")
         
         self.data = data
         self.data_format = data_format         
@@ -153,24 +149,22 @@ class Map:
             implicit_keys = []
             for j_key, j_field in enumerate(self.j_type.fields):
                 j_field_obj = build_jadn_type_obj(j_field)
+                
                 if (alias_val := get_alias(j_field_obj.type_options)) is not None:
-                    implicit_keys.append(alias_val)
-                    # print(f"added accepted key {alias_val}")
+                    implicit_keys.append(alias_val)    
                 elif is_user_defined(j_field_obj.base_type):
                     ref_type = get_reference_type(self.j_schema, j_field_obj.base_type)
                     j_field_obj = self.build_field_ref_obj(j_field_obj, ref_type) 
+                    
                     if (alias_val := get_alias(j_field_obj.type_options)) is not None:
-                        implicit_keys.append(alias_val)
-                        # print(f"added accepted key {alias_val}")
+                        implicit_keys.append(alias_val)    
                     else: 
                         implicit_keys.append(j_field[1])
-                        # print(f"added accepted key {alias_val}")
+                        
                 else: 
                     implicit_keys.append(j_field[1])
-                    # print(f"added accepted key {alias_val}")
-            # print(f"Keys {implicit_keys}")
+
             for key, value in keyless_map_data.items():
-                # print(f"{keyless_map_data.items()}")
                 if key not in implicit_keys:
                     raise ValueError(f"Undefined key for Map detected in {self.j_type.type_name}: {j_field[1]}")
                 
@@ -240,7 +234,6 @@ class Map:
                     
             if field_count < missing_fields:
                 raise ValueError(f"unexpected keyless value in field {j_field_obj.type_name}: {field_data}" )
-                #alternate error: "unexpected option in funny_data_map: {keyless_map_data}, funny_data_array: {keyless_found}, field_data: {field_data}, j_field_obj: {j_field_obj}"
 
         else:
             for j_key, j_field in enumerate(self.j_type.fields):
@@ -305,17 +298,18 @@ class Map:
                             ref_type_obj = build_j_type(ref_type)
                             check_type_name(ref_type_obj.type_name, self.j_config.TypeName)
                             merged_opts = merge_opts(self.j_type.type_options, ref_type_obj.type_options)
-                            #print(f"merged options: {merged_opts}")
 
                             if (alias_val := get_alias(merged_opts)) is not None:
                                 if data_key == alias_val:
                                     is_found = True
+                                    
                             elif data_key == j_field[1]:
                                 is_found = True
+                                
                         elif (alias_val := get_alias(self.j_type.type_options)) is not None:
-                            #print(f"alias: {alias_val}")
                             if data_key == alias_val:
                                 is_found = True
+                                
                         elif data_key == j_field[1]:
                             is_found = True
                             

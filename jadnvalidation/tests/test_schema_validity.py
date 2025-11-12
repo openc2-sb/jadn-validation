@@ -445,10 +445,10 @@ def test_total_validity():
     err_count = validate_invalid_data(j_schema, root, invalid_data_list)
     assert err_count == len(invalid_data_list) 
 
-def test_simple_metaschema_validation(): 
-    root = "Schema"
+# def test_simple_metaschema_validation(): 
+#     root = "Schema"
   
-    j_schema = {}
+#     j_schema = {}
 
 
 def test_total_validity_with_optsUPDATED(): 
