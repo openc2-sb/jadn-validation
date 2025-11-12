@@ -63,7 +63,7 @@ class Map:
         
         if is_keyless_map:
             if not isinstance(self.data, list):
-                raise ValueError(f"Data for JSON Keyless Map must be a list. Received: {type(self.data)}")
+                raise ValueError(f"Data for JSON Keyless Map must be a list. Received: {type(self.data)} ->{self.data}")
         else:
             if not isinstance(self.data, dict):
                 raise ValueError(f"Data must be a map / dict. Received: {type(self.data)}")
@@ -148,6 +148,26 @@ class Map:
             field_count = len(self.j_type.fields)
             missing_fields = 0
             
+            # here we're checking for things that are present and not supposed to be in the keyless map 
+            # since it lacks some of the regular guardrails
+            implicit_keys = []
+            for j_key, j_field in enumerate(self.j_type.fields):
+                j_field_obj = build_jadn_type_obj(j_field)
+                if (alias_val := get_alias(j_field_obj.type_options)) is not None:
+                    implicit_keys.append(alias_val)
+                elif is_user_defined(j_field_obj.base_type):
+                    ref_type = get_reference_type(self.j_schema, j_field_obj.base_type)
+                    j_field_obj = self.build_field_ref_obj(j_field_obj, ref_type) 
+                    if (alias_val := get_alias(j_field_obj.type_options)) is not None:
+                        implicit_keys.append(alias_val)
+                else: implicit_keys.append(j_field[1])
+            print(f"Keys {implicit_keys}")
+            for key, value in keyless_map_data.items():
+                print(f"{keyless_map_data.items()}")
+                if key not in implicit_keys:
+                    raise ValueError(f"Undefined key for Map detected in {self.j_type.type_name}: {j_field[1]}")
+                
+            # check to see if each field has valid data, passing missing optional fields    
             for j_key, j_field in enumerate(self.j_type.fields):
                 j_field_obj = build_jadn_type_obj(j_field)
                 

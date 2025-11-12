@@ -676,9 +676,9 @@ def test_map_alias_fields():
         "types": [
             ["Root-Test", "Map", ["~1"], "", [
                 [1, "A", "Pattern", ["[0"], ""],
-                [2, "B", "MinOccurs", ["[0", "=["], ""]
+                [2, "B", "MinOccurs", ["[0", "Z["], ""]
             ]],
-            ["Pattern", "String", ["[0", "=%"], "", []],
+            ["Pattern", "String", ["[0", "Z%"], "", []],
             ["MinOccurs", "Integer", ["[0"], "", []]
         ]
     }
@@ -714,8 +714,8 @@ def test_map_alias_fields_basic():
                 [1, "A", "Pattern", ["[0"], ""],
                 [2, "B", "Min-Occurs", ["[0"], ""]
             ]],
-            ["Pattern", "String", ["=%"], "", []],
-            ["Min-Occurs", "Integer", ["=["], "", []]
+            ["Pattern", "String", ["Z%"], "", []],
+            ["Min-Occurs", "Integer", ["Z["], "", []]
         ]
     }
     
