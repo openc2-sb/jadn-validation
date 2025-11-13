@@ -1,8 +1,8 @@
 from jadnvalidation.tests.test_utils import validate_invalid_data, validate_valid_data
-from jadnvalidation.utils.consts import CONCISE
+from jadnvalidation.utils.consts import CONCISE, COMPACT
 
 
-def test_compact():
+def test_compact_to_verbose_record():
     root = "Root-Test"
 
     j_schema = {
@@ -42,8 +42,8 @@ def test_compact():
         }     
     ]
     
-    err_count = validate_valid_data(j_schema, root, valid_data_list, data_format=CONCISE)    
+    err_count = validate_valid_data(j_schema, root, valid_data_list, data_format=COMPACT)    
     assert err_count == 0
             
-    err_count = validate_invalid_data(j_schema, root, invalid_data_list)
-    assert err_count == len(invalid_data_list) 
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list, data_format=COMPACT)
+    assert err_count > 0

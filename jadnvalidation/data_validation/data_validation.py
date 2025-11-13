@@ -8,6 +8,7 @@ from jadnvalidation.utils.general_utils import create_clz_instance
 from jadnxml.builder.xml_builder import build_py_from_xml
 
 from jadnvalidation.utils.type_utils import get_schema_type_by_name
+from jadnutils.json.convert_verbose import convert_to_verbose
 
 
 class DataValidation:
@@ -34,7 +35,7 @@ class DataValidation:
                 pass
 
             elif self.data_format == CONCISE or self.data_format == COMPACT:
-                pass  # Concise/json -> verbose converter          
+                self.data = convert_to_verbose(self.j_schema, self.data, self.data_format, self.root)        
             
             elif self.data_format == XML:
                 self.data = build_py_from_xml(self.j_schema, self.root, self.data)
