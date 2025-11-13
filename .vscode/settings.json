@@ -1,7 +1,4 @@
 {
-  "python.analysis.extraPaths": [
-    "/Users/jryan/Desktop/JADN_Repos/jadn-validation/.venv/lib/python3.10/site-packages"
-  ],
   "python.testing.pytestArgs": [
     "jadnvalidation"
   ],

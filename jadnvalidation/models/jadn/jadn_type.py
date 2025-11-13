@@ -1,28 +1,28 @@
 from typing import Any
+from enum import Enum
 
-from jadnvalidation.utils.enum_utils import BaseEnum
 from jadnvalidation.utils.general_utils import safe_get
 
-class Primitive(BaseEnum):  
+class Primitive(Enum):  
     BINARY = 'Binary'
     BOOLEAN = 'Boolean'
     INTEGER = 'Integer'
     NUMBER = 'Number'
     STRING = 'String'
     
-class Enumeration(BaseEnum):
+class Enumeration(Enum):
     ENUMERATED = 'Enumerated'
     
-class Specialization(BaseEnum):
+class Specialization(Enum):
     CHOICE = 'Choice'
     
-class Structure(BaseEnum):
+class Structure(Enum):
     ARRAY = 'Array'
     MAP = 'Map'
     RECORD = 'Record'
 
 # Core Types
-class Base_Type(BaseEnum):
+class Base_Type(Enum):
     BINARY = 'Binary'
     BOOLEAN = 'Boolean'
     INTEGER = 'Integer'
@@ -61,10 +61,7 @@ def is_array(jadn_type: Jadn_Type) -> bool:
         return False  
             
 def is_basetype(type: str) -> bool:
-    if type in Base_Type:
-        return True
-    else:
-        return False        
+    return type in [item.value for item in Base_Type]        
     
 def is_enumerated(jadn_type: list[any]):
     if len(jadn_type) == 3:
@@ -72,10 +69,7 @@ def is_enumerated(jadn_type: list[any]):
     return False
     
 def is_enumeration(jadn_type: Jadn_Type) -> bool:
-    if jadn_type.base_type in Enumeration:
-        return True
-    else:
-        return False
+    return jadn_type.base_type in [item.value for item in Enumeration]
     
 def is_field(jadn_type: list[any]):
     if len(jadn_type) > 0:
@@ -99,34 +93,22 @@ def is_field_multiplicity(opts: list) -> bool:
     return False
 
 def is_primitive(type: str) -> bool:
-    if type in Primitive:
-        return True
-    else:
-        return False
+    return type in [item.value for item in Primitive]
     
 def is_non_primitive(type: str) -> bool:
-    if type in Structure or type in Enumeration or type in Specialization:
-        return True
-    else:
-        return False
+    return (type in [item.value for item in Structure] or 
+            type in [item.value for item in Enumeration] or 
+            type in [item.value for item in Specialization])
     
 def is_record_or_map(jadn_type: Jadn_Type) -> bool:
-    if jadn_type.base_type == Base_Type.RECORD.value or jadn_type.base_type == Base_Type.MAP.value:
-        return True
-    else:
-        return False    
+    return (jadn_type.base_type == Base_Type.RECORD.value or 
+            jadn_type.base_type == Base_Type.MAP.value)
     
 def is_specialization(jadn_type: Jadn_Type) -> bool:
-    if jadn_type.base_type in Specialization:
-        return True
-    else:
-        return False       
+    return jadn_type.base_type in [item.value for item in Specialization]
     
 def is_structure(jadn_type: Jadn_Type) -> bool:
-    if jadn_type.base_type in Structure:
-        return True
-    else:
-        return False
+    return jadn_type.base_type in [item.value for item in Structure]
     
 def is_type(jadn_type: list[any]):
     if len(jadn_type) > 0:
@@ -135,6 +117,8 @@ def is_type(jadn_type: list[any]):
     return False    
     
 def is_user_defined(ktype:str):
+    if ktype is None:
+        return False
     return not is_basetype(ktype)
 
 def build_j_type(j_type: list) -> Jadn_Type | None:
@@ -155,13 +139,17 @@ def build_j_type(j_type: list) -> Jadn_Type | None:
 def build_jadn_type_obj(j_type: list) -> Jadn_Type | None: 
     jadn_type_obj = None
 
-    if is_enumerated(j_type):
+    if is_field(j_type):
+        # Field should have at least 4 elements: [id, name, base_type, options, ...]
+        # Handle malformed fields that might be missing base_type/options
+        base_type = safe_get(j_type, 2, None)
+        type_options = safe_get(j_type, 3, [])
         jadn_type_obj = Jadn_Type(
                 id=j_type[0],
                 type_name=j_type[1], 
-                base_type=None, 
-                type_options=[], 
-                type_description=j_type[2])
+                base_type=base_type, 
+                type_options=type_options, 
+                type_description=safe_get(j_type, 4, ""))
     elif is_type(j_type):
         jadn_type_obj = Jadn_Type(
                 type_name=j_type[0], 
@@ -169,13 +157,13 @@ def build_jadn_type_obj(j_type: list) -> Jadn_Type | None:
                 type_options=j_type[2], 
                 type_description=j_type[3],
                 fields=safe_get(j_type, 4, []))
-    elif is_field(j_type):
+    elif is_enumerated(j_type):
         jadn_type_obj = Jadn_Type(
                 id=j_type[0],
                 type_name=j_type[1], 
-                base_type=j_type[2], 
-                type_options=j_type[3], 
-                type_description=safe_get(j_type, 4, ""))
+                base_type=None, 
+                type_options=[], 
+                type_description=j_type[2])
 
     else:
         print("unknown jadn item")

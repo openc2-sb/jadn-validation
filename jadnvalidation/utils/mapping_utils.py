@@ -61,6 +61,8 @@ def get_max_length(j_type: Jadn_Type, global_config: Jadn_Config = None) -> int:
         max_length = global_config.MaxString
     elif j_type.base_type == Base_Type.BINARY.value:
         max_length = global_config.MaxBinary
+    elif j_type.base_type == Base_Type.ARRAY.value:
+        max_length = global_config.MaxElements
     else:
         max_length = None
     
@@ -163,14 +165,15 @@ def get_opts(j_type: Jadn_Type):
 def get_opt_int(key: str, j_type: Jadn_Type):
     return_val = None
     opts = get_opts(j_type)
-    for opt in opts:
-        opt_key, opt_val = general_utils.split_on_first_char(opt)
-        if key == opt_key:
-            try:
-                return_val = int(opt_val)
-            except ValueError as e:
-                print("Invalid option: requires integer value: " + e)
-            break
+    if opts is not None:
+        for opt in opts:
+            opt_key, opt_val = general_utils.split_on_first_char(opt)
+            if key == opt_key:
+                try:
+                    return_val = int(opt_val)
+                except ValueError as e:
+                    print("Invalid option: requires integer value: " + e)
+                break
         
     return return_val
 
@@ -184,6 +187,14 @@ def get_opt_str(key: str, j_type: Jadn_Type):
             break
         
     return return_val
+
+def to_dict_on_given_char(string_val: str, position: int) -> dict:
+    """Splits a string on the designated character."""
+    split_return = {}
+    split_value = general_utils.split_on_given_char(string_val, position)
+    split_return.update({str(split_value[0]):str(split_value[1])})
+    #split_return.update({string_val[:(position-1)]: string_val[position:]}) # really should work but dosnt
+    return split_return
 
 def get_tagid(opts: List[str]) -> int:
     """
@@ -253,6 +264,17 @@ def get_vtype(j_obj: Jadn_Type):
         
     return val
 
+def get_default_value(j_obj: Jadn_Type):
+    val = None
+    opts = get_opts(j_obj)
+    for opt in opts:
+        opt_key, opt_val = general_utils.split_on_first_char(opt)
+        if "u" == opt_key:
+            val = opt_val
+            break
+        
+    return val
+
 def is_derived_enumeration(j_type_opts: List[str]) -> str:
     derived_val = None
     
@@ -285,13 +307,78 @@ def get_pattern(j_type: Jadn_Type):
     return get_opt_str("%", j_type)
 
 def use_field_ids(j_type_opts: List[str]) -> bool:
-    use_id = False
+    """
+    Checks if field IDs should be used (= option without value).
     
-    if j_type_opts:
-        for type_opt in j_type_opts:
-            opt_char_id, opt_val = general_utils.split_on_first_char(type_opt)
-            if opt_char_id == "=":
-                use_id = True
-                break   
+    Args:
+        j_type_opts: List of type options
+        
+    Returns:
+        bool: True if '=' option exists without a value, False otherwise
+    """
+    if not j_type_opts:
+        return False
     
-    return use_id
+    for type_opt in j_type_opts:
+        opt_char_id, opt_val = general_utils.split_on_first_char(type_opt)
+        if opt_char_id == "=":
+            # Return True only if '=' exists without a value (empty or None)
+            return not opt_val
+    
+    return False
+
+def has_alias_option(j_type_opts: List[str]) -> bool:
+    """
+    Checks if any alias option ('Z') exists in type options.
+    
+    Args:
+        j_type_opts: List of type options
+        
+    Returns:
+        bool: True if any 'Z' option exists (with or without value), False otherwise
+    """
+    if not j_type_opts:
+        return False
+    
+    for type_opt in j_type_opts:
+        opt_char_id, opt_val = general_utils.split_on_first_char(type_opt)
+        if opt_char_id == "Z":
+            return True
+    
+    return False
+
+def use_alias(j_type_opts: List[str]) -> str | None:
+    """
+    Alias for get_alias() for backward compatibility.
+    
+    Args:
+        j_type_opts: List of type options
+        
+    Returns:
+        str: The alias value if '=' option exists with a value
+        None: If no alias option found or if '=' option exists without a value
+    """
+    return get_alias(j_type_opts)
+
+def get_alias(j_type_opts: List[str]) -> str | None:
+    """
+    Checks for alias option ('Z') in type options and returns the alias value.
+    This is the primary function for alias handling.
+    
+    Args:
+        j_type_opts: List of type options
+        
+    Returns:
+        str: The alias value if 'Z' option exists with a value
+        None: If no alias option found or if 'Z' option exists without a value
+    """
+    if not j_type_opts:
+        return None
+    
+    for type_opt in j_type_opts:
+        opt_char_id, opt_val = general_utils.split_on_first_char(type_opt)
+        if opt_char_id == "Z":
+            # Return the alias value if it exists and is not empty
+            return opt_val if opt_val else None
+    
+    return None

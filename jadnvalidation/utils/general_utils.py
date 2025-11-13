@@ -25,7 +25,16 @@ def create_regex(pattern_string):
   try:
     return re.compile(pattern_string)
   except re.error as e:
-    raise ValueError(f"Invalid regex pattern: {e}")
+    raise ValueError(f"Invalid regex pattern: {e}. cannot create regex {pattern_string}")
+
+def is_none(field_data):
+    """
+    Check if field_data is None or equivalent to missing/undefined values.
+    Returns True if the data is None, empty list, or empty dict.
+    Note: Empty string ('') is considered a valid value, not a missing value.
+    """
+    return field_data is None #or field_data == [] or field_data == {}
+    # empty arrays are not None data in JADN
     
 # (class_name, j_schema: dict = {}, j_type: Union[list, Jadn_Type] = None, data: any = None)
 def create_clz_instance(class_name: str, *args, **kwargs):
@@ -44,7 +53,11 @@ def create_clz_instance(class_name: str, *args, **kwargs):
         "String" : "jadnvalidation.data_validation.string"
     }
 
-    module = importlib.import_module(modules.get(class_name))
+    module_name = modules.get(class_name)
+    if module_name is None:
+        raise ValueError(f"Unknown data type: {class_name}")
+    
+    module = importlib.import_module(module_name)
     
     if module == None:
         raise ValueError("Unknown data type")
@@ -125,6 +138,7 @@ def create_fmt_clz_instance(class_name: str, *args, **kwargs):
         "GMonthDay" : "jadnvalidation.data_validation.formats.gmonthday",
         "SignedInteger" : "jadnvalidation.data_validation.formats.signed_integer",
         "UnsignedInteger" : "jadnvalidation.data_validation.formats.unsigned_integer",
+        "TaggedList" : "jadnvalidation.data_validation.formats.tagged_list",
         "HexBinary" : "jadnvalidation.data_validation.formats.hex_binary",
         "B64" : "jadnvalidation.data_validation.formats.b64",
         "Uuid" : "jadnvalidation.data_validation.formats.uuid",
@@ -365,9 +379,9 @@ def merge_opts(opts1: list, opts2: list) -> list:
             merged.append(opt)
         else:
             duplicates.append(opt)
-
-    if duplicates:
-        print(f"[merge_opts] Duplicate opts removed (by first char): {duplicates}")
+    # hiding this popup; can be replaced later
+    #if duplicates:
+        #print(f"[merge_opts] Duplicate opts removed (by first char): {duplicates}")
 
     return merged
 
@@ -412,6 +426,17 @@ def split_on_second_char(string):
         return []
 
     return [string[:2], string[2:]]
+
+def split_on_given_char(string:str, pos:int) -> list:
+    """Splits a string on the provided character."""
+
+    if not string:
+        return []
+    first_part = string[:int(pos)]
+    second_part = string[int(pos):]
+
+    holding_list:list = [first_part, second_part]
+    return holding_list
 
 def sort_array_by_id(j_array: list, j_array2: list = None, is_allow_dups: bool = False) -> list:
     """

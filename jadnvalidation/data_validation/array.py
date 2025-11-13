@@ -4,7 +4,7 @@ from jadnvalidation.models.jadn.jadn_type import build_jadn_type_obj, is_field_m
 from jadnvalidation.models.jadn.jadn_config import Jadn_Config, check_field_name, check_sys_char, check_type_name, get_j_config
 from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type, is_user_defined
 from jadnvalidation.utils.consts import JSON, XML
-from jadnvalidation.utils.general_utils import create_clz_instance, create_fmt_clz_instance, get_item_safe_check, merge_opts, sort_array_by_id
+from jadnvalidation.utils.general_utils import create_clz_instance, create_fmt_clz_instance, get_item_safe_check, is_none, merge_opts, sort_array_by_id
 from jadnvalidation.utils.mapping_utils import flip_to_array_of, get_format, get_inheritance, get_max_length, get_max_occurs, get_min_length, get_min_occurs, get_tagged_data, is_optional
 from jadnvalidation.utils.type_utils import get_reference_type, get_schema_type_by_name
 from jadnutils.utils.jadn_utils import get_inherited_fields
@@ -48,11 +48,11 @@ class Array:
         self.errors = []
         
     def check_type(self):
-        print(type(self.data))
         if isinstance(self.data, str):
             if "/ipv4-net" in self.j_type.type_options or "/ipv6-net" in self.j_type.type_options:
                 pass
-            else: raise ValueError(f"Data for type {self.j_type.type_name} of the wrong type. Received: {type(self.data)}")
+            else: 
+                raise ValueError(f"Data for type {self.j_type.type_name} of the wrong type. Received: {type(self.data)}")
         elif not isinstance(self.data, list):
             raise ValueError(f"Data for type {self.j_type.type_name} must be a list. Received: {type(self.data)}")
     
@@ -69,8 +69,8 @@ class Array:
                 raise ValueError(f"Type {self.j_type.type_name} inherits from type {inherit_from} with different base type {inherited_type_obj.base_type}. Received: {self.j_type.base_type}")
             
             schema_types = self.j_schema.get('types', [])
-            self_type = get_schema_type_by_name(schema_types, self.j_type.type_name)
-            self.j_type.fields = get_inherited_fields(schema_types, self_type, self.j_type.fields)
+            raw_type = get_schema_type_by_name(schema_types, self.j_type.type_name)
+            self.j_type.fields = get_inherited_fields(schema_types, raw_type, self.j_type.fields)
 
     def check_and_order_fields(self):
         if is_structure(self.j_type):
@@ -100,7 +100,7 @@ class Array:
     def check_max_length(self):
         max_length = get_max_length(self.j_type, self.j_config)
         
-        if max_length is None or max_length == 0:
+        if max_length is None or max_length == 0 or max_length == Jadn_Config().MaxElements:
             max_length = len(self.j_type.fields)
         
         if max_length is not None and len(self.data) > max_length:
@@ -119,7 +119,7 @@ class Array:
             j_field_obj = build_jadn_type_obj(j_field)
             field_data = get_item_safe_check(self.data, j_index)    
             
-            if field_data is None:
+            if is_none(field_data):
                 if is_optional(j_field_obj):
                     continue
                 else:

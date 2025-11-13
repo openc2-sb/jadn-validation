@@ -50,6 +50,63 @@ def test_map():
     err_count = validate_valid_data(j_schema, root, invalid_data_list)
     assert err_count == len(invalid_data_list) 
 
+def test_map_with_structures():
+    root = "Root-Test"
+    
+    j_schema = {
+        "meta": {
+            "package": "http://test/v1.0",
+            "roots": ["Root-Test"]
+        },
+        "types": [
+            ["Root-Test", "Map", [], "", [
+                [1, "field_value_1", "String", ["[0", "]-1"], ""],
+                [2, "field_value_2", "Record-Name", [], ""],
+                [3, "field_value_3", "Array-Name", ["[0", "]-1"], ""]
+            ]],
+            ["Record-Name", "Record", [], "", [
+                [1, "field_value_1", "String", [], ""],
+                [2, "field_value_2", "String", [], ""]
+            ]],
+            ["Array-Name", "Array", [], "", [
+                [1, "field_value_1", "Integer", [], ""],
+                [2, "field_value_2", "String", [], ""]
+            ]]
+        ]
+    }
+    
+    valid_data_list = [
+            {   "field_value_1": ["placeat repellendus sit", "another_string"],
+                "field_value_2": {"field_value_1": "molestias, sit elit. sit",
+                                  "field_value_2": "molestias, sit elit. sit"},
+                "field_value_3": [[1, "molestias, sit elit. sit"]]
+            }, 
+            {   "field_value_2": {"field_value_1": "molestias, sit elit. sit",
+                                  "field_value_2": "molestias, sit elit. sit"},
+                "field_value_3": [[1, "molestias, sit elit. sit"], [1, "molestias, sit elit. sit"]]
+            }
+    ]
+    
+    invalid_data_list = [
+        {
+            "field_value_1": "placeat repellendus sit",
+            "field_value_2": "molestias, sit elit. sit",
+            "field_value_3": "test extra field validation"
+        }, 
+        {
+            "field_value_x": "test incorrect field name"
+        },
+        {
+            "field_value_1": 123
+        }        
+    ]
+    
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+            
+    err_count = validate_valid_data(j_schema, root, invalid_data_list)
+    assert err_count == len(invalid_data_list) 
+
 def test_map_non_sequential():
     root = "Root-Test"
     
@@ -250,8 +307,8 @@ def test_map_id():
     err_count = validate_valid_data(j_schema, root, valid_data_list)    
     assert err_count == 0
             
-    # err_count = validate_invalid_data(j_schema, root, invalid_data_list)
-    # assert err_count == len(invalid_data_list)
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)
+    assert err_count == len(invalid_data_list)
     
 '''
 def test_xml_map_id():
@@ -489,6 +546,190 @@ def test_map_max_occurs():
         }        
     ]
     
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+            
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)
+    assert err_count == len(invalid_data_list)
+
+     
+def test_map_keyless_map():
+    root = "Root-Test"
+    
+    j_schema = {
+        "meta": {
+            "package": "http://test/v1.0",
+            "roots": ["Root-Test"]
+        },
+        "types": [
+            ["Root-Test", "Map", ["~1"], "", [
+                [1, "A", "String", ["[0"], ""],
+                [2, "B", "String", ["[0"], ""],
+                [3, "C", "Boolean", ["[0"], ""]
+            ]]
+        ]
+    }
+    
+    valid_data_list = [
+        ["AI am any String"],["A1"],["BTwo"],["CTrue"]   
+    ]
+
+    invalid_data_list = [
+        ["3Two"], 
+        ["a1"], 
+        "A1",
+        {"field_value_21": "data 1"}, 
+        {"field_value_x": "test incorrect field name"},
+        {"field_value_1": 123}
+    ]
+    
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+        
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)
+    assert err_count == len(invalid_data_list)
+        
+def test_map_keyless_map_2():
+    root = "Root-Test"
+    
+    j_schema = {
+        "meta": {
+            "package": "http://test/v1.0",
+            "roots": ["Root-Test"]
+        },
+        "types": [
+            ["Root-Test", "Map", ["~1"], "", [
+                [1, "A", "String-Thing", ["[0"], ""],
+                [2, "B", "Int-Thing", ["[0"], ""]
+            ]],
+            ["String-Thing", "String", ["[0"], "", []],
+            ["Int-Thing", "Integer", ["[0"], "", []]
+        ]
+    }
+    
+    valid_data_list = [
+            
+        ["AI am any String"],["A1"],["B2"]
+                          
+    ]
+
+    invalid_data_list = [
+
+        ["3Two"], ["a1"], "A1", ["BHello"]       
+    ]
+    
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+        
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)
+    assert err_count == len(invalid_data_list)     
+
+def test_map_keyless_map_inheritence():
+    root = "Root-Test"
+    
+    j_schema = {
+        "meta": {
+            "package": "http://test/v1.0",
+            "roots": ["Root-Test"]
+        },
+        "types": [
+            ["Root-Test", "Map", ["eIntermed-Test", "~1"], "", [
+                [3, "C", "String-Thing", ["[0"], ""],
+                [4, "D", "Int-Thing", ["[0"], ""]
+            ]],
+            ["Intermed-Test", "Map", ["eAbstract-Test", "~1"], "", [
+                [2, "B", "Int-Thing", ["[0"], ""]
+            ]],
+            ["Abstract-Test", "Map", ["~1"], "", [
+                [1, "A", "String-Thing", ["[0"], ""]
+            ]],
+            ["String-Thing", "String", [], "", []],
+            ["Int-Thing", "Integer", [], "", []]
+        ]
+    }
+    
+    valid_data_list = [
+            
+        ["C1"],["D2"],["A1", "B2", "C3", "D4"],["B2", "C3", "D4"],["C3", "D4"]
+                          
+    ]
+
+    invalid_data_list = [
+
+        ["3Two"], ["a1"], "A1", ["BHello"]       
+    ]
+    
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+        
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)
+    assert err_count == len(invalid_data_list)
+    
+def test_map_alias_fields():
+    root = "Root-Test"
+    
+    j_schema = {
+        "meta": {
+            "package": "http://test/v1.0",
+            "roots": ["Root-Test"]
+        },
+        "types": [
+            ["Root-Test", "Map", ["~1"], "", [
+                [1, "A", "Pattern", ["[0"], ""],
+                [2, "B", "MinOccurs", ["[0", "Z["], ""]
+            ]],
+            ["Pattern", "String", ["[0", "Z%"], "", []],
+            ["MinOccurs", "Integer", ["[0"], "", []]
+        ]
+    }
+    
+    
+    valid_data_list = [
+            
+        ["%I am any String"],["%1"],["[2"] #{"String-Thing": "I Am Any String"}, {"C", "1"}, {"[": 2}
+                          
+    ]
+
+    invalid_data_list = [
+
+        ["3Two"], ["A1"], "B1", ["BHello"]       
+    ]
+    err_count = validate_valid_data(j_schema, root, valid_data_list)    
+    assert err_count == 0
+            
+    err_count = validate_invalid_data(j_schema, root, invalid_data_list)
+    assert err_count == len(invalid_data_list)
+
+     
+def test_map_alias_fields_basic():
+    root = "Root-Test"
+    
+    j_schema = {
+        "meta": {
+            "package": "http://test/v1.0",
+            "roots": ["Root-Test"]
+        },
+        "types": [
+            ["Root-Test", "Map", [], "", [
+                [1, "A", "Pattern", ["[0"], ""],
+                [2, "B", "Min-Occurs", ["[0"], ""]
+            ]],
+            ["Pattern", "String", ["Z%"], "", []],
+            ["Min-Occurs", "Integer", ["Z["], "", []]
+        ]
+    }
+    
+    
+    valid_data_list = [
+            
+        {"[": 2}, {"%": "Any String"} #["%I am any String"],["%1"],{"String-Thing": "I Am Any String"}, {"C", "1"}, {"[": 2}
+                          
+    ]
+
+    invalid_data_list = [
+
+        ["3Two"], ["A1"], "B1", ["BHello"]       
+    ]
     err_count = validate_valid_data(j_schema, root, valid_data_list)    
     assert err_count == 0
             
