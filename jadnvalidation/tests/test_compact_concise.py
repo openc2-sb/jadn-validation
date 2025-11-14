@@ -82,3 +82,59 @@ def test_map():
 
     err_count = validate_invalid_data(jadn_schema, root, invalid_data_list, data_format=COMPACT)
     assert err_count > 0
+
+def test_ipv4net():
+    root = "Array-IPv4"
+    jadn_schema = {
+    "meta": {
+        "title": "IPv4/6Net Testing",
+        "package": "http://JADN-Schema-Start-Up-Template-URI",
+        "roots": ["Array-IPv4", "Array-IPv6"]
+    },
+    "types": [
+        ["Array-IPv4", "Array", ["/ipv4-net", "{1", "}2"], "", [
+            [1, "ipv4_addr", "Binary", ["/ipv4-addr", "{1"], "IPv4 address as defined in [[RFC0791]](#rfc0791)"],
+            [2, "prefix_length", "Integer", ["{0", "}32", "[0"], "CIDR prefix-length. If omitted, refers to a single host address."]
+        ]],
+        ["Array-IPv6", "Array", ["/ipv6-net", "{1", "}2"], "", [
+            [1, "ipv6_addr", "Binary", ["/ipv6-addr", "{1"], "IPv6 address as defined in [[RFC8200]](#rfc8200)"],
+            [2, "prefix_length", "Integer", ["{0", "}128", "[0"], "CIDR prefix-length. If omitted, refers to a single host address."]
+        ]]
+    ]
+    }
+
+    valid_data_list = [
+        "127.0.0.1/8",
+        "192.168.0.1/32"
+    ]
+
+    err_count = validate_valid_data(jadn_schema, root, valid_data_list, data_format=COMPACT)    
+    assert err_count == 0
+
+def test_ipv6net():
+    root = "Array-IPv6"
+    jadn_schema = {
+    "meta": {
+        "title": "IPv4/6Net Testing",
+        "package": "http://JADN-Schema-Start-Up-Template-URI",
+        "roots": ["Array-IPv4", "Array-IPv6"]
+    },
+    "types": [
+        ["Array-IPv4", "Array", ["/ipv4-net", "{1", "}2"], "", [
+            [1, "ipv4_addr", "Binary", ["/ipv4-addr", "{1"], "IPv4 address as defined in [[RFC0791]](#rfc0791)"],
+            [2, "prefix_length", "Integer", ["{0", "}32", "[0"], "CIDR prefix-length. If omitted, refers to a single host address."]
+        ]],
+        ["Array-IPv6", "Array", ["/ipv6-net", "{1", "}2"], "", [
+            [1, "ipv6_addr", "Binary", ["/ipv6-addr", "{1"], "IPv6 address as defined in [[RFC8200]](#rfc8200)"],
+            [2, "prefix_length", "Integer", ["{0", "}128", "[0"], "CIDR prefix-length. If omitted, refers to a single host address."]
+        ]]
+    ]
+    }
+
+    valid_data_list = [
+        "2001:0db8:85a3:0000:0000:8a2e:0370:7334/64",
+        "fe80::1/128"
+    ]
+
+    err_count = validate_valid_data(jadn_schema, root, valid_data_list, data_format=COMPACT)    
+    assert err_count == 0

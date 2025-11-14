@@ -1,6 +1,6 @@
 from jadnvalidation.models.jadn.jadn_config import Jadn_Config, get_j_config
 from jadnvalidation.models.jadn.jadn_type import Jadn_Type, build_j_type
-from jadnvalidation.utils.consts import JSON, XML
+from jadnvalidation.utils.consts import JSON, XML, COMPACT
 from jadnvalidation.utils.general_utils import create_clz_instance
 from jadnvalidation.utils.mapping_utils import is_optional
         
@@ -56,7 +56,7 @@ class Ipv4Net:
         return jadn_type_obj              
                 
     def check_type(self):
-        if self.data_format == JSON:
+        if self.data_format == JSON or self.data_format == COMPACT:
             if not isinstance(self.data, str):
                 raise ValueError(f"Data for type {self.j_type.type_name} must be JSON String. Received: {type(self.data)}")
             else: 
