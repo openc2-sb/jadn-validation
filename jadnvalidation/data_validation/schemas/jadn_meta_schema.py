@@ -54,8 +54,8 @@ j_meta_schema = {
             [2, "$MaxString", "Integer", ["y1", "[0"], "Package max characters, default = 255"],
             [3, "$MaxElements", "Integer", ["y1", "[0"], "Package max items/properties, default = 255"],
             [4, "$Sys", "String", ["{1", "}1", "[0"], "System character for TypeName, default = '.'"],
-            [5, "$TypeName", "String", ["/regex", "[0"], "Default = ^[A-Z][-.A-Za-z0-9]{0,63}$"],
-            [6, "$FieldName", "String", ["/regex", "[0"], "Default = ^[a-z][_A-Za-z0-9]{0,63}$"],
+            [5, "$TypeName", "String", ["/regex", "[0"], "Default = ^[A-Za-z][-_$A-Za-z0-9]{0,63}$"],
+            [6, "$FieldName", "String", ["/regex", "[0"], "Default = ^[A-Za-z$][-_$A-Za-z0-9]{0,63}$"],
             [7, "$NSID", "String", ["/regex", "[0"], "Default = ^([A-Za-z][A-Za-z0-9]{0,7})?$"]
         ]],
 
@@ -133,7 +133,20 @@ j_meta_schema_updated ={
     "license": "CC-BY-4.0",
     "roots": ["Schema"],
     "config": {
-      "$FieldName": "^[$A-Za-z][_A-Za-z0-9]{0,63}$"
+            # "$MaxBinary": 255,
+            "$MaxBinary": 500,
+            # "$MaxString": 255,
+            "$MaxString": 1000,
+            "$MaxElements": 1000,
+            "$Sys": "$",
+            # "$TypeName": "^[A-Z][-$A-Za-z0-9]{0,63}$",
+            # "$TypeName": "^[A-Z][-$A-Za-z0-9]*(\\$[A-Za-z0-9]+)?$",  # Allow optional $suffix for types like "Party$type"
+            # "$TypeName": "^[A-Za-z][-_$A-Za-z0-9]*(\\$[A-Za-z0-9]+)?$",  # Allow both uppercase and lowercase initial
+            "$TypeName": "^[A-Za-z][-_$A-Za-z0-9]{0,63}$",
+            # "$FieldName": "^[a-z][_A-Za-z0-9]{0,63}$",
+            # "$FieldName": "^[$A-Za-z][_A-Za-z0-9]{0,63}$",  # Adjusted to allow $ for system fields and uppercase first char for OSCAL
+            "$FieldName": "^[A-Za-z$][-_$A-Za-z0-9]{0,63}$", 
+            "$NSID": "^[A-Za-z][A-Za-z0-9]{0,7}$"
     }
   },
   "types": [
@@ -169,8 +182,8 @@ j_meta_schema_updated ={
     ]],
     ["Namespace", "String", ["/uri"], "Unique name of a package"],
     ["NSID", "String", ["%^([A-Za-z][A-Za-z0-9]{0,7})?$"], "Namespace prefix matching $NSID"],
-    ["TypeName", "String", ["%^[A-Z][-.A-Za-z0-9]{0,63}$"], "Name of a logical type"],
-    ["FieldName", "String", ["%^[a-z][_A-Za-z0-9]{0,63}$"], "Name of a field in a structured type"],
+    ["TypeName", "String", ["%^[A-Za-z][-_$A-Za-z0-9]{0,63}$"], "Name of a logical type"],
+    ["FieldName", "String", ["%^[A-Za-z$][-_$A-Za-z0-9]{0,63}$"], "Name of a field in a structured type"],
     ["TypeRef", "String", [], "Reference to a type, matching ($NSID ':')? $TypeName"],
     ["Type", "Array", [], "", [
       [1, "type_name", "TypeName", [], ""],

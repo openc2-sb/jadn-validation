@@ -1,6 +1,7 @@
 import hashlib
 import json
 import re
+import regex
 import sys
 import importlib
 
@@ -25,7 +26,11 @@ def create_regex(pattern_string):
   try:
     return re.compile(pattern_string)
   except re.error as e:
-    raise ValueError(f"Invalid regex pattern: {e}. cannot create regex {pattern_string}")
+    # If standard re module fails, try with regex module for Unicode property support
+    try:
+      return regex.compile(pattern_string)
+    except regex.error as regex_e:
+      raise ValueError(f"Invalid regex pattern: {regex_e}. cannot create regex {pattern_string}")
 
 def is_none(field_data):
     """

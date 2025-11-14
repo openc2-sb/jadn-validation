@@ -2,13 +2,14 @@ from setuptools import setup
  
 setup(
     name="jadnvalidation",
-    version="2.4.0", 
+    version="2.4.1", 
     packages=["jadnvalidation", "jadnvalidation.data_validation", "jadnvalidation.data_validation.formats", "jadnvalidation.data_validation.schemas", "jadnvalidation.models", "jadnvalidation.models.jadn", "jadnvalidation.utils", "jadnvalidation.models.jadn"],
     install_requires=[
         "jsonpointer",
         "pytest",
         "netaddr",
         "numpy",
+        "regex",
         "rfc3986",
         "rfc3987",
         "strict-rfc3339",
