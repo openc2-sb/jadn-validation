@@ -1,6 +1,6 @@
 from jadnvalidation.tests.test_utils import validate_invalid_data, validate_valid_data
 from jadnvalidation.utils.consts import CONCISE, COMPACT
-
+from jadnvalidation.tests.examples.test_oscal_catalog import oscal_catalog_j_schema
 
 def test_record():
     root = "Root-Test"
@@ -134,6 +134,17 @@ def test_ipv6net():
     valid_data_list = [
         "2001:0db8:85a3:0000:0000:8a2e:0370:7334/64",
         "fe80::1/128"
+    ]
+
+    err_count = validate_valid_data(jadn_schema, root, valid_data_list, data_format=COMPACT)    
+    assert err_count == 0
+
+def test_oscal_catalog():
+    jadn_schema = oscal_catalog_j_schema
+    root = "Root"
+
+    valid_data_list = [
+        ["abcdefg", ["f16Ed71a-aDec-5Dcf-91f3-3CF86E377805", ["abcdefg", "2441-11-30T22:38:21.1945433544702419844899708958283237972913002308048468717301575962981120384921890826170438Z", "2000-02-29T03:55:06.615663927730283605421447244-06:00", "x", "#$o1sl_/\"Or3.OK#};Hf(G, ;&T@J{[bbgqY#W+ELc+z0H2<~W~1xK7%j>-QIX:fPJ1OhJOuxwz", "abcdefg"]]]
     ]
 
     err_count = validate_valid_data(jadn_schema, root, valid_data_list, data_format=COMPACT)    
