@@ -9,6 +9,7 @@ setup(
         "pytest",
         "netaddr",
         "numpy",
+        "regex",
         "rfc3986",
         "rfc3987",
         "strict-rfc3339",
