@@ -1,6 +1,6 @@
 from jadnvalidation.data_validation.data_validation import DataValidation
 from jadnvalidation.utils.consts import JSON
-from jadnvalidation.utils.mapping_utils import use_alias, use_field_ids, has_alias_option, get_alias
+from jadnvalidation.utils.mapping_utils import use_alias, has_alias_option, get_alias
 from jadnvalidation.utils.keyless_map_utils import use_keyless_map
 from jadnvalidation.utils.type_utils import get_reference_type, validate_type_references, validate_field_type_references
 from jadnvalidation.models.jadn.jadn_type import (

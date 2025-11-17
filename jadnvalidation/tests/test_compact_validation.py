@@ -1,5 +1,5 @@
 from jadnvalidation.tests.test_utils import validate_invalid_data, validate_valid_data
-from jadnvalidation.utils.consts import CONCISE, COMPACT
+from jadnvalidation.utils.consts import COMPACT
 from jadnvalidation.tests.examples.test_oscal_catalog import oscal_catalog_j_schema
 
 def test_record():
