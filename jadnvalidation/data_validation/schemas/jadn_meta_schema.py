@@ -354,7 +354,7 @@ j_meta_schema_updated ={
       [123, "minLength", "Integer", ["w0", "[0", "Z{"]],
       [125, "maxLength", "Integer", ["w0", "[0", "Z}"]]
     ]],
-    ["Format", "String", ["%^[a-zA-Z0-9]{1,16$"]],
+    ["Format", "String", ["%^[a-zA-Z0-9]{1,16}$"]],
     ["Description", "String"]
   ]
 }
