@@ -149,3 +149,36 @@ def test_oscal_catalog():
 
     err_count = validate_valid_data(jadn_schema, root, valid_data_list, data_format=COMPACT)    
     assert err_count == 0
+
+def test_null_vals():
+    root = "Map-Name"
+    jadn_schema = {
+        "meta": {
+            "roots": ["Map-Name"]
+        },
+        "types": [
+            ["Map-Name", "Map", [], "", [
+                [1, "record_1", "Record-Name", [], ""],
+                [2, "record_2", "Record-Name", [], ""],
+                [3, "record_3_optional", "Record-Name", ["[0"], ""]
+            ]],
+            ["Record-Name", "Record", [], "", [
+                [1, "str_val_optional", "String", ["[0"], ""],
+                [2, "int_val", "Integer", [], ""]
+            ]]
+        ]
+        }
+    
+    valid_data_list = [
+        {
+            "record_1": {
+                "int_val": 10
+            },
+            "record_2": {
+                "str_val_optional": None,
+                "int_val": 20
+            }
+        }
+    ]
+    err_count = validate_valid_data(jadn_schema, root, valid_data_list, data_format=COMPACT)    
+    assert err_count == 0
