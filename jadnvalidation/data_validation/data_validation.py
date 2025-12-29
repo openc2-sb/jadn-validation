@@ -45,7 +45,7 @@ class DataValidation:
                 # self.data = 
                 pass
             else:
-                raise ValueError(f"Invalid Data Format: {self.data_format}")
+                raise ValueError(f"Invalid Data Format: {self.data_format}. Supported Formats: {JSON}, {CONCISE}, {COMPACT}, {XML}, {CBOR}")
             
             j_types = self.j_schema.get('types')
             if j_types == None or j_types == []:

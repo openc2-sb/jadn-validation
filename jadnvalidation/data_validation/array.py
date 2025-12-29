@@ -66,7 +66,7 @@ class Array:
                 raise ValueError(f"Type {self.j_type.type_name} inherits from unknown type {inherit_from}")
             
             if self.j_type.base_type != inherited_type_obj.base_type:
-                raise ValueError(f"Type {self.j_type.type_name} inherits from type {inherit_from} with different base type {inherited_type_obj.base_type}. Received: {self.j_type.base_type}")
+                raise ValueError(f"Type {self.j_type.type_name} with base type {self.j_type.base_type} attempts to inherit from type {inherit_from} with base type {inherited_type_obj.base_type}.")
             
             schema_types = self.j_schema.get('types', [])
             raw_type = get_schema_type_by_name(schema_types, self.j_type.type_name)
