@@ -6,4 +6,4 @@
 2) Run: python setup.py bdist_wheel --universal
 3) Under dist, locate: jadnvalidation-*-py2.py3-none-any.whl
 4) Copy to the repo or project that requires this functionality
-5) To add to the other project run: pip install jadn_json-*-py2.py3-none-any.whl
+5) To add to the other project run: pip install jadnvalidation-*-py2.py3-none-any.whl
